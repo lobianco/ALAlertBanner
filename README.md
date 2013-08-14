@@ -6,6 +6,10 @@ ALAlertBanner is a drop-in class for iOS (both iPhone and iPad) that presents be
 
 ### Preview
 
+![Preview1](https://raw.github.com/alobi/ALAlertBanner/master/Screenshots/screenshot1.png)
+
+![Preview2](https://raw.github.com/alobi/ALAlertBanner/master/Screenshots/screenshot2.png)
+
 ### Behind the Scenes
 
 ALAlertBanner uses [Core Animation](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CoreAnimation_guide/Introduction/Introduction.html) and [Grand Central Dispatch](http://developer.apple.com/library/ios/documentation/Performance/Reference/GCD_libdispatch_Ref/Reference/reference.html) under the hood, making it lightweight and stable. A singleton object is used to manage the presentation and dismissal of the alerts in a synchronous manner. 
