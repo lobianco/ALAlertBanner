@@ -48,7 +48,7 @@ You should use the ```ALAlertBannerManager``` singleton object to manage all ban
                                       subtitle:@"Here's a banner. Look how easy that was."];
 ```
 
-Note that ```subtitle``` may be nil. All other parameters should be used. Also note that you *can* present a banner in the AppDelegate's ```UIWindow``` but it will only work in portrait mode by default (aka no support for autorotation). 
+Note that ```subtitle``` may be nil. All other parameters should be used. Also note that you can present a banner in the AppDelegate's ```UIWindow``` (and it's pretty handy!) but it won't respond to any device orientation changes. 
 
 ### Other methods of consideration:
 
