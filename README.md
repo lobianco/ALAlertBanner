@@ -59,7 +59,9 @@ AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] dele
                                       subtitle:@"Here's another banner, and it is nice and comfy in its UIWindow"];
 ```
 
-A couple notes: ```title``` is limited to one line and will be truncated if necessary. ```subtitle``` can be any number of lines, or it can also be nil. All other parameters should be used however. Also note that you can present a banner in the AppDelegate's ```UIWindow``` (and it's pretty handy!) but it won't respond to any device orientation changes. 
+The second example above shows how you might create a "sticky" banner (aka its position won't change despite what's going on in the view below it) on the AppDelegate's ```UIWindow``` , but keep in mind it won't respond to any device orientation changes by default. Thus is the wildly and unkempt nature of the beast.  
+
+A couple notes: ```title``` is limited to one line and will be truncated if necessary. ```subtitle``` can be any number of lines, or it can also be nil. All other parameters should be used however. 
 
 ### Other methods of consideration:
 
@@ -132,7 +134,7 @@ The banner will be extend up from the bottom of the screen.
 ALAlertBannerPositionUnderNavBar
 ```
 
-This position should **ONLY** be used if presenting on the AppDelegate's main ```UIWindow```. It will create an effect similar to ```ALAlertBannerPositionTop``` on a ```UIView``` within a ```UINavigationController``` (i.e. extending down from underneath the navigation bar), but it will in fact be above all other views. It accomplishes this by using a ```CALayer``` mask to create the illusion of animating from behind the navigation bar. This position is useful if you want to do something like set up a "catch-all" error handler in your AppDelegate that responds to notifications about a certain event (like network requests, for instance).
+This position should **ONLY** be used if presenting on the AppDelegate's main ```UIWindow```. It will create an effect similar to ```ALAlertBannerPositionTop``` on a ```UIView``` within a ```UINavigationController``` (i.e. extending down from underneath the navigation bar), but it will in fact be above all other views. It accomplishes this by using a ```CALayer``` mask. This position is useful if you want to do something like set up a "catch-all" error handler in your AppDelegate that responds to notifications about a certain event (like network requests, for instance), yet you still want it to animate from underneath the nav bar. 
 
 ### Banner Types
 
