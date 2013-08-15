@@ -48,7 +48,7 @@ You should use the ```ALAlertBannerManager``` singleton object to manage all ban
                                       subtitle:@"Here's a banner. Look how easy that was."];
 ```
 
-or
+or in a ```UIWindow```:
 
 ```objc
 AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
