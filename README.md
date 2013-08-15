@@ -2,7 +2,7 @@
 
 ## About
 
-ALAlertBanner is a drop-in class for iOS (both iPhone and iPad) that presents beautiful alert banners in a customizable and configurable way. 
+ALAlertBanner is a drop-in library for iOS (both iPhone and iPad) that presents beautiful alert banners in a customizable and configurable way. 
 
 ### Preview
 
@@ -48,7 +48,18 @@ You should use the ```ALAlertBannerManager``` singleton object to manage all ban
                                       subtitle:@"Here's a banner. Look how easy that was."];
 ```
 
-Note that ```subtitle``` may be nil. All other parameters should be used. Also note that you can present a banner in the AppDelegate's ```UIWindow``` (and it's pretty handy!) but it won't respond to any device orientation changes. 
+or
+
+```objc
+AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+[[ALAlertBannerManager sharedManager] showAlertBannerInView:appDelegate.window 
+                                      style:ALAlertBannerStyleNotify 
+                                      position:ALAlertBannerPositionUnderNavBar 
+                                      title:@"Notify!"
+                                      subtitle:@"Here's another banner, and it is nice and comfy in its UIWindow"];
+```
+
+A couple notes: ```title``` is limited to one line and will be truncated if necessary. ```subtitle``` can be any number of lines, or it can also be nil. All other parameters should be used however. Also note that you can present a banner in the AppDelegate's ```UIWindow``` (and it's pretty handy!) but it won't respond to any device orientation changes. 
 
 ### Other methods of consideration:
 
