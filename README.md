@@ -170,7 +170,9 @@ Did I mention they have cute little shapes and nice colorful gradients?
 ## Contact Me
 
 Github: [alobi](https://github.com/alobi)
+
 Twitter: [@lobi4nco](https://twitter.com/lobi4nco)
+
 Email: [anthony@lobian.co](mailto:anthony@lobian.co)
 
 ## Credits & License
