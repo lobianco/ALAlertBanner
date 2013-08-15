@@ -6,9 +6,9 @@ ALAlertBanner is a drop-in class for iOS (both iPhone and iPad) that presents be
 
 ### Preview
 
-![Preview1](https://raw.github.com/alobi/ALAlertBanner/master/Screenshots/screenshot1.png)
+![Preview1](https://raw.github.com/alobi/ALAlertBanner/master/Screenshots/screenshot1.png) ![Preview2](https://raw.github.com/alobi/ALAlertBanner/master/Screenshots/screenshot3.png)
 
-![Preview2](https://raw.github.com/alobi/ALAlertBanner/master/Screenshots/screenshot2.png)
+![Preview3](https://raw.github.com/alobi/ALAlertBanner/master/Screenshots/screenshot2.png)
 
 ### Behind the Scenes
 
@@ -109,7 +109,7 @@ Should the banner dismiss prematurely if tapped? Default value is YES.
 ALAlertBannerPositionTop = 0
 ```
 
-The banner will be extend down from the top of the screen. If you're presenting it in a ```UIView``` within a ```UINavigationController```, that means the banner will extend down from underneath the navigation bar. If you're presenting it in the AppDelegate's main ```UIWindow```, then it should extend down from underneath the status bar. 
+The banner will be extend down from the top of the screen. If you're presenting it in a ```UIView``` within a ```UINavigationController```, that means the banner will extend down from underneath the navigation bar. If you're presenting it in the AppDelegate's main ```UIWindow```, then it should extend down from underneath the status bar (above any other UI elements, like the nav bar for instance). 
 
 ```objc
 ALAlertBannerPositionBottom
@@ -129,36 +129,44 @@ This position should **ONLY** be used if presenting on the AppDelegate's main ``
 ALAlertBannerStyleSuccess = 0
 ```
 
-The banner will have a checkmark and a nice green gradient.
+The banner will have a cute little checkmark and a nice green gradient.
 
 ```objc
 ALAlertBannerStyleFailure
 ```
 
-The banner will have an X and a nice red gradient.
+The banner will have a cute little X and a nice red gradient.
 
 ```objc
 ALAlertBannerStyleNotify
 ```
 
-The banner will have an ```i``` info symbol and a nice blue gradient.
+The banner will have a cute little info symbol and a nice blue gradient.
 
 ```objc
 ALAlertBannerStyleAlert
 ```
 
-The banner will have a caution triangle and a nice yellow gradient.
+The banner will have a cute little caution triangle and a nice yellow gradient.
 
-Did I mention they have nice colorful gradients?
+Did I mention they have cute little shapes and nice colorful gradients?
 
 ## Known Issues
 
 * ALAlertBanner supports all interface orientations. However, if you rotate the device while one or more banners is displaying (or animating), the layout will get fudgesicled. This is just something I haven't figured out how to fix yet. 
 * If you find any other bugs, please open a new issue. 
 
+## Contact Me
+
+Github: [alobi](https://github.com/alobi)
+Twitter: [@lobi4nco](https://twitter.com/lobi4nco)
+Email: [anthony@lobian.co](mailto:anthony@lobian.co)
+
 ## Credits & License
 
-ALAlertBanner is developed and maintained by Anthony Lobianco ([@lobi4nco](https://twitter.com/lobi4nco)). Licensed under the MIT License. Basically, I would appreciate attribution if you use it. And feel free to give me a shoutout on Twitter to let me know how you like it. 
+Feel free to give me a shoutout on Twitter to let me know how you like it. I'd love to hear your thoughts. 
+
+ALAlertBanner is developed and maintained by Anthony Lobianco ([@lobi4nco](https://twitter.com/lobi4nco)). Licensed under the MIT License. Basically, I would appreciate attribution if you use it.
 
 Enjoy!
 
