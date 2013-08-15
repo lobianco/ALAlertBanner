@@ -132,7 +132,7 @@ The banner will be extend up from the bottom of the screen.
 ALAlertBannerPositionUnderNavBar
 ```
 
-This position should **ONLY** be used if presenting on the AppDelegate's main ```UIWindow```. It will cause an effect similar to ```ALAlertBannerPositionTop``` in a ```UIView``` (i.e. extending down from underneath the navigation bar), but it will in fact be above all other displaying ```UIView```s. It accomplishes this by using a ```CALayer``` mask to create the illusion of animating from behind the navigation bar. 
+This position should **ONLY** be used if presenting on the AppDelegate's main ```UIWindow```. It will create an effect similar to ```ALAlertBannerPositionTop``` on a ```UIView``` within a ```UINavigationController``` (i.e. extending down from underneath the navigation bar), but it will in fact be above all other views. It accomplishes this by using a ```CALayer``` mask to create the illusion of animating from behind the navigation bar. This position is useful if you want to do something like set up a "catch-all" error handler in your AppDelegate that responds to notifications about a certain event (like network requests, for instance).
 
 ### Banner Types
 
