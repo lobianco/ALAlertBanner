@@ -45,7 +45,6 @@ static NSString *loremIpsum[] = {
 	// Do any additional setup after loading the view.
         
     self.view.backgroundColor = [UIColor lightGrayColor];
-    self.position = ALAlertBannerPositionTop;
         
     self.topButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     self.topButton.tag = ALAlertBannerPositionTop;
@@ -75,13 +74,18 @@ static NSString *loremIpsum[] = {
     self.label.font = [UIFont italicSystemFontOfSize:10.f];
     self.label.text = @"Go ahead, spam the shit out of that Show button.";
     [self.view addSubview:self.label];
-    
-    [self configureViewForOrientation:[UIApplication sharedApplication].statusBarOrientation];
 }
 
--(void)configureViewForOrientation:(UIInterfaceOrientation)orientation
+-(void)viewWillAppear:(BOOL)animated
 {
-    self.topButton.frame = CGRectMake(20, self.view.frame.size.height/2 - 50.f, self.view.frame.size.width/2 - 20.f, 40.f);
+    [super viewWillAppear:animated];
+    
+    self.position = ALAlertBannerPositionTop;
+}
+
+-(void)configureViewForPosition:(ALAlertBannerPosition)position
+{
+    self.topButton.frame = CGRectMake(20, position == ALAlertBannerPositionTop ? self.view.frame.size.height - 200.f : 100.f, self.view.frame.size.width/2 - 20.f, 40.f);
     self.bottomButton.frame = CGRectMake(self.topButton.frame.origin.x + self.topButton.frame.size.width, self.topButton.frame.origin.y, self.topButton.frame.size.width, self.topButton.frame.size.height);
     self.showInViewButton.frame = CGRectMake(self.topButton.frame.origin.x, self.topButton.frame.origin.y + self.topButton.frame.size.height + 10.f, self.view.frame.size.width/2 - 20.f, self.topButton.frame.size.height);
     self.hideAllBannersButton.frame = CGRectMake(self.showInViewButton.frame.origin.x + self.showInViewButton.frame.size.width, self.showInViewButton.frame.origin.y, self.view.frame.size.width/2 - 20.f, self.showInViewButton.frame.size.height);
@@ -124,6 +128,12 @@ static NSString *loremIpsum[] = {
     return loremIpsum[arc4random_uniform(arrayCount)];
 }
 
+-(void)setPosition:(ALAlertBannerPosition)position
+{
+    _position = position;
+    [self configureViewForPosition:position];
+}
+
 -(BOOL)shouldAutorotate
 {
     return YES;
@@ -137,7 +147,7 @@ static NSString *loremIpsum[] = {
 -(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
     [super willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
-    [self configureViewForOrientation:toInterfaceOrientation];
+    [self configureViewForPosition:self.position];
 }
 
 - (void)didReceiveMemoryWarning
