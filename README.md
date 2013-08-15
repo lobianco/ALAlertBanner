@@ -171,15 +171,13 @@ Did I mention they have cute little shapes and nice colorful gradients?
 
 ## Contact Me
 
-Github: [alobi](https://github.com/alobi)
+You can reach me anytime at the addresses below. If you use the library, feel free to give me a shoutout on Twitter to let me know how you like it. I'd love to hear your thoughts. 
 
-Twitter: [@lobi4nco](https://twitter.com/lobi4nco)
-
-Email: [anthony@lobian.co](mailto:anthony@lobian.co)
+Github: [alobi](https://github.com/alobi) <br>
+Twitter: [@lobi4nco](https://twitter.com/lobi4nco) <br>
+Email: [anthony@lobian.co](mailto:anthony@lobian.co) 
 
 ## Credits & License
-
-Feel free to give me a shoutout on Twitter to let me know how you like it. I'd love to hear your thoughts. 
 
 ALAlertBanner is developed and maintained by Anthony Lobianco ([@lobi4nco](https://twitter.com/lobi4nco)). Licensed under the MIT License. Basically, I would appreciate attribution if you use it.
 
