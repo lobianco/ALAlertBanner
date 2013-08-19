@@ -37,37 +37,55 @@ typedef enum {
     ALAlertBannerPositionUnderNavBar,
 } ALAlertBannerPosition;
 
+typedef enum {
+    ALAlertBannerStateShowing = 0,
+    ALAlertBannerStateHiding,
+    ALAlertBannerStateMovingForward,
+    ALAlertBannerStateMovingBackward,
+    ALAlertBannerStateVisible,
+    ALAlertBannerStateNotVisible
+} ALAlertBannerState;
+
 @class ALAlertBannerView;
 @protocol ALAlertBannerViewDelegate <NSObject>
 @required
--(void)alertBannerWillShow:(ALAlertBannerView*)alertBanner;
--(void)alertBannerDidShow:(ALAlertBannerView*)alertBanner;
--(void)alertBannerWillHide:(ALAlertBannerView*)alertBanner;
--(void)alertBannerDidHide:(ALAlertBannerView*)alertBanner;
+-(void)alertBannerWillShow:(ALAlertBannerView*)alertBanner inView:(UIView*)view;
+-(void)alertBannerDidShow:(ALAlertBannerView*)alertBanner inView:(UIView*)view;
+-(void)alertBannerWillHide:(ALAlertBannerView*)alertBanner inView:(UIView*)view;
+-(void)alertBannerDidHide:(ALAlertBannerView*)alertBanner inView:(UIView*)view;
 -(void)hideAlertBanner:(ALAlertBannerView*)alertBanner;
 @end
 
 @interface ALAlertBannerView : UIView
 
-@property (nonatomic, weak) id <ALAlertBannerViewDelegate> delegate;
+@property (nonatomic, readonly) ALAlertBannerStyle style;
+@property (nonatomic, readonly) ALAlertBannerPosition position;
+@property (nonatomic, readonly) ALAlertBannerState state;
 
-@property (nonatomic, readonly) ALAlertBannerStyle alertBannerStyle;
-@property (nonatomic, readonly) ALAlertBannerPosition alertBannerPosition;
-
-@property (nonatomic, readonly) BOOL isVisible;
-@property (nonatomic, readwrite) BOOL allowTapToDismiss;
-
-@property (nonatomic) NSTimeInterval showAnimationDuration;
-@property (nonatomic) NSTimeInterval hideAnimationDuration;
+@property (nonatomic, readonly) UIView *parentView;
 
 /**
- INTERNAL METHODS. 
+ INTERNAL DETAILS BELOW.
  
  Used by ALAlertBannerManager only. Every time you call one of them directly, I'll be forced to watch a Channing Tatum movie. Don't do that to me bro.
  */
+
+@property (nonatomic, weak) id <ALAlertBannerViewDelegate> delegate;
+
+@property (nonatomic) BOOL isScheduledToHide;
+@property (nonatomic) BOOL allowTapToDismiss;
+
+@property (nonatomic) CGFloat shadowOpacity;
+@property (nonatomic) NSTimeInterval showAnimationDuration;
+@property (nonatomic) NSTimeInterval hideAnimationDuration;
+
 +(ALAlertBannerView*)alertBannerForView:(UIView*)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString*)title subtitle:(NSString*)subtitle;
 -(void)show;
 -(void)hide;
--(void)move:(CGFloat)distance forward:(BOOL)forward;
+-(void)push:(CGFloat)distance forward:(BOOL)forward;
+-(void)updateSizeAndSubviewsAnimated:(BOOL)animated;
+-(void)updatePositionAfterRotationWithY:(CGFloat)yPos animated:(BOOL)animated;
 
 @end
+
+

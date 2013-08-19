@@ -13,18 +13,21 @@
 static NSString *loremIpsum[] = {
     @"Aliquam facilisis gravida ipsum, eu varius lacus lobortis eu. Fusce ac suscipit elit, eu varius tortor. Sed sed vestibulum ante. Integer eu orci eget felis pulvinar scelerisque. Etiam euismod risus ipsum.",
     @"Nunc id dictum enim. Nulla facilisi.",
-    @"Mauris fermentum tellus in ligula laoreet accumsan. Nullam felis ipsum, ultrices id lacus a, accumsan tempor sapien."
+    @"Mauris fermentum tellus in ligula laoreet accumsan. Nullam felis ipsum, ultrices id lacus a, accumsan tempor sapien hala shishkabob."
 };
 
 @interface ViewController ()
 
 @property (nonatomic, strong) UIButton *topButton;
 @property (nonatomic, strong) UIButton *bottomButton;
-@property (nonatomic, strong) UIButton *showInViewButton;
-@property (nonatomic, strong) UIButton *hideAllBannersButton;
-@property (nonatomic, strong) UILabel *label;
+@property (nonatomic, strong) UIButton *underNavButton;
 
-@property (nonatomic, readwrite) ALAlertBannerPosition position;
+@property (nonatomic, strong) UISlider *secondsToShowSlider;
+@property (nonatomic, strong) UILabel *secondsToShowLabel;
+@property (nonatomic, strong) UISlider *animationDurationSlider;
+@property (nonatomic, strong) UILabel *animationDurationLabel;
+
+@property (nonatomic, strong) UIButton *hideAllBannersButton;
 
 @end
 
@@ -44,82 +47,90 @@ static NSString *loremIpsum[] = {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
         
-    self.view.backgroundColor = [UIColor lightGrayColor];
+    self.view.backgroundColor = [UIColor colorWithRed:224/255.0 green:234/255.0 blue:235/255.0 alpha:1.f];
         
     self.topButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     self.topButton.tag = ALAlertBannerPositionTop;
     [self.topButton setTitle:@"Top" forState:UIControlStateNormal];
-    [self.topButton addTarget:self action:@selector(selectPosition:) forControlEvents:UIControlEventTouchUpInside];
-    [self.topButton setHighlighted:YES];
+    [self.topButton addTarget:self action:@selector(showAlertBannerInView:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.topButton];
     
     self.bottomButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     self.bottomButton.tag = ALAlertBannerPositionBottom;
     [self.bottomButton setTitle:@"Bottom" forState:UIControlStateNormal];
-    [self.bottomButton addTarget:self action:@selector(selectPosition:) forControlEvents:UIControlEventTouchUpInside];
+    [self.bottomButton addTarget:self action:@selector(showAlertBannerInView:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.bottomButton];
     
-    self.showInViewButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [self.showInViewButton setTitle:@"Show Banner" forState:UIControlStateNormal];
-    [self.showInViewButton addTarget:self action:@selector(showAlertBannerInView:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:self.showInViewButton];
+    self.underNavButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    self.underNavButton.tag = ALAlertBannerPositionUnderNavBar;
+    [self.underNavButton setTitle:@"Under Nav" forState:UIControlStateNormal];
+    [self.underNavButton addTarget:self action:@selector(showAlertBannerInWindow:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.underNavButton];
     
-    self.hideAllBannersButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [self.hideAllBannersButton setTitle:@"Hide All" forState:UIControlStateNormal];
-    [self.hideAllBannersButton addTarget:self action:@selector(hideAllBanners) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:self.hideAllBannersButton];
+    self.secondsToShowSlider = [[UISlider alloc] init];
+    self.secondsToShowSlider.continuous = YES;
+    self.secondsToShowSlider.minimumValue = 0.0f;
+    self.secondsToShowSlider.maximumValue = 10.f;
+    [self.secondsToShowSlider setValue:3.5f];
+    [self.secondsToShowSlider addTarget:self action:@selector(secondsToShowSlider:) forControlEvents:UIControlEventValueChanged];
+    [self.secondsToShowSlider addTarget:self action:@selector(secondsToShowSliderTouchEnded:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.secondsToShowSlider];
     
-    self.label = [[UILabel alloc] init];
-    self.label.backgroundColor = [UIColor clearColor];
-    self.label.font = [UIFont italicSystemFontOfSize:10.f];
-    self.label.text = @"Go ahead, spam the shit out of that Show button.";
-    [self.view addSubview:self.label];
+    self.secondsToShowLabel = [[UILabel alloc] init];
+    self.secondsToShowLabel.backgroundColor = [UIColor clearColor];
+    self.secondsToShowLabel.font = [UIFont systemFontOfSize:10.f];
+    self.secondsToShowLabel.text = @"Seconds to show: 3.5 seconds";
+    self.secondsToShowLabel.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:self.secondsToShowLabel];
+    
+    self.animationDurationSlider = [[UISlider alloc] init];
+    self.animationDurationSlider.continuous = YES;
+    self.animationDurationSlider.minimumValue = 0.1f;
+    self.animationDurationSlider.maximumValue = 2.f;
+    [self.animationDurationSlider setValue:0.25f];
+    [self.animationDurationSlider addTarget:self action:@selector(animationDurationSlider:) forControlEvents:UIControlEventValueChanged];
+    [self.animationDurationSlider addTarget:self action:@selector(animationDurationSliderTouchEnded:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.animationDurationSlider];
+    
+    self.animationDurationLabel = [[UILabel alloc] init];
+    self.animationDurationLabel.backgroundColor = [UIColor clearColor];
+    self.animationDurationLabel.font = [UIFont systemFontOfSize:10.f];
+    self.animationDurationLabel.text = @"Animation duration: 0.25 seconds";
+    self.animationDurationLabel.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:self.animationDurationLabel];
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    self.position = ALAlertBannerPositionTop;
+    [self configureView];
 }
 
--(void)configureViewForPosition:(ALAlertBannerPosition)position
+-(void)configureView
 {
-    self.topButton.frame = CGRectMake(20, position == ALAlertBannerPositionTop ? self.view.frame.size.height - 200.f : 100.f, self.view.frame.size.width/2 - 20.f, 40.f);
+    self.topButton.frame = CGRectMake(20, self.view.frame.size.height/2 - 80.f, (self.view.frame.size.width - 40.f)/3, 40.f);
     self.bottomButton.frame = CGRectMake(self.topButton.frame.origin.x + self.topButton.frame.size.width, self.topButton.frame.origin.y, self.topButton.frame.size.width, self.topButton.frame.size.height);
-    self.showInViewButton.frame = CGRectMake(self.topButton.frame.origin.x, self.topButton.frame.origin.y + self.topButton.frame.size.height + 10.f, self.view.frame.size.width/2 - 20.f, self.topButton.frame.size.height);
-    self.hideAllBannersButton.frame = CGRectMake(self.showInViewButton.frame.origin.x + self.showInViewButton.frame.size.width, self.showInViewButton.frame.origin.y, self.view.frame.size.width/2 - 20.f, self.showInViewButton.frame.size.height);
-    self.label.frame = CGRectMake(self.showInViewButton.frame.origin.x, self.showInViewButton.frame.origin.y + self.showInViewButton.frame.size.height + 10.f, self.showInViewButton.frame.size.width + self.hideAllBannersButton.frame.size.width, 20.f);
-}
-
--(void)selectPosition:(UIButton*)button
-{
-    [self clearAllPositionButtons];
-    [self performSelector:@selector(highlightButton:) withObject:button afterDelay:0.0];
-    ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
-    self.position = position;
+    self.underNavButton.frame = CGRectMake(self.bottomButton.frame.origin.x + self.bottomButton.frame.size.width, self.topButton.frame.origin.y, self.topButton.frame.size.width, self.topButton.frame.size.height);
+    
+    self.secondsToShowSlider.frame = CGRectMake(self.topButton.frame.origin.x, self.topButton.frame.origin.y + self.topButton.frame.size.height + 20.f, self.view.frame.size.width - 40.f, 20.f);
+    self.secondsToShowLabel.frame = CGRectMake(self.secondsToShowSlider.frame.origin.x, self.secondsToShowSlider.frame.origin.y + self.secondsToShowSlider.frame.size.height, self.secondsToShowSlider.frame.size.width, 20.f);
+    self.animationDurationSlider.frame = CGRectMake(self.secondsToShowSlider.frame.origin.x, self.secondsToShowLabel.frame.origin.y + self.secondsToShowLabel.frame.size.height + 20.f, self.view.frame.size.width - 40.f, 20.f);
+    self.animationDurationLabel.frame = CGRectMake(self.animationDurationSlider.frame.origin.x, self.animationDurationSlider.frame.origin.y + self.animationDurationSlider.frame.size.height, self.animationDurationSlider.frame.size.width, 20.f);
 }
 
 -(void)showAlertBannerInView:(UIButton*)button
 {
+    ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
     ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
-    [[ALAlertBannerManager sharedManager] showAlertBannerInView:self.view style:randomStyle position:self.position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum]];
+    [[ALAlertBannerManager sharedManager] showAlertBannerInView:self.view style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum]];
 }
 
--(void)hideAllBanners
+-(void)showAlertBannerInWindow:(UIButton*)button
 {
-    [[ALAlertBannerManager sharedManager] hideAllAlertBanners];
-}
-
--(void)highlightButton:(UIButton *)button
-{
-    [button setHighlighted:YES];
-}
-
--(void)clearAllPositionButtons
-{
-    [self.topButton setHighlighted:NO];
-    [self.bottomButton setHighlighted:NO];
+    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+    ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
+    ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
+    [[ALAlertBannerManager sharedManager] showAlertBannerInView:appDelegate.window style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum]];
 }
 
 -(NSString*)randomLoremIpsum
@@ -128,10 +139,29 @@ static NSString *loremIpsum[] = {
     return loremIpsum[arc4random_uniform(arrayCount)];
 }
 
--(void)setPosition:(ALAlertBannerPosition)position
+-(void)secondsToShowSlider:(UISlider *)slider
 {
-    _position = position;
-    [self configureViewForPosition:position];
+    CGFloat roundedValue = round(slider.value * 100)/100.0;
+    [slider setValue:roundedValue animated:NO];
+    self.secondsToShowLabel.text = [NSString stringWithFormat:@"Seconds to show: %.02f seconds", roundedValue];
+}
+
+-(void)secondsToShowSliderTouchEnded:(UISlider *)slider
+{
+    [[ALAlertBannerManager sharedManager] setSecondsToShow:slider.value];
+}
+
+-(void)animationDurationSlider:(UISlider *)slider
+{
+    CGFloat roundedValue = round(slider.value * 100)/100.0;
+    [slider setValue:roundedValue animated:NO];
+    self.animationDurationLabel.text = [NSString stringWithFormat:@"Animation duration: %0.02f seconds", roundedValue];
+}
+
+-(void)animationDurationSliderTouchEnded:(UISlider *)slider
+{
+    [[ALAlertBannerManager sharedManager] setShowAnimationDuration:slider.value];
+    [[ALAlertBannerManager sharedManager] setHideAnimationDuration:slider.value];
 }
 
 -(BOOL)shouldAutorotate
@@ -147,7 +177,7 @@ static NSString *loremIpsum[] = {
 -(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
     [super willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
-    [self configureViewForPosition:self.position];
+    [self configureView];
 }
 
 - (void)didReceiveMemoryWarning

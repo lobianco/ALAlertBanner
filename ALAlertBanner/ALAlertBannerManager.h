@@ -35,6 +35,7 @@
 +(ALAlertBannerManager*)sharedManager;
 
 -(void)showAlertBannerInView:(UIView*)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString*)title subtitle:(NSString*)subtitle;
+-(NSArray *)alertBannersInView:(UIView*)view;
 -(void)hideAllAlertBanners;
 -(void)hideAlertBannersInView:(UIView*)view;
 
