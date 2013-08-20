@@ -30,6 +30,26 @@
 # pragma mark Categories for Convenience
 
 @interface UIView (Convenience)
+<<<<<<< HEAD
+@property (nonatomic, strong) NSMutableArray *alertBanners;
+@end
+
+@implementation UIView (Convenience)
+@dynamic alertBanners;
+-(void)setAlertBanners:(NSMutableArray *)alertBanners
+{
+    objc_setAssociatedObject(self, @selector(alertBanners), alertBanners, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+-(NSMutableArray *)alertBanners
+{
+    NSMutableArray *alertBannersArray = objc_getAssociatedObject(self, @selector(alertBanners));
+    if (alertBannersArray == nil)
+    {
+        alertBannersArray = [NSMutableArray new];
+        [self setAlertBanners:alertBannersArray];
+    }
+    return alertBannersArray;
+=======
 @property (nonatomic, strong) NSMutableArray *topBanners;
 @property (nonatomic, strong) NSMutableArray *bottomBanners;
 @property (nonatomic, strong) NSMutableArray *navBarBanners;
@@ -78,6 +98,7 @@
         [self setNavBarBanners:navBarBannersArray];
     }
     return navBarBannersArray;
+>>>>>>> aa0a954ae40762c429c851d6d80874e2521c13a9
 }
 @end
 
@@ -206,6 +227,15 @@
 
 -(void)alertBannerWillShow:(ALAlertBannerView *)alertBanner inView:(UIView*)view
 {
+<<<<<<< HEAD
+    NSMutableArray *bannersArray = view.alertBanners;
+    for (ALAlertBannerView *banner in bannersArray)
+        if (banner.position == alertBanner.position)
+            [banner push:alertBanner.frame.size.height forward:YES];
+    
+    [bannersArray addObject:alertBanner];
+    alertBanner.shadowOpacity = (bannersArray.count > 1 ? 0.f : 0.65f);
+=======
     NSMutableArray *activeArray;
     switch (alertBanner.position) {
         case ALAlertBannerPositionTop:
@@ -224,6 +254,7 @@
     
     [activeArray addObject:alertBanner];
     alertBanner.shadowOpacity = (activeArray.count > 1 ? 0.f : 0.65f);
+>>>>>>> aa0a954ae40762c429c851d6d80874e2521c13a9
 }
 
 -(void)alertBannerDidShow:(ALAlertBannerView *)alertBanner inView:(UIView *)view
@@ -245,6 +276,13 @@
 
 -(void)alertBannerWillHide:(ALAlertBannerView *)alertBanner inView:(UIView *)view
 {
+<<<<<<< HEAD
+    NSMutableArray *bannersArray = view.alertBanners;
+    NSUInteger index = [bannersArray indexOfObject:alertBanner];
+    if (index != NSNotFound && index > 0)
+    {
+        NSArray *bannersToPush = [bannersArray subarrayWithRange:NSMakeRange(0, index)];
+=======
     NSMutableArray *activeArray;
     switch (alertBanner.position) {
         case ALAlertBannerPositionTop:
@@ -261,6 +299,7 @@
     if (index != NSNotFound && index > 0)
     {
         NSArray *bannersToPush = [activeArray subarrayWithRange:NSMakeRange(0, index)];
+>>>>>>> aa0a954ae40762c429c851d6d80874e2521c13a9
         for (ALAlertBannerView *banner in bannersToPush)
             if (banner.position == alertBanner.position)
                 [banner push:-alertBanner.frame.size.height forward:NO];
@@ -268,9 +307,15 @@
     
     else if (index == 0)
     {
+<<<<<<< HEAD
+        if (bannersArray.count > 1)
+        {
+            ALAlertBannerView *nextAlertBanner = (ALAlertBannerView*)[bannersArray objectAtIndex:1];
+=======
         if (activeArray.count > 1)
         {
             ALAlertBannerView *nextAlertBanner = (ALAlertBannerView*)[activeArray objectAtIndex:1];
+>>>>>>> aa0a954ae40762c429c851d6d80874e2521c13a9
             [nextAlertBanner setShadowOpacity:0.65f];
         }
         
@@ -280,6 +325,22 @@
 
 -(void)alertBannerDidHide:(ALAlertBannerView *)alertBanner inView:(UIView *)view
 {
+<<<<<<< HEAD
+    NSMutableArray *bannersArray = view.alertBanners;
+    dispatch_semaphore_t semaphore;
+    switch (alertBanner.position) {
+        case ALAlertBannerPositionTop:
+            semaphore = self.topPositionSemaphore;
+            break;
+        case ALAlertBannerPositionBottom:
+            semaphore = self.bottomPositionSemaphore;
+            break;
+        case ALAlertBannerPositionUnderNavBar:
+            semaphore = self.navBarPositionSemaphore;
+            break;
+    }
+    [bannersArray removeObject:alertBanner];
+=======
     NSMutableArray *activeArray;
     dispatch_semaphore_t semaphore;
     switch (alertBanner.position) {
@@ -297,6 +358,7 @@
             break;
     }
     [activeArray removeObject:alertBanner];
+>>>>>>> aa0a954ae40762c429c851d6d80874e2521c13a9
     
     dispatch_semaphore_signal(semaphore);
 }
@@ -306,17 +368,31 @@
 
 -(NSArray *)alertBannersInView:(UIView *)view
 {
+<<<<<<< HEAD
+    /*
+=======
+>>>>>>> aa0a954ae40762c429c851d6d80874e2521c13a9
     NSMutableArray *arrayOfBanners = [[NSMutableArray alloc] init];
     for (UIView *subview in view.subviews)
         if ([subview isKindOfClass:[ALAlertBannerView class]])
             [arrayOfBanners addObject:(ALAlertBannerView*)subview];
+<<<<<<< HEAD
+     */
+    
+    return [NSArray arrayWithArray:view.alertBanners];
+=======
     
     return [NSArray arrayWithArray:arrayOfBanners];
+>>>>>>> aa0a954ae40762c429c851d6d80874e2521c13a9
 }
 
 -(void)hideAlertBannersInView:(UIView *)view
 {
+<<<<<<< HEAD
+    for (ALAlertBannerView *alertBanner in view.alertBanners)
+=======
     for (ALAlertBannerView *alertBanner in [self alertBannersInView:view])
+>>>>>>> aa0a954ae40762c429c851d6d80874e2521c13a9
         [self hideAlertBanner:alertBanner];
 }
 
@@ -333,22 +409,39 @@
 {    
     for (UIView *view in self.bannerViews)
     {
+<<<<<<< HEAD
+        NSArray *topBanners = [view.alertBanners filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.position == %i", ALAlertBannerPositionTop]];
+        CGFloat topYCoord = 0.f;
+        for (ALAlertBannerView *alertBanner in [topBanners reverseObjectEnumerator])
+=======
         CGFloat topYCoord = 0.f;
         for (ALAlertBannerView *alertBanner in [view.topBanners reverseObjectEnumerator])
+>>>>>>> aa0a954ae40762c429c851d6d80874e2521c13a9
         {
             [alertBanner updateSizeAndSubviewsAnimated:YES];
             [alertBanner updatePositionAfterRotationWithY:topYCoord animated:YES];
             topYCoord += alertBanner.layer.bounds.size.height;
         }
         
+<<<<<<< HEAD
+        NSArray *bottomBanners = [view.alertBanners filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.position == %i", ALAlertBannerPositionBottom]];
+        CGFloat bottomYCoord = view.bounds.size.height;
+        for (ALAlertBannerView *alertBanner in [bottomBanners reverseObjectEnumerator])
+=======
         CGFloat bottomYCoord = view.bounds.size.height;
         for (ALAlertBannerView *alertBanner in [view.bottomBanners reverseObjectEnumerator])
+>>>>>>> aa0a954ae40762c429c851d6d80874e2521c13a9
         {
             //update frame size before animating to new position
             [alertBanner updateSizeAndSubviewsAnimated:YES];
             bottomYCoord -= alertBanner.layer.bounds.size.height;
             [alertBanner updatePositionAfterRotationWithY:bottomYCoord animated:YES];
         }
+<<<<<<< HEAD
+        
+        //TODO rotation for UIWindow
+=======
+>>>>>>> aa0a954ae40762c429c851d6d80874e2521c13a9
     }
 }
 

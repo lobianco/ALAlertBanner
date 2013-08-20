@@ -438,8 +438,11 @@ static CGFloat const kRotationDurationIPad = 0.4f;
         self.layer.mask = maskLayer;
         self.layer.mask.position = CGPointZero;
     }
+<<<<<<< HEAD
+=======
     
     [self setNeedsDisplay];
+>>>>>>> aa0a954ae40762c429c851d6d80874e2521c13a9
 }
 
 -(void)updateSizeAndSubviewsAnimated:(BOOL)animated
@@ -494,6 +497,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     CALayer *activeLayer = isAnimating ? (CALayer*)self.layer.presentationLayer : self.layer;
     NSString *currentAnimationKey = nil;
     CAMediaTimingFunction *timingFunction = nil;
+<<<<<<< HEAD
     
     if (isAnimating)
     {
@@ -517,6 +521,31 @@ static CGFloat const kRotationDurationIPad = 0.4f;
         [self.layer removeAnimationForKey:currentAnimationKey];
     }
     
+=======
+    
+    if (isAnimating)
+    {
+        CABasicAnimation *currentAnimation;
+        if (self.state == ALAlertBannerStateShowing) {
+            currentAnimation = (CABasicAnimation*)[self.layer animationForKey:kShowAlertBannerKey];
+            currentAnimationKey = kShowAlertBannerKey;
+        } else if (self.state == ALAlertBannerStateHiding) {
+            currentAnimation = (CABasicAnimation*)[self.layer animationForKey:kHideAlertBannerKey];
+            currentAnimationKey = kHideAlertBannerKey;
+        } else if (self.state == ALAlertBannerStateMovingBackward || self.state == ALAlertBannerStateMovingForward) {
+            currentAnimation = (CABasicAnimation*)[self.layer animationForKey:kMoveAlertBannerKey];
+            currentAnimationKey = kMoveAlertBannerKey;
+        } else
+            return;
+
+        CFTimeInterval remainingAnimationDuration = currentAnimation.duration - (CACurrentMediaTime() - currentAnimation.beginTime);
+        timingFunction = currentAnimation.timingFunction;
+        positionAnimationDuration = remainingAnimationDuration;
+        
+        [self.layer removeAnimationForKey:currentAnimationKey];
+    }
+    
+>>>>>>> aa0a954ae40762c429c851d6d80874e2521c13a9
     if (self.state == ALAlertBannerStateHiding || self.state == ALAlertBannerStateMovingBackward)
     {
         switch (self.position) {
@@ -574,7 +603,11 @@ static CGFloat const kRotationDurationIPad = 0.4f;
             fillColor = [UIColor colorWithRed:(48/255.0) green:(110/255.0) blue:(173/255.0) alpha:1.f];
             break;
         case ALAlertBannerStyleAlert:
+<<<<<<< HEAD
+            fillColor = [UIColor colorWithRed:(77/255.0) green:(175/255.0) blue:(67/255.0) alpha:1.f];
+=======
             fillColor = [UIColor colorWithRed:(211/255.0) green:(209/255.0) blue:(100/255.0) alpha:1.f];
+>>>>>>> aa0a954ae40762c429c851d6d80874e2521c13a9
             break;
     }
     

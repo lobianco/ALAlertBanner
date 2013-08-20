@@ -21,6 +21,13 @@ static NSString *loremIpsum[] = {
 @property (nonatomic, strong) UIButton *topButton;
 @property (nonatomic, strong) UIButton *bottomButton;
 @property (nonatomic, strong) UIButton *underNavButton;
+<<<<<<< HEAD
+
+@property (nonatomic, strong) UISlider *secondsToShowSlider;
+@property (nonatomic, strong) UILabel *secondsToShowLabel;
+@property (nonatomic, strong) UISlider *animationDurationSlider;
+@property (nonatomic, strong) UILabel *animationDurationLabel;
+=======
 
 @property (nonatomic, strong) UISlider *secondsToShowSlider;
 @property (nonatomic, strong) UILabel *secondsToShowLabel;
@@ -28,6 +35,7 @@ static NSString *loremIpsum[] = {
 @property (nonatomic, strong) UILabel *animationDurationLabel;
 
 @property (nonatomic, strong) UIButton *hideAllBannersButton;
+>>>>>>> aa0a954ae40762c429c851d6d80874e2521c13a9
 
 @end
 
@@ -47,7 +55,11 @@ static NSString *loremIpsum[] = {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
         
+<<<<<<< HEAD
+    self.view.backgroundColor = [UIColor colorWithRed:243/255.0 green:247/255.0 blue:249/255.0 alpha:1.f];
+=======
     self.view.backgroundColor = [UIColor colorWithRed:224/255.0 green:234/255.0 blue:235/255.0 alpha:1.f];
+>>>>>>> aa0a954ae40762c429c851d6d80874e2521c13a9
         
     self.topButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     self.topButton.tag = ALAlertBannerPositionTop;
@@ -66,6 +78,7 @@ static NSString *loremIpsum[] = {
     [self.underNavButton setTitle:@"Under Nav" forState:UIControlStateNormal];
     [self.underNavButton addTarget:self action:@selector(showAlertBannerInWindow:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.underNavButton];
+<<<<<<< HEAD
     
     self.secondsToShowSlider = [[UISlider alloc] init];
     self.secondsToShowSlider.continuous = YES;
@@ -92,6 +105,34 @@ static NSString *loremIpsum[] = {
     [self.animationDurationSlider addTarget:self action:@selector(animationDurationSliderTouchEnded:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.animationDurationSlider];
     
+=======
+    
+    self.secondsToShowSlider = [[UISlider alloc] init];
+    self.secondsToShowSlider.continuous = YES;
+    self.secondsToShowSlider.minimumValue = 0.0f;
+    self.secondsToShowSlider.maximumValue = 10.f;
+    [self.secondsToShowSlider setValue:3.5f];
+    [self.secondsToShowSlider addTarget:self action:@selector(secondsToShowSlider:) forControlEvents:UIControlEventValueChanged];
+    [self.secondsToShowSlider addTarget:self action:@selector(secondsToShowSliderTouchEnded:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.secondsToShowSlider];
+    
+    self.secondsToShowLabel = [[UILabel alloc] init];
+    self.secondsToShowLabel.backgroundColor = [UIColor clearColor];
+    self.secondsToShowLabel.font = [UIFont systemFontOfSize:10.f];
+    self.secondsToShowLabel.text = @"Seconds to show: 3.5 seconds";
+    self.secondsToShowLabel.textAlignment = NSTextAlignmentCenter;
+    [self.view addSubview:self.secondsToShowLabel];
+    
+    self.animationDurationSlider = [[UISlider alloc] init];
+    self.animationDurationSlider.continuous = YES;
+    self.animationDurationSlider.minimumValue = 0.1f;
+    self.animationDurationSlider.maximumValue = 2.f;
+    [self.animationDurationSlider setValue:0.25f];
+    [self.animationDurationSlider addTarget:self action:@selector(animationDurationSlider:) forControlEvents:UIControlEventValueChanged];
+    [self.animationDurationSlider addTarget:self action:@selector(animationDurationSliderTouchEnded:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.animationDurationSlider];
+    
+>>>>>>> aa0a954ae40762c429c851d6d80874e2521c13a9
     self.animationDurationLabel = [[UILabel alloc] init];
     self.animationDurationLabel.backgroundColor = [UIColor clearColor];
     self.animationDurationLabel.font = [UIFont systemFontOfSize:10.f];
