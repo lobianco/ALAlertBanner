@@ -463,9 +463,18 @@ static CGFloat const kRotationDurationIPad = 0.4f;
         [self.layer addAnimation:boundsAnimation forKey:nil];
     }
     
+    if (animated)
+    {
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:boundsAnimationDuration];
+    }
+    
     self.statusImageView.frame = CGRectMake(kMargin, (self.frame.size.height/2) - (self.statusImageView.image.size.height/2), self.statusImageView.image.size.width, self.statusImageView.image.size.height);
     self.titleLabel.frame = CGRectMake(self.statusImageView.frame.origin.x + self.statusImageView.frame.size.width + kMargin, kMargin, maxLabelSize.width, titleLabelHeight);
     self.subtitleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kMargin/2, maxLabelSize.width, subtitleLabelHeight);
+    
+    if (animated)
+        [UIView commitAnimations];
     
     if (self.shadowOpacity > 0)
     {
