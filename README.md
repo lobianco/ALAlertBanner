@@ -170,7 +170,7 @@ Did I mention they have cute little shapes and nice colorful gradients?
 
 ## Known Issues
 
-* ALAlertBanner supports all interface orientations. However, if you rotate the device while one or more banners is displaying (or animating), the layout will get fudgesicled. This is just something I haven't figured out how to fix yet. 
+* **FIXED** ~~ALAlertBanner supports all interface orientations. However, if you rotate the device while one or more banners is displaying (or animating), the layout will get fudgesicled. This is just something I haven't figured out how to fix yet.~~
 * If you find any other bugs, please open a new issue. 
 
 ## Contact Me
