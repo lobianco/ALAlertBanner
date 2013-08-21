@@ -258,7 +258,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
             moveMaskUp.duration = self.showAnimationDuration;
             moveMaskUp.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
             
-            [self.layer.mask addAnimation:moveMaskUp forKey:nil];
+            [self.layer.mask addAnimation:moveMaskUp forKey:@"position"];
         }
         
         CGPoint oldPoint = self.layer.position;
@@ -284,7 +284,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
         moveLayer.delegate = self;
         [moveLayer setValue:kShowAlertBannerKey forKey:@"anim"];
         
-        [self.layer addAnimation:moveLayer forKey:kShowAlertBannerKey];
+        [self.layer addAnimation:moveLayer forKey:@"position"];
     });
     
     [UIView animateWithDuration:self.fadeInDuration delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
@@ -311,7 +311,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
         moveMaskDown.duration = self.hideAnimationDuration;
         moveMaskDown.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
         
-        [self.layer.mask addAnimation:moveMaskDown forKey:nil];
+        [self.layer.mask addAnimation:moveMaskDown forKey:@"position"];
     }
     
     CGPoint oldPoint = self.layer.position;
@@ -337,7 +337,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     moveLayer.delegate = self;
     [moveLayer setValue:kHideAlertBannerKey forKey:@"anim"];
     
-    [self.layer addAnimation:moveLayer forKey:kHideAlertBannerKey];
+    [self.layer addAnimation:moveLayer forKey:@"position"];
 }
 
 -(void)push:(CGFloat)distance forward:(BOOL)forward
@@ -363,7 +363,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     moveLayer.delegate = self;
     [moveLayer setValue:kMoveAlertBannerKey forKey:@"anim"];
     
-    [self.layer addAnimation:moveLayer forKey:kMoveAlertBannerKey];
+    [self.layer addAnimation:moveLayer forKey:@"position"];
 }
 
 # pragma mark Touch Recognition
@@ -471,7 +471,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
         boundsAnimation.fromValue = [NSValue valueWithCGRect:oldBounds];
         boundsAnimation.toValue = [NSValue valueWithCGRect:newBounds];
         boundsAnimation.duration = boundsAnimationDuration;
-        [self.layer addAnimation:boundsAnimation forKey:nil];
+        [self.layer addAnimation:boundsAnimation forKey:@"bounds"];
     }
     
     if (animated)
@@ -499,7 +499,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
             shadowAnimation.fromValue = (id)[UIBezierPath bezierPathWithRect:oldShadowPath].CGPath;
             shadowAnimation.toValue = (id)[UIBezierPath bezierPathWithRect:newShadowPath].CGPath;
             shadowAnimation.duration = boundsAnimationDuration;
-            [self.layer addAnimation:shadowAnimation forKey:nil];
+            [self.layer addAnimation:shadowAnimation forKey:@"shadowPath"];
         }
     }
 }
