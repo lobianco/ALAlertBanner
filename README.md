@@ -90,28 +90,31 @@ Immediately hide all alert banners within a specific view.
 ```ALAlertBannerManager``` has the following editable properties:
 
 ```objc
+/**
+ Length of time in seconds that a banner should show before auto-hiding. Default is 3.5 seconds. A value <= 0 will disable auto-hiding. 
+ */
 @property (nonatomic) NSTimeInterval secondsToShow;
-```
 
-The length of time a banner should appear on-screen before auto-hiding. The default value is 3.5 seconds. A value <= 0 will disable auto-hiding. 
-
-```objc
+/**
+ The length of time it takes a banner to transition on-screen. Default is 0.25 seconds.
+ */
 @property (nonatomic) NSTimeInterval showAnimationDuration;
-```
 
-The duration a banner should take when animating on-screen. Default value is 0.25 seconds.
-
-```objc
+/**
+ The length of time it takes a banner to transition off-screen. Default is 0.2 seconds.
+ */
 @property (nonatomic) NSTimeInterval hideAnimationDuration;
-```
 
-The duration a banner should take when animating off-screen. Default value is 0.2 seconds.
+/**
+ Banner opacity, between 0 and 1. Default value is 0.9f.
+ */
+@property (nonatomic, assign) CGFloat bannerOpacity;
 
-```objc
+/**
+ Tapping on a banner will dismiss it early. Default is YES.
+ */
 @property (nonatomic, assign) BOOL allowTapToDismiss;
 ```
-
-Should the banner dismiss prematurely if tapped? Default value is YES.
 
 
 ### Banner Positions
