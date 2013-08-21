@@ -92,9 +92,8 @@ static CGFloat const kRotationDurationIPad = 0.4f;
 {
     self.userInteractionEnabled = YES;
     self.alpha = 0.f;
-    
-    _allowTapToDismiss = YES;
-    
+    self.layer.shadowOpacity = 0.5f;
+        
     _statusImageView = [[UIImageView alloc] init];
     [self addSubview:_statusImageView];
     
@@ -155,14 +154,17 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     }    
 }
 
--(void)setShadowOpacity:(CGFloat)shadowOpacity
+-(void)setShadowOn:(BOOL)shadowOn
 {
-    self.layer.shadowOpacity = shadowOpacity;
+    _shadowOn = shadowOn;
     
-    if (shadowOpacity > 0.f)
+    CGFloat oldShadowRadius = self.layer.shadowRadius;
+    CGFloat newShadowRadius;
+    
+    if (shadowOn)
     {
+        newShadowRadius = 3.f;
         self.layer.shadowColor = [UIColor blackColor].CGColor;
-        self.layer.shadowRadius = 3.f;
         self.layer.shadowOffset = CGSizeMake(0, self.position == ALAlertBannerPositionBottom ? -1 : 1);
         CGRect shadowPath = CGRectMake(self.bounds.origin.x - kMargin, self.bounds.origin.y, self.bounds.size.width + kMargin*2, self.bounds.size.height);
         self.layer.shadowPath = [UIBezierPath bezierPathWithRect:shadowPath].CGPath;
@@ -171,15 +173,22 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     }
     
     else
+    {
+        newShadowRadius = 0.f;
+        self.layer.shadowRadius = 0.f;
+        self.layer.shadowOffset = CGSizeZero;
         self.fadeDuration = 0.f;
+    }
     
-    CABasicAnimation *fadeShadow = [CABasicAnimation animationWithKeyPath:@"shadowOpacity"];
-    fadeShadow.fromValue = [NSNumber numberWithFloat:_shadowOpacity];
-    fadeShadow.toValue = [NSNumber numberWithFloat:shadowOpacity];
+    self.layer.shouldRasterize = YES;
+    self.layer.rasterizationScale = [UIScreen mainScreen].scale;
+    self.layer.shadowRadius = newShadowRadius;
+    
+    CABasicAnimation *fadeShadow = [CABasicAnimation animationWithKeyPath:@"shadowRadius"];
+    fadeShadow.fromValue = [NSNumber numberWithFloat:oldShadowRadius];
+    fadeShadow.toValue = [NSNumber numberWithFloat:newShadowRadius];
     fadeShadow.duration = self.fadeDuration*2.f;
-    [self.layer addAnimation:fadeShadow forKey:@"shadowOpacity"];
-    
-    _shadowOpacity = shadowOpacity;
+    [self.layer addAnimation:fadeShadow forKey:@"shadowRadius"];
 }
 
 -(BOOL)isAnimating
@@ -277,7 +286,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     });
     
     [UIView animateWithDuration:self.fadeDuration delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
-        self.alpha = 1.f;
+        self.alpha = self.bannerOpacity;
     } completion:nil];
 }
 
@@ -476,7 +485,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     if (animated)
         [UIView commitAnimations];
     
-    if (self.shadowOpacity > 0)
+    if (self.shadowOn)
     {
         CGRect oldShadowPath = CGPathGetPathBoundingBox(self.layer.shadowPath);
         CGRect newShadowPath = CGRectMake(self.bounds.origin.x - kMargin, self.bounds.origin.y, self.bounds.size.width + kMargin*2, self.bounds.size.height);

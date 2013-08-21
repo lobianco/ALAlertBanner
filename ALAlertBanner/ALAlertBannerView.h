@@ -75,9 +75,10 @@ typedef enum {
 @property (nonatomic) BOOL isScheduledToHide;
 @property (nonatomic) BOOL allowTapToDismiss;
 
-@property (nonatomic) CGFloat shadowOpacity;
+@property (nonatomic) BOOL shadowOn;
 @property (nonatomic) NSTimeInterval showAnimationDuration;
 @property (nonatomic) NSTimeInterval hideAnimationDuration;
+@property (nonatomic) CGFloat bannerOpacity;
 
 +(ALAlertBannerView*)alertBannerForView:(UIView*)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString*)title subtitle:(NSString*)subtitle;
 -(void)show;
