@@ -43,7 +43,7 @@
 @property (nonatomic) NSTimeInterval hideAnimationDuration;
 
 /**
- Banner opacity, between 0 and 1. Default value is 0.9f.
+ Banner opacity, between 0 and 1. Default value is 0.93f.
  */
 @property (nonatomic, assign) CGFloat bannerOpacity;
 

@@ -92,7 +92,7 @@
         _showAnimationDuration = 0.25f;
         _hideAnimationDuration = 0.2f;
         _allowTapToDismiss = YES;
-        _bannerOpacity = 0.9f;
+        _bannerOpacity = 0.93f;
         
         //TODO
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
@@ -185,7 +185,7 @@
     
     [bannersArray addObject:alertBanner];
     NSArray *bannersInSamePosition = [bannersArray filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.position == %i", alertBanner.position]];
-    alertBanner.shadowOn = (bannersInSamePosition.count > 1 ? NO : YES);
+    alertBanner.showShadow = (bannersInSamePosition.count > 1 ? NO : YES);
 }
 
 -(void)alertBannerDidShow:(ALAlertBannerView *)alertBanner inView:(UIView *)view
@@ -223,10 +223,10 @@
         if (bannersInSamePosition.count > 1)
         {
             ALAlertBannerView *nextAlertBanner = (ALAlertBannerView*)[bannersInSamePosition objectAtIndex:1];
-            [nextAlertBanner setShadowOn:YES];
+            [nextAlertBanner setShowShadow:YES];
         }
         
-        [alertBanner setShadowOn:NO];
+        [alertBanner setShowShadow:NO];
     }
 }
 

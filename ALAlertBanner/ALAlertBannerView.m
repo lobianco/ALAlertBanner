@@ -60,7 +60,8 @@ static CGFloat const kRotationDurationIPad = 0.4f;
 @property (nonatomic, assign) ALAlertBannerPosition position;
 @property (nonatomic, assign) ALAlertBannerState state;
 
-@property (nonatomic) NSTimeInterval fadeDuration;
+@property (nonatomic) NSTimeInterval fadeInDuration;
+@property (nonatomic) NSTimeInterval fadeOutDuration;
 
 @property (nonatomic, readonly) BOOL isAnimating;
 
@@ -93,6 +94,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     self.userInteractionEnabled = YES;
     self.alpha = 0.f;
     self.layer.shadowOpacity = 0.5f;
+    _fadeOutDuration = 0.2f;
         
     _statusImageView = [[UIImageView alloc] init];
     [self addSubview:_statusImageView];
@@ -154,14 +156,14 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     }    
 }
 
--(void)setShadowOn:(BOOL)shadowOn
+-(void)setShowShadow:(BOOL)showShadow
 {
-    _shadowOn = shadowOn;
+    _showShadow = showShadow;
     
     CGFloat oldShadowRadius = self.layer.shadowRadius;
     CGFloat newShadowRadius;
     
-    if (shadowOn)
+    if (showShadow)
     {
         newShadowRadius = 3.f;
         self.layer.shadowColor = [UIColor blackColor].CGColor;
@@ -169,7 +171,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
         CGRect shadowPath = CGRectMake(self.bounds.origin.x - kMargin, self.bounds.origin.y, self.bounds.size.width + kMargin*2, self.bounds.size.height);
         self.layer.shadowPath = [UIBezierPath bezierPathWithRect:shadowPath].CGPath;
         
-        self.fadeDuration = 0.15f;
+        self.fadeInDuration = 0.15f;
     }
     
     else
@@ -177,7 +179,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
         newShadowRadius = 0.f;
         self.layer.shadowRadius = 0.f;
         self.layer.shadowOffset = CGSizeZero;
-        self.fadeDuration = 0.f;
+        self.fadeInDuration = 0.f;
     }
     
     self.layer.shouldRasterize = YES;
@@ -187,7 +189,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     CABasicAnimation *fadeShadow = [CABasicAnimation animationWithKeyPath:@"shadowRadius"];
     fadeShadow.fromValue = [NSNumber numberWithFloat:oldShadowRadius];
     fadeShadow.toValue = [NSNumber numberWithFloat:newShadowRadius];
-    fadeShadow.duration = self.fadeDuration*2.f;
+    fadeShadow.duration = self.fadeOutDuration;
     [self.layer addAnimation:fadeShadow forKey:@"shadowRadius"];
 }
 
@@ -239,7 +241,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     
     self.state = ALAlertBannerStateShowing;
     
-    double delayInSeconds = self.fadeDuration;
+    double delayInSeconds = self.fadeInDuration;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         if (self.position == ALAlertBannerPositionUnderNavBar)
@@ -285,7 +287,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
         [self.layer addAnimation:moveLayer forKey:kShowAlertBannerKey];
     });
     
-    [UIView animateWithDuration:self.fadeDuration delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
+    [UIView animateWithDuration:self.fadeInDuration delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
         self.alpha = self.bannerOpacity;
     } completion:nil];
 }
@@ -384,7 +386,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     
     else if ([[anim valueForKey:@"anim"] isEqualToString:kHideAlertBannerKey] && flag)
     {
-        [UIView animateWithDuration:self.fadeDuration delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
+        [UIView animateWithDuration:self.fadeOutDuration delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
             self.alpha = 0.f;
         } completion:^(BOOL finished) {
             self.state = ALAlertBannerStateNotVisible;
@@ -485,7 +487,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     if (animated)
         [UIView commitAnimations];
     
-    if (self.shadowOn)
+    if (self.showShadow)
     {
         CGRect oldShadowPath = CGPathGetPathBoundingBox(self.layer.shadowPath);
         CGRect newShadowPath = CGRectMake(self.bounds.origin.x - kMargin, self.bounds.origin.y, self.bounds.size.width + kMargin*2, self.bounds.size.height);

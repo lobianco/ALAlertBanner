@@ -75,7 +75,7 @@ typedef enum {
 @property (nonatomic) BOOL isScheduledToHide;
 @property (nonatomic) BOOL allowTapToDismiss;
 
-@property (nonatomic) BOOL shadowOn;
+@property (nonatomic) BOOL showShadow;
 @property (nonatomic) NSTimeInterval showAnimationDuration;
 @property (nonatomic) NSTimeInterval hideAnimationDuration;
 @property (nonatomic) CGFloat bannerOpacity;
