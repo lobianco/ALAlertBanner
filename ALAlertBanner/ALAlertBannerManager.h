@@ -27,16 +27,54 @@
 
 @interface ALAlertBannerManager : NSObject
 
-@property (nonatomic) NSTimeInterval secondsToShow; //default is 3.5
-@property (nonatomic) NSTimeInterval showAnimationDuration; //default is 0.25
-@property (nonatomic) NSTimeInterval hideAnimationDuration; //default is 0.2
-@property (nonatomic, assign) BOOL allowTapToDismiss; //default is YES
+/**
+ Length of time in seconds that a banner should show before auto-hiding. Default is 3.5 seconds. A value <= 0 will disable auto-hiding. 
+ */
+@property (nonatomic) NSTimeInterval secondsToShow;
 
+/**
+ The length of time it takes a banner to transition on-screen. Default is 0.25 seconds.
+ */
+@property (nonatomic) NSTimeInterval showAnimationDuration;
+
+/**
+ The length of time it takes a banner to transition off-screen. Default is 0.2 seconds.
+ */
+@property (nonatomic) NSTimeInterval hideAnimationDuration;
+
+/**
+ Banner opacity, between 0 and 1. Default value is 0.9f.
+ */
+@property (nonatomic, assign) CGFloat bannerOpacity;
+
+/**
+ Tapping on a banner will dismiss it early. Default is YES.
+ */
+@property (nonatomic, assign) BOOL allowTapToDismiss;
+
+/**
+ The global shared instance that manages the presentation and dismissal of alert banners.
+ */
 +(ALAlertBannerManager*)sharedManager;
 
+/**
+ The default (and only) way to display a banner. All parameters except subtitle must not be nil.
+ */
 -(void)showAlertBannerInView:(UIView*)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString*)title subtitle:(NSString*)subtitle;
+
+/**
+ Returns an array of all banners within a certain view.
+ */
 -(NSArray *)alertBannersInView:(UIView*)view;
+
+/**
+ Immediately hides all alert banners in all views.
+ */
 -(void)hideAllAlertBanners;
+
+/**
+ Immediately hides all alert banners in a certain view.
+ */
 -(void)hideAlertBannersInView:(UIView*)view;
 
 @end
