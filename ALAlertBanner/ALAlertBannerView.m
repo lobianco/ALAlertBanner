@@ -29,18 +29,35 @@ static NSString * const kShowAlertBannerKey = @"showAlertBannerKey";
 static NSString * const kHideAlertBannerKey = @"hideAlertBannerKey";
 static NSString * const kMoveAlertBannerKey = @"moveAlertBannerKey";
 static CGFloat const kMargin = 10.f;
-static CGFloat const kNavigationBarHeight = 44.f;
-static CGFloat const kStatusBarHeight = 20.f;
-
+static CGFloat const kNavigationBarHeightDefault = 44.f;
+static CGFloat const kNavigationBarHeightiOS7Landscape = 32.f;
 static CGFloat const kRotationDurationIphone = 0.3f;
 static CGFloat const kRotationDurationIPad = 0.4f;
 
-#define DEVICE_ANIMATION_DURATION UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? kRotationDurationIPad : kRotationDurationIphone;
+#define AL_DEVICE_ANIMATION_DURATION UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? kRotationDurationIPad : kRotationDurationIphone;
+
+//macros referenced from MBProgressHUD. cheers to @matej
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
+  #define AL_SINGLELINE_TEXT_HEIGHT(text, font) [text length] > 0 ? [text sizeWithAttributes:nil].height : 0.f;
+#else
+  #define AL_SINGLELINE_TEXT_HEIGHT(text, font) [text length] > 0 ? [text sizeWithFont:font].height : 0.f;
+#endif
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
+    #define AL_MULTILINE_TEXT_HEIGHT(text, font, maxSize, mode) [text length] > 0 ? [text boundingRectWithSize:maxSize \
+                                                                                                       options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) \
+                                                                                                    attributes:nil \
+                                                                                                       context:NULL].size.height : 0.f;
+#else
+    #define AL_MULTILINE_TEXT_HEIGHT(text, font, maxSize, mode) [text length] > 0 ? [text sizeWithFont:font \
+                                                                                     constrainedToSize:maxSize \
+                                                                                         lineBreakMode:mode].height : 0.f;
+#endif
 
 # pragma mark -
 # pragma mark Helper Categories
 
-//referenced from http://stackoverflow.com/questions/11598043/get-slightly-lighter-and-darker-color-from-uicolor
+//darkerColor referenced from http://stackoverflow.com/questions/11598043/get-slightly-lighter-and-darker-color-from-uicolor
 @implementation UIColor (LightAndDark)
 - (UIColor *)darkerColor
 {
@@ -54,13 +71,35 @@ static CGFloat const kRotationDurationIPad = 0.4f;
 }
 @end
 
+@implementation UIDevice (SystemVersion)
++(float)iOSVersion
+{
+    static float version = 0;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        version = [[[UIDevice currentDevice] systemVersion] floatValue];
+    });
+    return version;
+}
+@end
+
+@implementation UIApplication (NavigationBarHeight)
++(CGFloat)navigationBarHeight
+{
+    //if we're on iOS7 or later, return new landscape navBar height
+    if (AL_IOS_7_OR_GREATER && UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
+        return kNavigationBarHeightiOS7Landscape;
+    
+    return kNavigationBarHeightDefault;
+}
+@end
+
 @interface ALAlertBannerView ()
 
 @property (nonatomic, assign) ALAlertBannerStyle style;
 @property (nonatomic, assign) ALAlertBannerPosition position;
 @property (nonatomic, assign) ALAlertBannerState state;
 
-@property (nonatomic) NSTimeInterval fadeInDuration;
 @property (nonatomic) NSTimeInterval fadeOutDuration;
 
 @property (nonatomic, readonly) BOOL isAnimating;
@@ -87,6 +126,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     return self;
 }
 
+# pragma mark -
 # pragma mark Initializer Helpers
 
 -(void)commonInit
@@ -126,6 +166,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     [self addSubview:_subtitleLabel];    
 }
 
+# pragma mark -
 # pragma mark Custom Setters & Getters
 
 -(void)setStyle:(ALAlertBannerStyle)style
@@ -179,7 +220,9 @@ static CGFloat const kRotationDurationIPad = 0.4f;
         newShadowRadius = 0.f;
         self.layer.shadowRadius = 0.f;
         self.layer.shadowOffset = CGSizeZero;
-        self.fadeInDuration = 0.f;
+        
+        //if on iOS7, keep fade in duration at a value greater than 0 so it doesn't instantly appear behind the translucent nav bar
+        self.fadeInDuration = (AL_IOS_7_OR_GREATER && self.position == ALAlertBannerPositionTop) ? 0.15f : 0.f;
     }
     
     self.layer.shouldRasterize = YES;
@@ -201,6 +244,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
             self.state == ALAlertBannerStateMovingBackward);
 }
 
+# pragma mark -
 # pragma mark Class Methods
 
 +(ALAlertBannerView*)alertBannerForView:(UIView*)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString*)title subtitle:(NSString*)subtitle
@@ -226,6 +270,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     return alertBanner;
 }
 
+# pragma mark -
 # pragma mark Instance Methods
 
 -(void)show
@@ -284,7 +329,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
         moveLayer.delegate = self;
         [moveLayer setValue:kShowAlertBannerKey forKey:@"anim"];
         
-        [self.layer addAnimation:moveLayer forKey:@"position"];
+        [self.layer addAnimation:moveLayer forKey:kShowAlertBannerKey];
     });
     
     [UIView animateWithDuration:self.fadeInDuration delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
@@ -337,10 +382,10 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     moveLayer.delegate = self;
     [moveLayer setValue:kHideAlertBannerKey forKey:@"anim"];
     
-    [self.layer addAnimation:moveLayer forKey:@"position"];
+    [self.layer addAnimation:moveLayer forKey:kHideAlertBannerKey];
 }
 
--(void)push:(CGFloat)distance forward:(BOOL)forward
+-(void)push:(CGFloat)distance forward:(BOOL)forward delay:(double)delay
 {    
     self.state = (forward ? ALAlertBannerStateMovingForward : ALAlertBannerStateMovingBackward);
     
@@ -353,19 +398,24 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     CGPoint oldPoint = activeLayer.position;
     CGPoint newPoint = CGPointMake(oldPoint.x, (self.layer.position.y - oldPoint.y)+oldPoint.y+distanceToPush);
     
-    self.layer.position = newPoint;
-    
-    CABasicAnimation *moveLayer = [CABasicAnimation animationWithKeyPath:@"position"];
-    moveLayer.fromValue = [NSValue valueWithCGPoint:oldPoint];
-    moveLayer.toValue = [NSValue valueWithCGPoint:newPoint];
-    moveLayer.duration = forward ? self.showAnimationDuration : self.hideAnimationDuration;
-    moveLayer.timingFunction = forward ? [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut] : [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-    moveLayer.delegate = self;
-    [moveLayer setValue:kMoveAlertBannerKey forKey:@"anim"];
-    
-    [self.layer addAnimation:moveLayer forKey:@"position"];
+    double delayInSeconds = delay;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        self.layer.position = newPoint;
+        
+        CABasicAnimation *moveLayer = [CABasicAnimation animationWithKeyPath:@"position"];
+        moveLayer.fromValue = [NSValue valueWithCGPoint:oldPoint];
+        moveLayer.toValue = [NSValue valueWithCGPoint:newPoint];
+        moveLayer.duration = forward ? self.showAnimationDuration : self.hideAnimationDuration;
+        moveLayer.timingFunction = forward ? [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut] : [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+        moveLayer.delegate = self;
+        [moveLayer setValue:kMoveAlertBannerKey forKey:@"anim"];
+        
+        [self.layer addAnimation:moveLayer forKey:kMoveAlertBannerKey];
+    });
 }
 
+# pragma mark -
 # pragma mark Touch Recognition
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
@@ -374,6 +424,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
         [self.delegate hideAlertBanner:self];
 }
 
+# pragma mark -
 # pragma mark Private Methods
 
 -(void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
@@ -416,8 +467,8 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     BOOL isSuperviewKindOfWindow = ([parentView isKindOfClass:[UIWindow class]]);
     
     CGSize maxLabelSize = CGSizeMake(parentView.bounds.size.width - (kMargin*3) - self.statusImageView.image.size.width, CGFLOAT_MAX);
-    CGFloat titleLabelHeight = self.titleLabel.font.pointSize + 2.f;
-    CGFloat subtitleLabelHeight = [self.subtitleLabel.text sizeWithFont:self.subtitleLabel.font constrainedToSize:maxLabelSize lineBreakMode:self.subtitleLabel.lineBreakMode].height;
+    CGFloat titleLabelHeight = AL_SINGLELINE_TEXT_HEIGHT(self.titleLabel.text, self.titleLabel.font);
+    CGFloat subtitleLabelHeight = AL_MULTILINE_TEXT_HEIGHT(self.subtitleLabel.text, self.subtitleLabel.font, maxLabelSize, self.subtitleLabel.lineBreakMode);
     CGFloat heightForSelf = titleLabelHeight + subtitleLabelHeight + (self.subtitleLabel.text == nil ? kMargin*2 : kMargin*2.5);
     
     CGRect frame = CGRectMake(0, 0, parentView.bounds.size.width, heightForSelf);
@@ -426,12 +477,14 @@ static CGFloat const kRotationDurationIPad = 0.4f;
         case ALAlertBannerPositionTop:
             initialYCoord = -heightForSelf;
             if (isSuperviewKindOfWindow) initialYCoord += kStatusBarHeight;
+            if (AL_IOS_7_OR_GREATER)
+                initialYCoord += [UIApplication navigationBarHeight] + kStatusBarHeight;
             break;
         case ALAlertBannerPositionBottom:
             initialYCoord = parentView.bounds.size.height;
             break;
         case ALAlertBannerPositionUnderNavBar:
-            initialYCoord = -heightForSelf + kNavigationBarHeight + kStatusBarHeight;
+            initialYCoord = -heightForSelf + [UIApplication navigationBarHeight] + kStatusBarHeight;
             break;
     }
     frame.origin.y = initialYCoord;
@@ -454,11 +507,11 @@ static CGFloat const kRotationDurationIPad = 0.4f;
 -(void)updateSizeAndSubviewsAnimated:(BOOL)animated
 {
     CGSize maxLabelSize = CGSizeMake(self.parentView.bounds.size.width - (kMargin*3) - self.statusImageView.image.size.width, CGFLOAT_MAX);
-    CGFloat titleLabelHeight = self.titleLabel.font.pointSize + 2.f;
-    CGFloat subtitleLabelHeight = [self.subtitleLabel.text sizeWithFont:self.subtitleLabel.font constrainedToSize:maxLabelSize lineBreakMode:self.subtitleLabel.lineBreakMode].height;
+    CGFloat titleLabelHeight = AL_SINGLELINE_TEXT_HEIGHT(self.titleLabel.text, self.titleLabel.font);
+    CGFloat subtitleLabelHeight = AL_MULTILINE_TEXT_HEIGHT(self.subtitleLabel.text, self.subtitleLabel.font, maxLabelSize, self.subtitleLabel.lineBreakMode);
     CGFloat heightForSelf = titleLabelHeight + subtitleLabelHeight + (self.subtitleLabel.text == nil ? kMargin*2 : kMargin*2.5);
     
-    CFTimeInterval boundsAnimationDuration = DEVICE_ANIMATION_DURATION;
+    CFTimeInterval boundsAnimationDuration = AL_DEVICE_ANIMATION_DURATION;
         
     CGRect oldBounds = self.layer.bounds;
     CGRect newBounds = oldBounds;
@@ -560,7 +613,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
         
         //because the banner's location is relative to the height of the screen when in the bottom position, we should just immediately set it's position upon rotation events. this will prevent any ill-timed animations due to the presentation layer's position at the time of rotation
         if (self.position == ALAlertBannerPositionBottom)
-            positionAnimationDuration = DEVICE_ANIMATION_DURATION;
+            positionAnimationDuration = AL_DEVICE_ANIMATION_DURATION;
         
         positionAnimation.duration = positionAnimationDuration;
         positionAnimation.timingFunction = timingFunction == nil ? [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear] : timingFunction;

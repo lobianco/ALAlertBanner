@@ -88,6 +88,7 @@
         dispatch_semaphore_signal(_navBarPositionSemaphore);
         
         _bannerViews = [NSMutableArray new];
+        
         _secondsToShow = 3.5f;
         _showAnimationDuration = 0.25f;
         _hideAnimationDuration = 0.2f;
@@ -178,14 +179,19 @@
 
 -(void)alertBannerWillShow:(ALAlertBannerView *)alertBanner inView:(UIView*)view
 {
+    //make copy so we can set shadow before pushing banners
+    NSArray *bannersToPush = [NSArray arrayWithArray:view.alertBanners];
     NSMutableArray *bannersArray = view.alertBanners;
-    for (ALAlertBannerView *banner in bannersArray)
-        if (banner.position == alertBanner.position)
-            [banner push:alertBanner.frame.size.height forward:YES];
     
     [bannersArray addObject:alertBanner];
     NSArray *bannersInSamePosition = [bannersArray filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.position == %i", alertBanner.position]];
+    
+    //set shadow before pushing other banners, because the banner push may be delayed by the fade in duration (which is set at the same time as the shadow) on iOS7
     alertBanner.showShadow = (bannersInSamePosition.count > 1 ? NO : YES);
+    
+    for (ALAlertBannerView *banner in bannersToPush)
+        if (banner.position == alertBanner.position)
+            [banner push:alertBanner.frame.size.height forward:YES delay:alertBanner.fadeInDuration];
 }
 
 -(void)alertBannerDidShow:(ALAlertBannerView *)alertBanner inView:(UIView *)view
@@ -215,7 +221,7 @@
         NSArray *bannersToPush = [bannersInSamePosition subarrayWithRange:NSMakeRange(0, index)];
 
         for (ALAlertBannerView *banner in bannersToPush)
-            [banner push:-alertBanner.frame.size.height forward:NO];
+            [banner push:-alertBanner.frame.size.height forward:NO delay:0.f];
     }
     
     else if (index == 0)
@@ -285,6 +291,8 @@
     {
         NSArray *topBanners = [view.alertBanners filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.position == %i", ALAlertBannerPositionTop]];
         CGFloat topYCoord = 0.f;
+        if (AL_IOS_7_OR_GREATER)
+            topYCoord += [UIApplication navigationBarHeight] + kStatusBarHeight;
         for (ALAlertBannerView *alertBanner in [topBanners reverseObjectEnumerator])
         {
             [alertBanner updateSizeAndSubviewsAnimated:YES];

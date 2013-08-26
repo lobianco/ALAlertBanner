@@ -24,6 +24,22 @@
 
 #import <UIKit/UIKit.h>
 
+/** 
+ include these constants and category methods here so Manager can see them
+ */
+
+#define AL_IOS_7_OR_GREATER [UIDevice iOSVersion] >= 7.0
+
+static CGFloat const kStatusBarHeight = 20.f;
+
+@interface UIDevice (SystemVersion)
++(float)iOSVersion;
+@end
+
+@interface UIApplication (NavigationBarHeight)
++(CGFloat)navigationBarHeight;
+@end
+
 typedef enum {
     ALAlertBannerStyleSuccess = 0,
     ALAlertBannerStyleFailure,
@@ -75,6 +91,7 @@ typedef enum {
 @property (nonatomic) BOOL isScheduledToHide;
 @property (nonatomic) BOOL allowTapToDismiss;
 
+@property (nonatomic) NSTimeInterval fadeInDuration;
 @property (nonatomic) BOOL showShadow;
 @property (nonatomic) NSTimeInterval showAnimationDuration;
 @property (nonatomic) NSTimeInterval hideAnimationDuration;
@@ -83,10 +100,8 @@ typedef enum {
 +(ALAlertBannerView*)alertBannerForView:(UIView*)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString*)title subtitle:(NSString*)subtitle;
 -(void)show;
 -(void)hide;
--(void)push:(CGFloat)distance forward:(BOOL)forward;
+-(void)push:(CGFloat)distance forward:(BOOL)forward delay:(double)delay;
 -(void)updateSizeAndSubviewsAnimated:(BOOL)animated;
 -(void)updatePositionAfterRotationWithY:(CGFloat)yPos animated:(BOOL)animated;
 
 @end
-
-
