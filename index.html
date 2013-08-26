@@ -1,0 +1,244 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>ALAlertBanner by alobi</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>ALAlertBanner</h1>
+        <p>A clean and simple alert banner for iPhone and iPad</p>
+
+        <p class="view"><a href="https://github.com/alobi/ALAlertBanner">View the Project on GitHub <small>alobi/ALAlertBanner</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/alobi/ALAlertBanner/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/alobi/ALAlertBanner/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/alobi/ALAlertBanner">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="alalertbanner" class="anchor" href="#alalertbanner"><span class="octicon octicon-link"></span></a>ALAlertBanner</h1>
+
+<h2>
+<a name="about" class="anchor" href="#about"><span class="octicon octicon-link"></span></a>About</h2>
+
+<p>ALAlertBanner is a drop-in library for iOS (both iPhone and iPad) that presents beautiful alert banners in a customizable and configurable way. </p>
+
+<h3>
+<a name="preview" class="anchor" href="#preview"><span class="octicon octicon-link"></span></a>Preview</h3>
+
+<p><img src="https://raw.github.com/alobi/ALAlertBanner/master/Screenshots/screenshot1.gif" alt="Preview1"><img src="https://raw.github.com/alobi/ALAlertBanner/master/Screenshots/screenshot3.png" alt="Preview2"></p>
+
+<p><img src="https://raw.github.com/alobi/ALAlertBanner/master/Screenshots/screenshot2.png" alt="Preview3"></p>
+
+<h3>
+<a name="behind-the-scenes" class="anchor" href="#behind-the-scenes"><span class="octicon octicon-link"></span></a>Behind the Scenes</h3>
+
+<p>ALAlertBanner uses <a href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CoreAnimation_guide/Introduction/Introduction.html">Core Animation</a> and <a href="http://developer.apple.com/library/ios/documentation/Performance/Reference/GCD_libdispatch_Ref/Reference/reference.html">Grand Central Dispatch</a> under the hood, making it lightweight and stable. A singleton object is used to manage the presentation and dismissal of the alerts in a synchronous manner. </p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Installation is easy.</p>
+
+<ol>
+<li>Download the ZIP from Github and copy the ALAlertBanner directory to your project</li>
+<li>Link the <code>QuartzCore.framework</code> library in your project's Build Phases</li>
+<li>
+<code>#import "ALAlertBanner.h"</code> in your view of choice</li>
+</ol><p>If you can compile without errors, congratulations! You're one step closer to... </p>
+
+<p>(•_•)</p>
+
+<p>( •_•)&gt;⌐■-■ </p>
+
+<p>(⌐■_■)</p>
+
+<p><em>...being cool</em>.</p>
+
+<h3>
+<a name="tested-environments" class="anchor" href="#tested-environments"><span class="octicon octicon-link"></span></a>Tested Environments</h3>
+
+<p>ALAlertBanner has been tested on iOS 5.0 and 5.1 (simulator) and iOS 6.1 (device) with ARC enabled. It should work in older/newer versions/devices, but I'm not positive. </p>
+
+<h2>
+<a name="example-usage" class="anchor" href="#example-usage"><span class="octicon octicon-link"></span></a>Example Usage</h2>
+
+<p>You should use the <code>ALAlertBannerManager</code> singleton object to manage all banners. You can easily present a banner in a regular <code>UIView</code> like so:</p>
+
+<div class="highlight"><pre><span class="p">[[</span><span class="n">ALAlertBannerManager</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="n">showAlertBannerInView</span><span class="o">:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span> 
+                                      <span class="n">style</span><span class="o">:</span><span class="n">ALAlertBannerStyleSuccess</span> 
+                                      <span class="n">position</span><span class="o">:</span><span class="n">ALAlertBannerPositionTop</span> 
+                                      <span class="n">title</span><span class="o">:</span><span class="s">@"Success!"</span>
+                                      <span class="nl">subtitle:</span><span class="s">@"Here's a banner. Look how easy that was."</span><span class="p">];</span>
+</pre></div>
+
+<p>or in a <code>UIWindow</code>:</p>
+
+<div class="highlight"><pre><span class="n">AppDelegate</span> <span class="o">*</span><span class="n">appDelegate</span> <span class="o">=</span> <span class="p">(</span><span class="n">AppDelegate</span><span class="o">*</span><span class="p">)[[</span><span class="n">UIApplication</span> <span class="n">sharedApplication</span><span class="p">]</span> <span class="n">delegate</span><span class="p">];</span>
+<span class="p">[[</span><span class="n">ALAlertBannerManager</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="n">showAlertBannerInView</span><span class="o">:</span><span class="n">appDelegate</span><span class="p">.</span><span class="n">window</span> 
+                                      <span class="n">style</span><span class="o">:</span><span class="n">ALAlertBannerStyleNotify</span> 
+                                      <span class="n">position</span><span class="o">:</span><span class="n">ALAlertBannerPositionUnderNavBar</span> 
+                                      <span class="n">title</span><span class="o">:</span><span class="s">@"Notify!"</span>
+                                      <span class="nl">subtitle:</span><span class="s">@"Here's another banner, and it is nice and comfy in its UIWindow"</span><span class="p">];</span>
+</pre></div>
+
+<p>A couple notes: <code>title</code> is limited to one line and will be truncated if necessary. <code>subtitle</code> can be any number of lines, or it can also be nil. All other parameters should be used however. </p>
+
+<h3>
+<a name="other-methods-of-consideration" class="anchor" href="#other-methods-of-consideration"><span class="octicon octicon-link"></span></a>Other methods of consideration:</h3>
+
+<div class="highlight"><pre><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">hideAllAlertBanners</span><span class="p">;</span>
+</pre></div>
+
+<p>Immediately hide all alert banners.</p>
+
+<div class="highlight"><pre><span class="k">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">hideAlertBannersInView:</span><span class="p">(</span><span class="n">UIView</span><span class="o">*</span><span class="p">)</span><span class="nv">view</span><span class="p">;</span>
+</pre></div>
+
+<p>Immediately hide all alert banners within a specific view.</p>
+
+<h3>
+<a name="properties" class="anchor" href="#properties"><span class="octicon octicon-link"></span></a>Properties</h3>
+
+<p><strong><em>Note:</em></strong> ALL properties should be set through <code>ALAlertBannerManager</code> like so:</p>
+
+<div class="highlight"><pre><span class="p">[[</span><span class="n">ALAlertBannerManager</span> <span class="n">sharedManager</span><span class="p">]</span> <span class="n">setProperty</span><span class="o">:</span><span class="mf">0.f</span><span class="p">];</span>
+</pre></div>
+
+<p><strong><em>End Note</em></strong></p>
+
+<hr><p><code>ALAlertBannerManager</code> has the following editable properties:</p>
+
+<div class="highlight"><pre><span class="cm">/**</span>
+<span class="cm"> Length of time in seconds that a banner should show before auto-hiding. Default is 3.5 seconds. A value &lt;= 0 will disable auto-hiding. </span>
+<span class="cm"> */</span>
+<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSTimeInterval</span> <span class="n">secondsToShow</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> The length of time it takes a banner to transition on-screen. Default is 0.25 seconds.</span>
+<span class="cm"> */</span>
+<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSTimeInterval</span> <span class="n">showAnimationDuration</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> The length of time it takes a banner to transition off-screen. Default is 0.2 seconds.</span>
+<span class="cm"> */</span>
+<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">)</span> <span class="n">NSTimeInterval</span> <span class="n">hideAnimationDuration</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> Banner opacity, between 0 and 1. Default value is 0.93f.</span>
+<span class="cm"> */</span>
+<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="n">CGFloat</span> <span class="n">bannerOpacity</span><span class="p">;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> Tapping on a banner will dismiss it early. Default is YES.</span>
+<span class="cm"> */</span>
+<span class="k">@property</span> <span class="p">(</span><span class="n">nonatomic</span><span class="p">,</span> <span class="n">assign</span><span class="p">)</span> <span class="kt">BOOL</span> <span class="n">allowTapToDismiss</span><span class="p">;</span>
+</pre></div>
+
+<h3>
+<a name="banner-positions" class="anchor" href="#banner-positions"><span class="octicon octicon-link"></span></a>Banner Positions</h3>
+
+<div class="highlight"><pre><span class="n">ALAlertBannerPositionTop</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+
+<p>The banner will be extend down from the top of the screen. If you're presenting it in a:</p>
+
+<ul>
+<li><p><code>UIView</code>: the banner will extend down from underneath the status bar (if visible)</p></li>
+<li><p><code>UIView</code> within a <code>UINavigationController</code>: it will extend down from underneath the navigation bar</p></li>
+<li><p><code>UIWindow</code>: it should extend down from underneath the status bar but above any other UI elements, like the nav bar for instance </p></li>
+</ul><div class="highlight"><pre><span class="n">ALAlertBannerPositionBottom</span>
+</pre></div>
+
+<p>The banner will be extend up from the bottom of the screen. </p>
+
+<div class="highlight"><pre><span class="n">ALAlertBannerPositionUnderNavBar</span>
+</pre></div>
+
+<p>This position should <strong>ONLY</strong> be used if presenting in a <code>UIWindow</code>. It will create an effect similar to <code>ALAlertBannerPositionTop</code> on a <code>UIView</code> within a <code>UINavigationController</code> (i.e. extending down from underneath the navigation bar), but it will in fact be above all other views. It accomplishes this by using a <code>CALayer</code> mask. This position is useful if you want to do something like set up a "catch-all" error handler in your AppDelegate that responds to notifications about a certain event (like network requests, for instance), yet you still want it to animate from underneath the nav bar. </p>
+
+<h3>
+<a name="banner-types" class="anchor" href="#banner-types"><span class="octicon octicon-link"></span></a>Banner Types</h3>
+
+<div class="highlight"><pre><span class="n">ALAlertBannerStyleSuccess</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
+
+<p>The banner will have a cute little checkmark and a nice green gradient.</p>
+
+<div class="highlight"><pre><span class="n">ALAlertBannerStyleFailure</span>
+</pre></div>
+
+<p>The banner will have a cute little X and a nice red gradient.</p>
+
+<div class="highlight"><pre><span class="n">ALAlertBannerStyleNotify</span>
+</pre></div>
+
+<p>The banner will have a cute little info symbol and a nice blue gradient.</p>
+
+<div class="highlight"><pre><span class="n">ALAlertBannerStyleAlert</span>
+</pre></div>
+
+<p>The banner will have a cute little caution triangle and a nice yellow gradient.</p>
+
+<p>Did I mention they have cute little shapes and nice colorful gradients?</p>
+
+<h2>
+<a name="known-issues" class="anchor" href="#known-issues"><span class="octicon octicon-link"></span></a>Known Issues</h2>
+
+<ul>
+<li>
+<strong>FIXED</strong> <del>ALAlertBanner supports all interface orientations. However, if you rotate the device while one or more banners is displaying (or animating), the layout will get fudgesicled. This is just something I haven't figured out how to fix yet.</del>
+</li>
+<li>Alert banners won't rotate when added to a UIWindow. This is something I haven't added yet but will try to get to soon.</li>
+<li>On the topic of rotation, ALAlertBanner listens for <code>UIDeviceOrientationDidChangeNotification</code>  to handle rotation events. I'd prefer to listen for <code>UIApplicationDidChangeStatusBarOrientationNotification</code> instead but I need the bounds of the banner's superview to update before handling the rotation notification, and the only way to that seems to be by using <code>UIDeviceOrientationDidChangeNotification</code>. If you have an idea on how to fix this, please let me know by submitting a new issue or sending me an email.</li>
+<li>If you find any other bugs, please open a new issue. </li>
+</ul><h2>
+<a name="contact-me" class="anchor" href="#contact-me"><span class="octicon octicon-link"></span></a>Contact Me</h2>
+
+<p>You can reach me anytime at the addresses below. If you use the library, feel free to give me a shoutout on Twitter to let me know how you like it. I'd love to hear your thoughts. </p>
+
+<p>Github: <a href="https://github.com/alobi">alobi</a> <br>
+Twitter: <a href="https://twitter.com/lobi4nco">@lobi4nco</a> <br>
+Email: <a href="mailto:anthony@lobian.co">anthony@lobian.co</a> </p>
+
+<h2>
+<a name="credits--license" class="anchor" href="#credits--license"><span class="octicon octicon-link"></span></a>Credits &amp; License</h2>
+
+<p>ALAlertBanner is developed and maintained by Anthony Lobianco (<a href="https://twitter.com/lobi4nco">@lobi4nco</a>). Licensed under the MIT License. Basically, I would appreciate attribution if you use it.</p>
+
+<p>Enjoy!</p>
+
+<p>(⌐■_■)</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/alobi">alobi</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-43501903-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
