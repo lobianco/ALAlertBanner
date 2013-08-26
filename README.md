@@ -178,6 +178,10 @@ Did I mention they have cute little shapes and nice colorful gradients?
 * On the topic of rotation, ALAlertBanner listens for ```UIDeviceOrientationDidChangeNotification```  to handle rotation events. I'd prefer to listen for ```UIApplicationDidChangeStatusBarOrientationNotification``` instead but I need the bounds of the banner's superview to update before handling the rotation notification, and the only way to that seems to be by using ```UIDeviceOrientationDidChangeNotification```. If you have an idea on how to fix this, please let me know by submitting a new issue or sending me an email.
 * If you find any other bugs, please open a new issue. 
 
+## Suggestions?
+
+Let me know!
+
 ## Contact Me
 
 You can reach me anytime at the addresses below. If you use the library, feel free to give me a shoutout on Twitter to let me know how you like it. I'd love to hear your thoughts. 
