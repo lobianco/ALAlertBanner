@@ -6,9 +6,9 @@ ALAlertBanner is a drop-in library for iOS (both iPhone and iPad) that presents 
 
 ### Preview
 
-![Preview1](https://raw.github.com/alobi/ALAlertBanner/master/Screenshots/screenshot1.gif) ![Preview2](https://raw.github.com/alobi/ALAlertBanner/master/Screenshots/screenshot3.png)
+![Preview1](http://alobi.github.io/ALAlertBanner/screenshots/screenshot1.gif) ![Preview2](http://alobi.github.io/ALAlertBanner/screenshots/screenshot3.png)
 
-![Preview3](https://raw.github.com/alobi/ALAlertBanner/master/Screenshots/screenshot2.png)
+![Preview3](http://alobi.github.io/ALAlertBanner/screenshots/screenshot2.png)
 
 ### Behind the Scenes
 
