@@ -2,7 +2,7 @@
 
 ## About
 
-ALAlertBanner is a drop-in component for iOS (both iPhone and iPad) that presents beautiful alert banners in a customizable and configurable way. 
+ALAlertBanner is a drop-in component for iOS (both iPhone and iPad) that allows you to display beautiful alert banners in a customizable and configurable way. 
 
 ### Preview
 
@@ -20,7 +20,7 @@ Installation is easy.
 
 ### Cocoapods
 
-1. Add ```pod 'ALAlertBanner'``` to your Podfile
+1. Add ```pod 'ALAlertBanner', '~>0.1.1'``` to your Podfile
 2. ```#import <ALAlertBanner/ALAlertBanner.h>``` in your view of choice
 
 ### Manually
@@ -41,7 +41,7 @@ If you can compile without errors, congratulations! You're one step closer to...
 
 ### Tested Environments
 
-ALAlertBanner has been tested on iOS 5.0 and 5.1 (simulator) and iOS 6.1 (device) with ARC enabled. It should work in older/newer versions/devices, but I'm not positive. 
+ALAlertBanner has been tested to work on iOS 5.0, 5.1 and 6.0 (simulator), iOS 6.1 (device), and iOS 7.0 (simulator) with ARC enabled. 
 
 ## Example Usage
 
