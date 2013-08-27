@@ -18,6 +18,13 @@ ALAlertBanner uses [Core Animation](https://developer.apple.com/library/mac/docu
 
 Installation is easy.
 
+### Cocoapods
+
+1. Add ```pod 'ALAlertBanner'``` to your Podfile
+2. ```#import <ALAlertBanner/ALAlertBanner.h>``` in your view of choice
+
+### Manually
+
 1. Download the ZIP from Github and copy the ALAlertBanner directory to your project
 2. Link the ```QuartzCore.framework``` library in your project's Build Phases
 3. ```#import "ALAlertBanner.h"``` in your view of choice
