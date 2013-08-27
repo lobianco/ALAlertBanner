@@ -2,7 +2,7 @@
 
 ## About
 
-ALAlertBanner is a drop-in library for iOS (both iPhone and iPad) that presents beautiful alert banners in a customizable and configurable way. 
+ALAlertBanner is a drop-in component for iOS (both iPhone and iPad) that presents beautiful alert banners in a customizable and configurable way. 
 
 ### Preview
 
