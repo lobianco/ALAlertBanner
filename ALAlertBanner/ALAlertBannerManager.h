@@ -28,27 +28,37 @@
 @interface ALAlertBannerManager : NSObject
 
 /**
- Length of time in seconds that a banner should show before auto-hiding. Default is 3.5 seconds. A value <= 0 will disable auto-hiding. 
+ Length of time in seconds that a banner should show before auto-hiding. 
+ 
+ Default value is 3.5 seconds. A value <= 0 will disable auto-hiding.
  */
 @property (nonatomic) NSTimeInterval secondsToShow;
 
 /**
- The length of time it takes a banner to transition on-screen. Default is 0.25 seconds.
+ The length of time it takes a banner to transition on-screen. 
+ 
+ Default value is 0.25 seconds.
  */
 @property (nonatomic) NSTimeInterval showAnimationDuration;
 
 /**
- The length of time it takes a banner to transition off-screen. Default is 0.2 seconds.
+ The length of time it takes a banner to transition off-screen. 
+ 
+ Default value is 0.2 seconds.
  */
 @property (nonatomic) NSTimeInterval hideAnimationDuration;
 
 /**
- Banner opacity, between 0 and 1. Default value is 0.93f.
+ Banner opacity, between 0 and 1. 
+ 
+ Default value is 0.93f.
  */
 @property (nonatomic, assign) CGFloat bannerOpacity;
 
 /**
- Tapping on a banner will dismiss it early. Default is YES.
+ Tapping on a banner will dismiss it early. 
+ 
+ Default value is YES. If you supply a tappedHandler in one of the appropriate methods, this will be set to NO for that specific banner.
  */
 @property (nonatomic, assign) BOOL allowTapToDismiss;
 
@@ -58,9 +68,30 @@
 +(ALAlertBannerManager*)sharedManager;
 
 /**
- The default (and only) way to display a banner. All parameters except subtitle must not be nil.
+ The default methods to display a banner. 
  */
+-(void)showAlertBannerInView:(UIView*)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString*)title;
+
 -(void)showAlertBannerInView:(UIView*)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString*)title subtitle:(NSString*)subtitle;
+
+/** 
+ Optional method to set the secondsToShow duration on a per-banner basis.
+ */
+-(void)showAlertBannerInView:(UIView*)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString*)title subtitle:(NSString*)subtitle hideAfter:(NSTimeInterval)secondsToShow;
+
+/**
+ Optional methods to handle a tap on a banner. 
+ 
+ By default, supplying a tap handler will disable allowTapToDismiss on this particular banner. If you want to reinstate this behavior alongside the tap handler, you can call `[[ALAlertBannerManager sharedManager] hideAlertBanner:alertBanner];` in tappedBlock().
+ */
+-(void)showAlertBannerInView:(UIView*)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString*)title subtitle:(NSString*)subtitle tappedHandler:(void(^)(ALAlertBannerView *alertBanner))tappedBlock;
+
+-(void)showAlertBannerInView:(UIView*)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString*)title subtitle:(NSString*)subtitle hideAfter:(NSTimeInterval)secondsToShow tappedHandler:(void(^)(ALAlertBannerView *alertBanner))tappedBlock;
+
+/**
+ Immediately hide a specific alert banner.
+ */
+-(void)hideAlertBanner:(ALAlertBannerView *)alertBanner;
 
 /**
  Returns an array of all banners within a certain view.

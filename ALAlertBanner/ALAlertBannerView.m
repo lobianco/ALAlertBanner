@@ -38,17 +38,13 @@ static CGFloat const kRotationDurationIPad = 0.4f;
 
 //macros referenced from MBProgressHUD. cheers to @matej
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
-  #define AL_SINGLELINE_TEXT_HEIGHT(text, font) [text length] > 0 ? [text sizeWithAttributes:nil].height : 0.f;
-#else
-  #define AL_SINGLELINE_TEXT_HEIGHT(text, font) [text length] > 0 ? [text sizeWithFont:font].height : 0.f;
-#endif
-
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
+    #define AL_SINGLELINE_TEXT_HEIGHT(text, font) [text length] > 0 ? [text sizeWithAttributes:nil].height : 0.f;
     #define AL_MULTILINE_TEXT_HEIGHT(text, font, maxSize, mode) [text length] > 0 ? [text boundingRectWithSize:maxSize \
                                                                                                        options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) \
                                                                                                     attributes:nil \
                                                                                                        context:NULL].size.height : 0.f;
 #else
+    #define AL_SINGLELINE_TEXT_HEIGHT(text, font) [text length] > 0 ? [text sizeWithFont:font].height : 0.f;
     #define AL_MULTILINE_TEXT_HEIGHT(text, font, maxSize, mode) [text length] > 0 ? [text sizeWithFont:font \
                                                                                      constrainedToSize:maxSize \
                                                                                          lineBreakMode:mode].height : 0.f;
@@ -420,7 +416,13 @@ static CGFloat const kRotationDurationIPad = 0.4f;
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (self.state == ALAlertBannerStateVisible && self.allowTapToDismiss)
+    if (self.state != ALAlertBannerStateVisible)
+        return;
+    
+    if (self.tappedBlock) // && !self.isScheduledToHide ...?
+        self.tappedBlock(self);
+    
+    if (self.allowTapToDismiss)
         [self.delegate hideAlertBanner:self];
 }
 
@@ -469,7 +471,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     CGSize maxLabelSize = CGSizeMake(parentView.bounds.size.width - (kMargin*3) - self.statusImageView.image.size.width, CGFLOAT_MAX);
     CGFloat titleLabelHeight = AL_SINGLELINE_TEXT_HEIGHT(self.titleLabel.text, self.titleLabel.font);
     CGFloat subtitleLabelHeight = AL_MULTILINE_TEXT_HEIGHT(self.subtitleLabel.text, self.subtitleLabel.font, maxLabelSize, self.subtitleLabel.lineBreakMode);
-    CGFloat heightForSelf = titleLabelHeight + subtitleLabelHeight + (self.subtitleLabel.text == nil ? kMargin*2 : kMargin*2.5);
+    CGFloat heightForSelf = titleLabelHeight + subtitleLabelHeight + (self.subtitleLabel.text == nil || self.titleLabel.text == nil ? kMargin*2 : kMargin*2.5);
     
     CGRect frame = CGRectMake(0, 0, parentView.bounds.size.width, heightForSelf);
     CGFloat initialYCoord = 0.f;
@@ -509,7 +511,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     CGSize maxLabelSize = CGSizeMake(self.parentView.bounds.size.width - (kMargin*3) - self.statusImageView.image.size.width, CGFLOAT_MAX);
     CGFloat titleLabelHeight = AL_SINGLELINE_TEXT_HEIGHT(self.titleLabel.text, self.titleLabel.font);
     CGFloat subtitleLabelHeight = AL_MULTILINE_TEXT_HEIGHT(self.subtitleLabel.text, self.subtitleLabel.font, maxLabelSize, self.subtitleLabel.lineBreakMode);
-    CGFloat heightForSelf = titleLabelHeight + subtitleLabelHeight + (self.subtitleLabel.text == nil ? kMargin*2 : kMargin*2.5);
+    CGFloat heightForSelf = titleLabelHeight + subtitleLabelHeight + (self.subtitleLabel.text == nil || self.titleLabel.text == nil ? kMargin*2 : kMargin*2.5);
     
     CFTimeInterval boundsAnimationDuration = AL_DEVICE_ANIMATION_DURATION;
         
@@ -533,9 +535,9 @@ static CGFloat const kRotationDurationIPad = 0.4f;
         [UIView setAnimationDuration:boundsAnimationDuration];
     }
     
-    self.statusImageView.frame = CGRectMake(kMargin, (self.frame.size.height/2) - (self.statusImageView.image.size.height/2), self.statusImageView.image.size.width, self.statusImageView.image.size.height);
+    self.statusImageView.frame = CGRectMake(kMargin, (self.frame.size.height/2) - (self.statusImageView.image.size.height/2), self.statusImageView.image.size.width, self.statusImageView.image.size.height);    
     self.titleLabel.frame = CGRectMake(self.statusImageView.frame.origin.x + self.statusImageView.frame.size.width + kMargin, kMargin, maxLabelSize.width, titleLabelHeight);
-    self.subtitleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + kMargin/2, maxLabelSize.width, subtitleLabelHeight);
+    self.subtitleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + (self.titleLabel.text == nil ? 0.f : kMargin/2), maxLabelSize.width, subtitleLabelHeight);
     
     if (animated)
         [UIView commitAnimations];

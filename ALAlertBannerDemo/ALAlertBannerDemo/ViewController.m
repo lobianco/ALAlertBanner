@@ -120,7 +120,12 @@ static NSString *loremIpsum[] = {
 {
     ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
     ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
-    [[ALAlertBannerManager sharedManager] showAlertBannerInView:self.view style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum]];
+    [[ALAlertBannerManager sharedManager] showAlertBannerInView:self.view style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum] tappedHandler:^(ALAlertBannerView *alertBanner) {
+        
+        NSLog(@"tapped!");
+        [[ALAlertBannerManager sharedManager] hideAlertBanner:alertBanner];
+        
+    }];
 }
 
 -(void)showAlertBannerInWindow:(UIButton*)button

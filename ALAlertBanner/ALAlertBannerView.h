@@ -90,6 +90,7 @@ typedef enum {
 
 @property (nonatomic) BOOL isScheduledToHide;
 @property (nonatomic) BOOL allowTapToDismiss;
+@property (nonatomic, copy) void(^tappedBlock)(ALAlertBannerView *);
 
 @property (nonatomic) NSTimeInterval fadeInDuration;
 @property (nonatomic) BOOL showShadow;

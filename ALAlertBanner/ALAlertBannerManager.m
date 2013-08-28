@@ -102,25 +102,46 @@
     return self;
 }
 
+-(void)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title
+{
+    [self showAlertBannerInView:view style:style position:position title:title subtitle:nil hideAfter:self.secondsToShow tappedHandler:nil];
+}
+
 -(void)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle
 {
+    [self showAlertBannerInView:view style:style position:position title:title subtitle:subtitle hideAfter:self.secondsToShow tappedHandler:nil];
+}
+
+-(void)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle hideAfter:(NSTimeInterval)secondsToShow
+{
+    [self showAlertBannerInView:view style:style position:position title:title subtitle:subtitle hideAfter:secondsToShow tappedHandler:nil];
+}
+
+-(void)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle tappedHandler:(void (^)(ALAlertBannerView *))tappedBlock
+{
+    [self showAlertBannerInView:view style:style position:position title:title subtitle:subtitle hideAfter:self.secondsToShow tappedHandler:tappedBlock];
+}
+
+-(void)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle hideAfter:(NSTimeInterval)secondsToShow tappedHandler:(void (^)(ALAlertBannerView *))tappedBlock
+{    
     ALAlertBannerView *alertBanner = [ALAlertBannerView alertBannerForView:view style:style position:position title:title subtitle:subtitle];
     alertBanner.delegate = self;
     alertBanner.tag = arc4random_uniform(SHRT_MAX);
     alertBanner.showAnimationDuration = self.showAnimationDuration;
     alertBanner.hideAnimationDuration = self.hideAnimationDuration;
-    alertBanner.allowTapToDismiss = self.allowTapToDismiss;
+    alertBanner.allowTapToDismiss = tappedBlock ? NO : self.allowTapToDismiss;
     alertBanner.isScheduledToHide = NO;
     alertBanner.bannerOpacity = self.bannerOpacity;
+    alertBanner.tappedBlock = tappedBlock;
     
     //keep track of all views we've added banners to, to deal with rotation events and hideAllAlertBanners
     if (![self.bannerViews containsObject:view])
         [self.bannerViews addObject:view];
     
-    [self showAlertBanner:alertBanner];
+    [self showAlertBanner:alertBanner hideAfter:secondsToShow];
 }
 
--(void)showAlertBanner:(ALAlertBannerView*)alertBanner
+-(void)showAlertBanner:(ALAlertBannerView*)alertBanner hideAfter:(NSTimeInterval)delay
 {
     dispatch_semaphore_t semaphore;
     switch (alertBanner.position) {
@@ -139,8 +160,8 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [alertBanner show];
             
-            if (self.secondsToShow > 0)
-                [self performSelector:@selector(hideAlertBanner:) withObject:alertBanner afterDelay:self.secondsToShow];
+            if (delay > 0)
+                [self performSelector:@selector(hideAlertBanner:) withObject:alertBanner afterDelay:delay];
         });
     });
 }
