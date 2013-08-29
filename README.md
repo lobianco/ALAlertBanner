@@ -20,7 +20,7 @@ Installation is easy.
 
 ### Cocoapods
 
-1. Add ```pod 'ALAlertBanner', '~>0.2.0'``` to your Podfile
+1. Add ```pod 'ALAlertBanner', '~>0.2.1'``` to your Podfile
 2. ```#import <ALAlertBanner/ALAlertBanner.h>``` in your view of choice
 
 ### Manually
