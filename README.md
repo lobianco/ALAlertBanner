@@ -4,6 +4,14 @@
 
 ALAlertBanner is a drop-in component for iOS (both iPhone and iPad) that allows you to display beautiful alert banners in a customizable and configurable way. 
 
+### Improvements
+
+![ImprovementPreview](https://raw.github.com/DJBen/ALAlertBanner/master/Screenshot/iOS%20Simulator%20Screen%20shot%20Aug%2029,%202013%2010.14.46%20AM.png)
+
+This version of ALAlertBanner has a more consistent style with iOS 7 UI. Removed gloss, gradient and shadow... and every element that makes this banner not "flat".
+
+The appearance in iOS 6.x and below is unchanged.
+
 ### Preview
 
 ![Preview1](http://alobi.github.io/ALAlertBanner/screenshots/screenshot1.gif) ![Preview2](http://alobi.github.io/ALAlertBanner/screenshots/screenshot3.png)

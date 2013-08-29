@@ -65,6 +65,17 @@ static CGFloat const kRotationDurationIPad = 0.4f;
                                alpha:a];
     return nil;
 }
+
+- (UIColor *)lighterColor
+{
+    float h, s, b, a;
+    if ([self getHue:&h saturation:&s brightness:&b alpha:&a])
+        return [UIColor colorWithHue:h
+                          saturation:s
+                          brightness:b * 1.15
+                               alpha:a];
+    return nil;
+}
 @end
 
 @implementation UIDevice (SystemVersion)
@@ -651,20 +662,32 @@ static CGFloat const kRotationDurationIPad = 0.4f;
             break;
     }
     
-    NSArray *colorsArray = [NSArray arrayWithObjects:(id)[fillColor CGColor], (id)[[fillColor darkerColor] CGColor], nil];
-    CGColorSpaceRef colorSpace =  CGColorSpaceCreateDeviceRGB();
-    const CGFloat locations[2] = {0.0, 1.0};
-    CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)colorsArray, locations);
+    if (AL_IOS_7_OR_GREATER) {
+        // Fill with plain color in iOS 7 to fit its "flat" design
+        CGContextSetFillColorWithColor(context, [[fillColor lighterColor] CGColor]);
+        CGContextFillRect(context, self.bounds);
+    } else {
+        NSArray *colorsArray = [NSArray arrayWithObjects:(id)[fillColor CGColor], (id)[[fillColor darkerColor] CGColor], nil];
+        CGColorSpaceRef colorSpace =  CGColorSpaceCreateDeviceRGB();
+        const CGFloat locations[2] = {0.0, 1.0};
+        CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)colorsArray, locations);
+        
+        CGContextDrawLinearGradient(context, gradient, CGPointZero, CGPointMake(0, self.bounds.size.height), 0);
+        
+        CGGradientRelease(gradient);
+        CGColorSpaceRelease(colorSpace);
+    }
+
+    if (AL_IOS_7_OR_GREATER) {
+        CGContextSetFillColorWithColor(context, [UIColor colorWithRed:1 green:1 blue:1 alpha:1.0].CGColor);
+        CGContextFillRect(context, CGRectMake(0, rect.size.height - 1.f, rect.size.width, 1.f));
+    } else {
+        CGContextSetFillColorWithColor(context, [UIColor colorWithRed:0 green:0 blue:0 alpha:0.6].CGColor);
+        CGContextFillRect(context, CGRectMake(0, rect.size.height - 1.f, rect.size.width, 1.f));
+        CGContextSetFillColorWithColor(context, [UIColor colorWithRed:1 green:1 blue:1 alpha:0.3].CGColor);
+        CGContextFillRect(context, CGRectMake(0, 0, rect.size.width, 1.f));
+    }
     
-    CGContextDrawLinearGradient(context, gradient, CGPointZero, CGPointMake(0, self.bounds.size.height), 0);
-    
-    CGGradientRelease(gradient);
-    CGColorSpaceRelease(colorSpace);
-    
-    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:0 green:0 blue:0 alpha:0.6].CGColor);
-    CGContextFillRect(context, CGRectMake(0, rect.size.height - 1.f, rect.size.width, 1.f));
-    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:1 green:1 blue:1 alpha:0.3].CGColor);
-    CGContextFillRect(context, CGRectMake(0, 0, rect.size.width, 1.f));
 }
 
 @end
