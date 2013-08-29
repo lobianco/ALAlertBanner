@@ -23,38 +23,31 @@
  **/
 
 #import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
-//for iOS 4.3 support
-#ifndef AL_WEAK
-#if __has_feature(objc_arc_weak)
-    #define AL_WEAK weak
-#else
-    #define AL_WEAK unsafe_unretained
-#endif
-#endif
+@interface ALAlertBannerStyle : NSObject
 
-/**
- include these constants and category methods here so Manager can see them
- */
+@property (nonatomic, strong, readonly) UIColor *backgroundColor;
+@property (nonatomic, strong, readonly) UIImage *icon;
 
-#define AL_IOS_7_OR_GREATER [UIDevice iOSVersion] >= 7.0
-
-static CGFloat const kStatusBarHeight = 20.f;
-
-@interface UIDevice (SystemVersion)
-+(float)iOSVersion;
 @end
 
-@interface UIApplication (NavigationBarHeight)
-+(CGFloat)navigationBarHeight;
-@end
+FOUNDATION_EXTERN ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *icon);
 
-typedef enum {
-    ALAlertBannerStyleSuccess = 0,
-    ALAlertBannerStyleFailure,
-    ALAlertBannerStyleNotify,
-    ALAlertBannerStyleAlert,
-} ALAlertBannerStyle;
+#define kALAlertBannerBackgroundColorGreen [UIColor colorWithRed:(77/255.0f) green:(175/255.0f) blue:(67/255.0f) alpha:1.0f]
+#define kALAlertBannerBackgroundColorRed [UIColor colorWithRed:(173/255.0f) green:(48/255.0f) blue:(48/255.0f) alpha:1.0f]
+#define kALAlertBannerBackgroundColorBlue [UIColor colorWithRed:(48/255.0f) green:(110/255.0f) blue:(173/255.0f) alpha:1.0f]
+#define kALAlertBannerBackgroundColorYellow [UIColor colorWithRed:(211/255.0f) green:(209/255.0f) blue:(100/255.0f) alpha:1.0f]
+
+#define kALAlertBannerIconSuccess [UIImage imageNamed:@"bannerSuccess.png"]
+#define kALAlertBannerIconFailure [UIImage imageNamed:@"bannerFailure.png"]
+#define kALAlertBannerIconInfo [UIImage imageNamed:@"bannerNotify.png"]
+#define kALAlertBannerIconWarning [UIImage imageNamed:@"bannerAlert.png"]
+
+#define kALAlertBannerStyleSuccess ALAlertBannerStyleMake(kALAlertBannerBackgroundColorGreen, kALAlertBannerIconSuccess)
+#define kALAlertBannerStyleFailure ALAlertBannerStyleMake(kALAlertBannerBackgroundColorRed, kALAlertBannerIconFailure)
+#define kALAlertBannerStyleNotify ALAlertBannerStyleMake(kALAlertBannerBackgroundColorBlue, kALAlertBannerIconInfo)
+#define kALAlertBannerStyleAlert ALAlertBannerStyleMake(kALAlertBannerBackgroundColorYellow, kALAlertBannerIconWarning)
 
 typedef enum {
     ALAlertBannerPositionTop = 0,
@@ -68,48 +61,25 @@ typedef enum {
     ALAlertBannerStateMovingForward,
     ALAlertBannerStateMovingBackward,
     ALAlertBannerStateVisible,
-    ALAlertBannerStateNotVisible
+    ALAlertBannerStateHidden
 } ALAlertBannerState;
+
 
 @class ALAlertBannerView;
 @protocol ALAlertBannerViewDelegate <NSObject>
 @required
--(void)alertBannerWillShow:(ALAlertBannerView*)alertBanner inView:(UIView*)view;
--(void)alertBannerDidShow:(ALAlertBannerView*)alertBanner inView:(UIView*)view;
--(void)alertBannerWillHide:(ALAlertBannerView*)alertBanner inView:(UIView*)view;
--(void)alertBannerDidHide:(ALAlertBannerView*)alertBanner inView:(UIView*)view;
--(void)hideAlertBanner:(ALAlertBannerView*)alertBanner;
+
+- (void)alertBannerWillShow:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
+- (void)alertBannerDidShow:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
+- (void)alertBannerWillHide:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
+- (void)alertBannerDidHide:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
+- (void)hideAlertBanner:(ALAlertBannerView *)alertBanner;
 @end
 
-@interface ALAlertBannerView : UIView
+@interface ALAlertBannerView : UIControl
 
-@property (nonatomic, readonly) ALAlertBannerStyle style;
-@property (nonatomic, readonly) ALAlertBannerPosition position;
-@property (nonatomic, readonly) ALAlertBannerState state;
-
-/**
- INTERNAL DETAILS BELOW.
- 
- Used by ALAlertBannerManager only. Every time you call one of them directly, I'll be forced to watch a Channing Tatum movie. Don't do that to me bro.
- */
-
-@property (nonatomic, AL_WEAK) id <ALAlertBannerViewDelegate> delegate;
-
-@property (nonatomic) BOOL isScheduledToHide;
-@property (nonatomic) BOOL allowTapToDismiss;
-@property (nonatomic, copy) void(^tappedBlock)(ALAlertBannerView *);
-
-@property (nonatomic) NSTimeInterval fadeInDuration;
-@property (nonatomic) BOOL showShadow;
-@property (nonatomic) NSTimeInterval showAnimationDuration;
-@property (nonatomic) NSTimeInterval hideAnimationDuration;
-@property (nonatomic) CGFloat bannerOpacity;
-
-+(ALAlertBannerView*)alertBannerForView:(UIView*)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString*)title subtitle:(NSString*)subtitle;
--(void)show;
--(void)hide;
--(void)push:(CGFloat)distance forward:(BOOL)forward delay:(double)delay;
--(void)updateSizeAndSubviewsAnimated:(BOOL)animated;
--(void)updatePositionAfterRotationWithY:(CGFloat)yPos animated:(BOOL)animated;
+- (ALAlertBannerStyle *)bannerStyle;
+- (ALAlertBannerPosition)bannerPosition;
+- (ALAlertBannerState)bannerState;
 
 @end

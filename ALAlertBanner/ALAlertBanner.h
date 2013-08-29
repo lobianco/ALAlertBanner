@@ -22,10 +22,12 @@
  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  **/
 
-#import <Foundation/Foundation.h>
-
 #import "ALAlertBannerManager.h"
 
-@interface ALAlertBanner : NSObject
+#if !__has_feature(objc_arc)
+#error ALAlertBanner requires to be built with ARC
+#endif
 
-@end
+#if (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_5_0)
+#error ALAlertBanner requires iOS 5 or higher
+#endif
