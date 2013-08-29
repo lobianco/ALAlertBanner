@@ -517,7 +517,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
         
     CGRect oldBounds = self.layer.bounds;
     CGRect newBounds = oldBounds;
-    newBounds.size = CGSizeMake(self.parentView.frame.size.width, heightForSelf);
+    newBounds.size = CGSizeMake(self.parentView.bounds.size.width, heightForSelf);
     self.layer.bounds = newBounds;
     
     if (animated)
