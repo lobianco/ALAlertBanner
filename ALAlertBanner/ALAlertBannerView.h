@@ -24,7 +24,16 @@
 
 #import <UIKit/UIKit.h>
 
-/** 
+//for iOS 4.3 support
+#ifndef AL_WEAK
+#if __has_feature(objc_arc_weak)
+    #define AL_WEAK weak
+#else
+    #define AL_WEAK unsafe_unretained
+#endif
+#endif
+
+/**
  include these constants and category methods here so Manager can see them
  */
 
@@ -78,15 +87,13 @@ typedef enum {
 @property (nonatomic, readonly) ALAlertBannerPosition position;
 @property (nonatomic, readonly) ALAlertBannerState state;
 
-@property (nonatomic, readonly) UIView *parentView;
-
 /**
  INTERNAL DETAILS BELOW.
  
  Used by ALAlertBannerManager only. Every time you call one of them directly, I'll be forced to watch a Channing Tatum movie. Don't do that to me bro.
  */
 
-@property (nonatomic, weak) id <ALAlertBannerViewDelegate> delegate;
+@property (nonatomic, AL_WEAK) id <ALAlertBannerViewDelegate> delegate;
 
 @property (nonatomic) BOOL isScheduledToHide;
 @property (nonatomic) BOOL allowTapToDismiss;

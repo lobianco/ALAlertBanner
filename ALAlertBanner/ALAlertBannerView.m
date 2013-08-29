@@ -104,7 +104,6 @@ static CGFloat const kRotationDurationIPad = 0.4f;
 @property (nonatomic, strong) UILabel *subtitleLabel;
 @property (nonatomic, strong) UIImageView *statusImageView;
 
-@property (nonatomic, weak) UIView *parentView;
 @property (nonatomic) CGRect parentFrameUponCreation;
 
 @end
@@ -256,7 +255,6 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     alertBanner.style = style;
     alertBanner.position = position;
     alertBanner.state = ALAlertBannerStateNotVisible;
-    alertBanner.parentView = view;
     
     [view addSubview:alertBanner];
     
@@ -271,14 +269,14 @@ static CGFloat const kRotationDurationIPad = 0.4f;
 
 -(void)show
 {
-    if (!CGRectEqualToRect(self.parentFrameUponCreation, self.parentView.bounds))
+    if (!CGRectEqualToRect(self.parentFrameUponCreation, self.superview.bounds))
     {
         //if view size changed since this banner was created, reset layout
         [self setInitialLayout];
         [self updateSizeAndSubviewsAnimated:NO];
     }
     
-    [self.delegate alertBannerWillShow:self inView:self.parentView];
+    [self.delegate alertBannerWillShow:self inView:self.superview];
     
     self.state = ALAlertBannerStateShowing;
     
@@ -335,7 +333,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
 
 -(void)hide
 {
-    [self.delegate alertBannerWillHide:self inView:self.parentView];
+    [self.delegate alertBannerWillHide:self inView:self.superview];
     
     self.state = ALAlertBannerStateHiding;
     
@@ -433,7 +431,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
 {    
     if ([[anim valueForKey:@"anim"] isEqualToString:kShowAlertBannerKey] && flag)
     {
-        [self.delegate alertBannerDidShow:self inView:self.parentView];
+        [self.delegate alertBannerDidShow:self inView:self.superview];
         self.state = ALAlertBannerStateVisible;
     }
     
@@ -443,7 +441,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
             self.alpha = 0.f;
         } completion:^(BOOL finished) {
             self.state = ALAlertBannerStateNotVisible;
-            [self.delegate alertBannerDidHide:self inView:self.parentView];
+            [self.delegate alertBannerDidHide:self inView:self.superview];
             [[NSNotificationCenter defaultCenter] removeObserver:self];
             [self removeFromSuperview];
         }];
@@ -464,7 +462,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
 {
     self.layer.anchorPoint = CGPointMake(0, 0);
     
-    UIView *parentView = self.parentView;
+    UIView *parentView = self.superview;
     self.parentFrameUponCreation = parentView.bounds;
     BOOL isSuperviewKindOfWindow = ([parentView isKindOfClass:[UIWindow class]]);
     
@@ -508,7 +506,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
 
 -(void)updateSizeAndSubviewsAnimated:(BOOL)animated
 {
-    CGSize maxLabelSize = CGSizeMake(self.parentView.bounds.size.width - (kMargin*3) - self.statusImageView.image.size.width, CGFLOAT_MAX);
+    CGSize maxLabelSize = CGSizeMake(self.superview.bounds.size.width - (kMargin*3) - self.statusImageView.image.size.width, CGFLOAT_MAX);
     CGFloat titleLabelHeight = AL_SINGLELINE_TEXT_HEIGHT(self.titleLabel.text, self.titleLabel.font);
     CGFloat subtitleLabelHeight = AL_MULTILINE_TEXT_HEIGHT(self.subtitleLabel.text, self.subtitleLabel.font, maxLabelSize, self.subtitleLabel.lineBreakMode);
     CGFloat heightForSelf = titleLabelHeight + subtitleLabelHeight + (self.subtitleLabel.text == nil || self.titleLabel.text == nil ? kMargin*2 : kMargin*2.5);
@@ -517,7 +515,7 @@ static CGFloat const kRotationDurationIPad = 0.4f;
         
     CGRect oldBounds = self.layer.bounds;
     CGRect newBounds = oldBounds;
-    newBounds.size = CGSizeMake(self.parentView.bounds.size.width, heightForSelf);
+    newBounds.size = CGSizeMake(self.superview.bounds.size.width, heightForSelf);
     self.layer.bounds = newBounds;
     
     if (animated)
