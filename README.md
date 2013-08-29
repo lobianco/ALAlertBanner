@@ -10,6 +10,18 @@ ALAlertBanner is a drop-in component for iOS (both iPhone and iPad) that allows 
 
 ![Preview3](http://alobi.github.io/ALAlertBanner/screenshots/screenshot2.png)
 
+### Why Use ALAlertBanner?
+
+I'll tell you why!
+
+* Portrait and landscape support
+* Many different style and position choices
+* Multiple banners can be shown on-screen simultaneously (even in different positions)
+* Auto-dismissal, and tap-to-dismiss functionality with optional tap response block
+* Lightweight, stable component with small memory footprint
+* Universal (iPhone and iPad) support
+* iOS 4.3<sup>[*note](#tested-environments)</sup> - 7 support
+
 ### Behind the Scenes
 
 ALAlertBanner uses [Core Animation](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/CoreAnimation_guide/Introduction/Introduction.html) and [Grand Central Dispatch](http://developer.apple.com/library/ios/documentation/Performance/Reference/GCD_libdispatch_Ref/Reference/reference.html) under the hood, making it lightweight and stable. A singleton object is used to manage the presentation and dismissal of the alerts in a synchronous manner. 
@@ -41,7 +53,7 @@ If you can compile without errors, congratulations! You're one step closer to...
 
 ### Tested Environments
 
-ALAlertBanner has been tested to work on iOS 5.0, 5.1 and 6.0 (simulator), iOS 6.1 (device), and iOS 7.0 (simulator) with ARC enabled. 
+ALAlertBanner has been tested to work on iOS 5.0, 5.1 and 6.0 (simulator), iOS 6.1 (device), and iOS 7.0 (simulator) with ARC enabled. It has **NOT** been tested on iOS 4.3 but it should work. If you have a 4.3 device and can verify this, please get in touch with me.
 
 ## Example Usage
 
@@ -186,7 +198,7 @@ Some properties can be set on a per-banner basis by using the appropriate method
 ALAlertBannerPositionTop = 0
 ```
 
-The banner will be extend down from the top of the screen. If you're presenting it in a:
+The banner will extend down from the top of the screen. If you're presenting it in a:
 
 * ```UIView```: the banner will extend down from underneath the status bar (if visible)
 
@@ -198,7 +210,7 @@ The banner will be extend down from the top of the screen. If you're presenting 
 ALAlertBannerPositionBottom
 ```
 
-The banner will be extend up from the bottom of the screen. 
+The banner will extend up from the bottom of the screen. 
 
 ```objc
 ALAlertBannerPositionUnderNavBar
@@ -236,7 +248,6 @@ Did I mention they have cute little shapes and nice colorful gradients?
 
 ## Known Issues
 
-* **FIXED** ~~ALAlertBanner supports all interface orientations. However, if you rotate the device while one or more banners is displaying (or animating), the layout will get fudgesicled. This is just something I haven't figured out how to fix yet.~~
 * Alert banners won't rotate when added to a UIWindow. This is something I haven't added yet but will try to get to soon.
 * On the topic of rotation, ALAlertBanner listens for ```UIDeviceOrientationDidChangeNotification```  to handle rotation events. I'd prefer to listen for ```UIApplicationDidChangeStatusBarOrientationNotification``` instead but I need the bounds of the banner's superview to update before handling the rotation notification, and the only way to that seems to be by using ```UIDeviceOrientationDidChangeNotification```. If you have an idea on how to fix this, please let me know by submitting a new issue or sending me an email.
 * If you find any other bugs, please open a new issue. 
