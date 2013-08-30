@@ -94,30 +94,9 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 
 @end
 
-@implementation ALAlertBannerStyle
-
-ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *image) {
-    return [ALAlertBannerStyle alertBannerStyleWithColor:backgroundColor image:image];
-}
-
-+ (instancetype)alertBannerStyleWithColor:(UIColor *)color image:(UIImage *)image {
-    return [[self alloc] initWithColor:color image:image];
-}
-
-- (instancetype)initWithColor:(UIColor *)color image:(UIImage *)image {
-    self = [super init];
-    if (self) {
-        _backgroundColor = color;
-        _image = image;
-    }
-    return self;
-}
-
-@end
-
 @interface ALAlertBannerView ()
 
-@property (nonatomic, strong) ALAlertBannerStyle *style;
+@property (nonatomic, assign) ALAlertBannerStyle style;
 @property (nonatomic, assign) ALAlertBannerPosition position;
 @property (nonatomic, assign) ALAlertBannerState state;
 
@@ -187,9 +166,31 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *im
 # pragma mark -
 # pragma mark Custom Setters & Getters
 
--(void)setStyle:(ALAlertBannerStyle *)style {
+-(void)setStyle:(ALAlertBannerStyle)style {
     _style = style;
-    self.styleImageView.image = self.style.image;
+    
+    switch (style) {
+        case ALAlertBannerStyleSuccess:
+            self.styleImageView.image = [UIImage imageNamed:@"bannerSuccess.png"];
+            break;
+            
+        case ALAlertBannerStyleFailure:
+            self.styleImageView.image = [UIImage imageNamed:@"bannerFailure.png"];
+            break;
+            
+        case ALAlertBannerStyleNotify:
+            self.styleImageView.image = [UIImage imageNamed:@"bannerNotify.png"];
+            break;
+            
+        case ALAlertBannerStyleAlert:
+            self.styleImageView.image = [UIImage imageNamed:@"bannerAlert.png"];
+            
+            //tone the shadows down a little for the yellow background
+            self.titleLabel.layer.shadowOpacity = 0.2;
+            self.subtitleLabel.layer.shadowOpacity = 0.2;
+            
+            break;
+    }
 }
 
 - (void)setShowShadow:(BOOL)showShadow {
@@ -238,7 +239,7 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *im
 # pragma mark -
 # pragma mark Class Methods
 
-+ (ALAlertBannerView *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle *)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle {
++ (ALAlertBannerView *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle {
     ALAlertBannerView *alertBanner = [[ALAlertBannerView alloc] init];
     BOOL isSuperviewKindOfWindow = ([view isKindOfClass:[UIWindow class]]);
     
@@ -606,7 +607,21 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *im
 - (void)drawRect:(CGRect)rect {
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    UIColor *fillColor = self.style.backgroundColor;
+    UIColor *fillColor;
+    switch (self.style) {
+        case ALAlertBannerStyleSuccess:
+            fillColor = [UIColor colorWithRed:(77/255.0) green:(175/255.0) blue:(67/255.0) alpha:1.f];
+            break;
+        case ALAlertBannerStyleFailure:
+            fillColor = [UIColor colorWithRed:(173/255.0) green:(48/255.0) blue:(48/255.0) alpha:1.f];
+            break;
+        case ALAlertBannerStyleNotify:
+            fillColor = [UIColor colorWithRed:(48/255.0) green:(110/255.0) blue:(173/255.0) alpha:1.f];
+            break;
+        case ALAlertBannerStyleAlert:
+            fillColor = [UIColor colorWithRed:(211/255.0) green:(209/255.0) blue:(100/255.0) alpha:1.f];
+            break;
+    }
     
     NSArray *colorsArray = [NSArray arrayWithObjects:(id)[fillColor CGColor], (id)[[fillColor darkerColor] CGColor], nil];
     CGColorSpaceRef colorSpace =  CGColorSpaceCreateDeviceRGB();

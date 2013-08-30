@@ -54,7 +54,7 @@ static CGFloat const kStatusBarHeight = 20.f;
 @property (nonatomic) NSTimeInterval hideAnimationDuration;
 @property (nonatomic) CGFloat bannerOpacity;
 
-+ (instancetype)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle *)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle;
++ (instancetype)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle;
 - (void)show;
 - (void)hide;
 - (void)push:(CGFloat)distance forward:(BOOL)forward delay:(double)delay;

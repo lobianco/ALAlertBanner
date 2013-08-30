@@ -114,7 +114,8 @@ static NSString *loremIpsum[] = {
 
 - (void)showAlertBannerInView:(UIButton *)button {
     ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
-    [[ALAlertBannerManager sharedManager] showAlertBannerInView:self.view style:self.randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum] tappedHandler:^(ALAlertBannerView *alertBanner) {
+    ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
+    [[ALAlertBannerManager sharedManager] showAlertBannerInView:self.view style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum] tappedHandler:^(ALAlertBannerView *alertBanner) {
         
         NSLog(@"tapped!");
         [[ALAlertBannerManager sharedManager] hideAlertBanner:alertBanner];
@@ -124,21 +125,9 @@ static NSString *loremIpsum[] = {
 
 - (void)showAlertBannerInWindow:(UIButton *)button {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
     ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
-    [[ALAlertBannerManager sharedManager] showAlertBannerInView:appDelegate.window style:self.randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum]];
-}
-
-- (ALAlertBannerStyle *)randomStyle {
-    NSUInteger i = arc4random_uniform(4);
-    if (i == 0) {
-        return kALAlertBannerStyleSuccess;
-    } else if (i == 1) {
-        return kALAlertBannerStyleFailure;
-    } else if (i == 2) {
-        return kALAlertBannerStyleNotify;
-    } else {
-        return kALAlertBannerStyleAlert;
-    }
+    [[ALAlertBannerManager sharedManager] showAlertBannerInView:appDelegate.window style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum]];
 }
 
 - (NSString *)randomLoremIpsum {

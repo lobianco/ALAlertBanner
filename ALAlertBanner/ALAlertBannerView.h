@@ -25,29 +25,12 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 
-@interface ALAlertBannerStyle : NSObject
-
-@property (nonatomic, strong, readonly) UIColor *backgroundColor;
-@property (nonatomic, strong, readonly) UIImage *image;
-
-@end
-
-extern ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *image);
-
-#define kALAlertBannerBackgroundColorGreen  [UIColor colorWithRed:(77/255.f) green:(175/255.f) blue:(67/255.f) alpha:1.f]
-#define kALAlertBannerBackgroundColorRed    [UIColor colorWithRed:(173/255.f) green:(48/255.f) blue:(48/255.f) alpha:1.f]
-#define kALAlertBannerBackgroundColorBlue   [UIColor colorWithRed:(48/255.f) green:(110/255.f) blue:(173/255.f) alpha:1.f]
-#define kALAlertBannerBackgroundColorYellow [UIColor colorWithRed:(211/255.f) green:(209/255.f) blue:(100/255.f) alpha:1.f]
-
-#define kALAlertBannerIconSuccess   [UIImage imageNamed:@"bannerSuccess.png"]
-#define kALAlertBannerIconFailure   [UIImage imageNamed:@"bannerFailure.png"]
-#define kALAlertBannerIconInfo      [UIImage imageNamed:@"bannerNotify.png"]
-#define kALAlertBannerIconWarning   [UIImage imageNamed:@"bannerAlert.png"]
-
-#define kALAlertBannerStyleSuccess  ALAlertBannerStyleMake(kALAlertBannerBackgroundColorGreen, kALAlertBannerIconSuccess)
-#define kALAlertBannerStyleFailure  ALAlertBannerStyleMake(kALAlertBannerBackgroundColorRed, kALAlertBannerIconFailure)
-#define kALAlertBannerStyleNotify   ALAlertBannerStyleMake(kALAlertBannerBackgroundColorBlue, kALAlertBannerIconInfo)
-#define kALAlertBannerStyleAlert    ALAlertBannerStyleMake(kALAlertBannerBackgroundColorYellow, kALAlertBannerIconWarning)
+typedef enum {
+    ALAlertBannerStyleSuccess = 0,
+    ALAlertBannerStyleFailure,
+    ALAlertBannerStyleNotify,
+    ALAlertBannerStyleAlert,
+} ALAlertBannerStyle;
 
 typedef enum {
     ALAlertBannerPositionTop = 0,
@@ -78,8 +61,8 @@ typedef enum {
 
 @interface ALAlertBannerView : UIView
 
-- (ALAlertBannerStyle *)style;
-- (ALAlertBannerPosition)position;
-- (ALAlertBannerState)state;
+@property (nonatomic, readonly) ALAlertBannerStyle style;
+@property (nonatomic, readonly) ALAlertBannerPosition position;
+@property (nonatomic, readonly) ALAlertBannerState state;
 
 @end
