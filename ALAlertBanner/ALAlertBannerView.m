@@ -29,17 +29,13 @@
 static NSString * const kShowAlertBannerKey = @"showAlertBannerKey";
 static NSString * const kHideAlertBannerKey = @"hideAlertBannerKey";
 static NSString * const kMoveAlertBannerKey = @"moveAlertBannerKey";
+
 static CGFloat const kMargin = 10.f;
 static CGFloat const kNavigationBarHeightDefault = 44.f;
 static CGFloat const kNavigationBarHeightiOS7Landscape = 32.f;
 
 static CFTimeInterval const kRotationDurationIphone = 0.3;
 static CFTimeInterval const kRotationDurationIPad = 0.4;
-
-ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *icon) {
-    return [ALAlertBannerStyle alertBannerStyleWithColor:backgroundColor icon:icon];
-}
-
 
 #define AL_DEVICE_ANIMATION_DURATION UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? kRotationDurationIPad : kRotationDurationIphone;
 
@@ -60,47 +56,34 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
 # pragma mark -
 # pragma mark Helper Categories
 
-@implementation UIColor (ALAdditions)
+
+//darkerColor referenced from http://stackoverflow.com/questions/11598043/get-slightly-lighter-and-darker-color-from-uicolor
+@implementation UIColor (LightAndDark)
+
 - (UIColor *)darkerColor {
-    CGFloat h, s, b, a = 0.0f;
-    
-    if ([self getHue:&h saturation:&s brightness:&b alpha:&a]) {
-        return [UIColor colorWithHue:h saturation:s brightness:b*0.75f alpha:a];
-    }
-    
+    float h, s, b, a;
+    if ([self getHue:&h saturation:&s brightness:&b alpha:&a])
+        return [UIColor colorWithHue:h saturation:s brightness:b * 0.75 alpha:a];
     return nil;
 }
+
 @end
 
 @implementation UIDevice (ALSystemVersion)
+
 + (float)iOSVersion {
-    static float version = 0.0f;
+    static float version = 0.f;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         version = [[[UIDevice currentDevice] systemVersion] floatValue];
     });
     return version;
 }
-@end
-
-@implementation ALAlertBannerStyle
-
-- (instancetype)initWithColor:(UIColor *)color icon:(UIImage *)icon {
-    self = [super init];
-    if (self) {
-        _backgroundColor = color;
-        _icon = icon;
-    }
-    return self;
-}
-
-+ (instancetype)alertBannerStyleWithColor:(UIColor *)color icon:(UIImage *)icon {
-    return [[self alloc] initWithColor:color icon:icon];
-}
 
 @end
 
 @implementation UIApplication (ALNavigationBarHeight)
+
 + (CGFloat)navigationBarHeight {
     //if we're on iOS7 or later, return new landscape navBar height
     if (AL_IOS_7_OR_GREATER && UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
@@ -108,13 +91,35 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
     
     return kNavigationBarHeightDefault;
 }
+
+@end
+
+@implementation ALAlertBannerStyle
+
+ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *image) {
+    return [ALAlertBannerStyle alertBannerStyleWithColor:backgroundColor image:image];
+}
+
++ (instancetype)alertBannerStyleWithColor:(UIColor *)color image:(UIImage *)image {
+    return [[self alloc] initWithColor:color image:image];
+}
+
+- (instancetype)initWithColor:(UIColor *)color image:(UIImage *)image {
+    self = [super init];
+    if (self) {
+        _backgroundColor = color;
+        _image = image;
+    }
+    return self;
+}
+
 @end
 
 @interface ALAlertBannerView ()
 
-@property (nonatomic, strong) ALAlertBannerStyle *bannerStyle;
-@property (nonatomic, assign) ALAlertBannerPosition bannerPosition;
-@property (nonatomic, assign) ALAlertBannerState bannerState;
+@property (nonatomic, strong) ALAlertBannerStyle *style;
+@property (nonatomic, assign) ALAlertBannerPosition position;
+@property (nonatomic, assign) ALAlertBannerState state;
 
 @property (nonatomic) NSTimeInterval fadeOutDuration;
 
@@ -122,7 +127,7 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
 
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *subtitleLabel;
-@property (nonatomic, strong) UIImageView *statusImageView;
+@property (nonatomic, strong) UIImageView *styleImageView;
 
 @property (nonatomic) CGRect parentFrameUponCreation;
 
@@ -145,35 +150,35 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
 
 - (void)commonInit {
     self.userInteractionEnabled = YES;
-    self.alpha = 0.0f;
+    self.alpha = 0.f;
     self.layer.shadowOpacity = 0.5f;
     _fadeOutDuration = 0.2f;
         
-    _statusImageView = [[UIImageView alloc] init];
-    [self addSubview:_statusImageView];
+    _styleImageView = [[UIImageView alloc] init];
+    [self addSubview:_styleImageView];
     
     _titleLabel = [[UILabel alloc] init];
     _titleLabel.backgroundColor = [UIColor clearColor];
-    _titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13.0f];
-    _titleLabel.textColor = [UIColor colorWithWhite:1.0f alpha:0.9f];
+    _titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13.f];
+    _titleLabel.textColor = [UIColor colorWithWhite:1.f alpha:0.9f];
     _titleLabel.textAlignment = NSTextAlignmentLeft;
     _titleLabel.numberOfLines = 1;
     _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     _titleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
-    _titleLabel.layer.shadowOffset = CGSizeMake(0.0f, -1.0f);
+    _titleLabel.layer.shadowOffset = CGSizeMake(0.f, -1.f);
     _titleLabel.layer.shadowOpacity = 0.3f;
-    _titleLabel.layer.shadowRadius = 0.0f;
+    _titleLabel.layer.shadowRadius = 0.f;
     [self addSubview:_titleLabel];
     
     _subtitleLabel = [[UILabel alloc] init];
     _subtitleLabel.backgroundColor = [UIColor clearColor];
-    _subtitleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:10.0f];
-    _subtitleLabel.textColor = [UIColor colorWithWhite:1.0f alpha:0.9f];
+    _subtitleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:10.f];
+    _subtitleLabel.textColor = [UIColor colorWithWhite:1.f alpha:0.9f];
     _subtitleLabel.textAlignment = NSTextAlignmentLeft;
     _subtitleLabel.numberOfLines = 0;
     _subtitleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     _subtitleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
-    _subtitleLabel.layer.shadowOffset = CGSizeMake(0.0f, -1.0f);
+    _subtitleLabel.layer.shadowOffset = CGSizeMake(0.f, -1.f);
     _subtitleLabel.layer.shadowOpacity = 0.3f;
     _subtitleLabel.layer.shadowRadius = 0.f;
     [self addSubview:_subtitleLabel];    
@@ -182,10 +187,9 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
 # pragma mark -
 # pragma mark Custom Setters & Getters
 
-- (void)setBannerStyle:(ALAlertBannerStyle *)bannerStyle {
-    _bannerStyle = bannerStyle;
-    
-    self.statusImageView.image = self.bannerStyle.icon;
+-(void)setStyle:(ALAlertBannerStyle *)style {
+    _style = style;
+    self.styleImageView.image = self.style.image;
 }
 
 - (void)setShowShadow:(BOOL)showShadow {
@@ -195,22 +199,22 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
     CGFloat newShadowRadius;
     
     if (showShadow) {
-        newShadowRadius = 3.0f;
+        newShadowRadius = 3.f;
         self.layer.shadowColor = [UIColor blackColor].CGColor;
-        self.layer.shadowOffset = CGSizeMake(0.0f, self.bannerPosition == ALAlertBannerPositionBottom ? -1.0f : 1.0f);
-        CGRect shadowPath = CGRectMake(self.bounds.origin.x - kMargin, self.bounds.origin.y, self.bounds.size.width + kMargin*2.0f, self.bounds.size.height);
+        self.layer.shadowOffset = CGSizeMake(0.f, self.position == ALAlertBannerPositionBottom ? -1.f : 1.f);
+        CGRect shadowPath = CGRectMake(self.bounds.origin.x - kMargin, self.bounds.origin.y, self.bounds.size.width + kMargin*2.f, self.bounds.size.height);
         self.layer.shadowPath = [UIBezierPath bezierPathWithRect:shadowPath].CGPath;
         
         self.fadeInDuration = 0.15f;
     }
     
     else {
-        newShadowRadius = 0.0f;
-        self.layer.shadowRadius = 0.0f;
+        newShadowRadius = 0.f;
+        self.layer.shadowRadius = 0.f;
         self.layer.shadowOffset = CGSizeZero;
         
         //if on iOS7, keep fade in duration at a value greater than 0 so it doesn't instantly appear behind the translucent nav bar
-        self.fadeInDuration = (AL_IOS_7_OR_GREATER && self.bannerPosition == ALAlertBannerPositionTop) ? 0.15f : 0.f;
+        self.fadeInDuration = (AL_IOS_7_OR_GREATER && self.position == ALAlertBannerPositionTop) ? 0.15f : 0.f;
     }
     
     self.layer.shouldRasterize = YES;
@@ -225,10 +229,10 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
 }
 
 - (BOOL)isAnimating {
-    return (self.bannerState == ALAlertBannerStateShowing ||
-            self.bannerState == ALAlertBannerStateHiding ||
-            self.bannerState == ALAlertBannerStateMovingForward ||
-            self.bannerState == ALAlertBannerStateMovingBackward);
+    return (self.state == ALAlertBannerStateShowing ||
+            self.state == ALAlertBannerStateHiding ||
+            self.state == ALAlertBannerStateMovingForward ||
+            self.state == ALAlertBannerStateMovingBackward);
 }
 
 # pragma mark -
@@ -243,9 +247,9 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
     
     alertBanner.titleLabel.text = title;
     alertBanner.subtitleLabel.text = subtitle;
-    alertBanner.bannerStyle = style;
-    alertBanner.bannerPosition = position;
-    alertBanner.bannerState = ALAlertBannerStateHidden;
+    alertBanner.style = style;
+    alertBanner.position = position;
+    alertBanner.state = ALAlertBannerStateHidden;
     
     [view addSubview:alertBanner];
     
@@ -267,15 +271,15 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
     
     [self.delegate alertBannerWillShow:self inView:self.superview];
     
-    self.bannerState = ALAlertBannerStateShowing;
+    self.state = ALAlertBannerStateShowing;
     
     double delayInSeconds = self.fadeInDuration;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        if (self.bannerPosition == ALAlertBannerPositionUnderNavBar) {
+        if (self.position == ALAlertBannerPositionUnderNavBar) {
             //animate mask
             CGPoint currentPoint = self.layer.mask.position;
-            CGPoint newPoint = CGPointMake(0.0f, -self.frame.size.height);
+            CGPoint newPoint = CGPointMake(0.f, -self.frame.size.height);
             
             self.layer.mask.position = newPoint;
             
@@ -290,7 +294,7 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
         
         CGPoint oldPoint = self.layer.position;
         CGFloat yCoord = oldPoint.y;
-        switch (self.bannerPosition) {
+        switch (self.position) {
             case ALAlertBannerPositionTop:
             case ALAlertBannerPositionUnderNavBar:
                 yCoord += self.frame.size.height;
@@ -322,9 +326,9 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
 - (void)hide {
     [self.delegate alertBannerWillHide:self inView:self.superview];
     
-    self.bannerState = ALAlertBannerStateHiding;
+    self.state = ALAlertBannerStateHiding;
     
-    if (self.bannerPosition == ALAlertBannerPositionUnderNavBar) {
+    if (self.position == ALAlertBannerPositionUnderNavBar) {
         CGPoint currentPoint = self.layer.mask.position;
         CGPoint newPoint = CGPointZero;
         
@@ -341,7 +345,7 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
     
     CGPoint oldPoint = self.layer.position;
     CGFloat yCoord = oldPoint.y;
-    switch (self.bannerPosition) {
+    switch (self.position) {
         case ALAlertBannerPositionTop:
         case ALAlertBannerPositionUnderNavBar:
             yCoord -= self.frame.size.height;
@@ -366,10 +370,10 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
 }
 
 - (void)push:(CGFloat)distance forward:(BOOL)forward delay:(double)delay {    
-    self.bannerState = (forward ? ALAlertBannerStateMovingForward : ALAlertBannerStateMovingBackward);
+    self.state = (forward ? ALAlertBannerStateMovingForward : ALAlertBannerStateMovingBackward);
     
     CGFloat distanceToPush = distance;
-    if (self.bannerPosition == ALAlertBannerPositionBottom)
+    if (self.position == ALAlertBannerPositionBottom)
         distanceToPush *= -1;
     
     CALayer *activeLayer = self.isAnimating ? (CALayer *)[self.layer presentationLayer] : self.layer;
@@ -397,28 +401,15 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
 # pragma mark -
 # pragma mark Touch Recognition
 
-- (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
-    if (self.bannerState == ALAlertBannerStateVisible && (self.allowTapToDismiss || self.tappedBlock)) {
-        return YES;
-    }
-    return NO;
-}
-
-- (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
-    if (self.bannerState == ALAlertBannerStateVisible && self.highlighted) {
-        if (self.tappedBlock) {
-            self.tappedBlock(self);
-        }
-        
-        if (self.allowTapToDismiss) {
-            [self.delegate hideAlertBanner:self];
-        }
-    }
-}
-
-- (void)setHighlighted:(BOOL)highlighted {
-    [super setHighlighted:highlighted];
-    [self setNeedsDisplay];
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (self.state != ALAlertBannerStateVisible)
+        return;
+    
+    if (self.tappedBlock) // && !self.isScheduledToHide ...?
+        self.tappedBlock(self);
+    
+    if (self.allowTapToDismiss)
+        [self.delegate hideAlertBanner:self];
 }
 
 # pragma mark -
@@ -427,14 +418,14 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {    
     if ([[anim valueForKey:@"anim"] isEqualToString:kShowAlertBannerKey] && flag) {
         [self.delegate alertBannerDidShow:self inView:self.superview];
-        self.bannerState = ALAlertBannerStateVisible;
+        self.state = ALAlertBannerStateVisible;
     }
     
     else if ([[anim valueForKey:@"anim"] isEqualToString:kHideAlertBannerKey] && flag) {
         [UIView animateWithDuration:self.fadeOutDuration delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
             self.alpha = 0.f;
         } completion:^(BOOL finished) {
-            self.bannerState = ALAlertBannerStateHidden;
+            self.state = ALAlertBannerStateHidden;
             [self.delegate alertBannerDidHide:self inView:self.superview];
             [[NSNotificationCenter defaultCenter] removeObserver:self];
             [self removeFromSuperview];
@@ -442,30 +433,30 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
     }
     
     else if ([[anim valueForKey:@"anim"] isEqualToString:kMoveAlertBannerKey] && flag) {
-        self.bannerState = ALAlertBannerStateVisible;
+        self.state = ALAlertBannerStateVisible;
     }
 }
 
 - (void)didMoveToSuperview {
     [super didMoveToSuperview];
-    //TODO transform view for uiwindow
+    //TODO: transform view for uiwindow
 }
 
 - (void)setInitialLayout {
-    self.layer.anchorPoint = CGPointMake(0.0f, 0.0f);
+    self.layer.anchorPoint = CGPointMake(0.f, 0.f);
     
     UIView *superview = self.superview;
     self.parentFrameUponCreation = superview.bounds;
     BOOL isSuperviewKindOfWindow = ([superview isKindOfClass:[UIWindow class]]);
     
-    CGSize maxLabelSize = CGSizeMake(superview.bounds.size.width - (kMargin*3) - self.statusImageView.image.size.width, CGFLOAT_MAX);
+    CGSize maxLabelSize = CGSizeMake(superview.bounds.size.width - (kMargin*3) - self.styleImageView.image.size.width, CGFLOAT_MAX);
     CGFloat titleLabelHeight = AL_SINGLELINE_TEXT_HEIGHT(self.titleLabel.text, self.titleLabel.font);
     CGFloat subtitleLabelHeight = AL_MULTILINE_TEXT_HEIGHT(self.subtitleLabel.text, self.subtitleLabel.font, maxLabelSize, self.subtitleLabel.lineBreakMode);
     CGFloat heightForSelf = titleLabelHeight + subtitleLabelHeight + (self.subtitleLabel.text == nil || self.titleLabel.text == nil ? kMargin*2 : kMargin*2.5);
     
-    CGRect frame = CGRectMake(0, 0, superview.bounds.size.width, heightForSelf);
+    CGRect frame = CGRectMake(0.f, 0.f, superview.bounds.size.width, heightForSelf);
     CGFloat initialYCoord = 0.f;
-    switch (self.bannerPosition) {
+    switch (self.position) {
         case ALAlertBannerPositionTop:
             initialYCoord = -heightForSelf;
             if (isSuperviewKindOfWindow) initialYCoord += kStatusBarHeight;
@@ -483,9 +474,9 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
     self.frame = frame;
     
     //if position is under the nav bar, add a mask
-    if (self.bannerPosition == ALAlertBannerPositionUnderNavBar) {
+    if (self.position == ALAlertBannerPositionUnderNavBar) {
         CAShapeLayer *maskLayer = [[CAShapeLayer alloc] init];
-        CGRect maskRect = CGRectMake(0.0f, frame.size.height, frame.size.width, superview.bounds.size.height); //give the mask enough height so it doesn't clip the shadow
+        CGRect maskRect = CGRectMake(0.f, frame.size.height, frame.size.width, superview.bounds.size.height); //give the mask enough height so it doesn't clip the shadow
         CGPathRef path = CGPathCreateWithRect(maskRect, NULL);
         maskLayer.path = path;
         CGPathRelease(path);
@@ -496,10 +487,10 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
 }
 
 - (void)updateSizeAndSubviewsAnimated:(BOOL)animated {
-    CGSize maxLabelSize = CGSizeMake(self.superview.bounds.size.width - (kMargin*3.0f) - self.statusImageView.image.size.width, CGFLOAT_MAX);
+    CGSize maxLabelSize = CGSizeMake(self.superview.bounds.size.width - (kMargin*3.f) - self.styleImageView.image.size.width, CGFLOAT_MAX);
     CGFloat titleLabelHeight = AL_SINGLELINE_TEXT_HEIGHT(self.titleLabel.text, self.titleLabel.font);
     CGFloat subtitleLabelHeight = AL_MULTILINE_TEXT_HEIGHT(self.subtitleLabel.text, self.subtitleLabel.font, maxLabelSize, self.subtitleLabel.lineBreakMode);
-    CGFloat heightForSelf = titleLabelHeight + subtitleLabelHeight + (self.subtitleLabel.text == nil || self.titleLabel.text == nil ? kMargin*2 : kMargin*2.5);
+    CGFloat heightForSelf = titleLabelHeight + subtitleLabelHeight + (self.subtitleLabel.text == nil || self.titleLabel.text == nil ? kMargin*2.f : kMargin*2.5f);
     
     CFTimeInterval boundsAnimationDuration = AL_DEVICE_ANIMATION_DURATION;
         
@@ -521,9 +512,9 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
         [UIView setAnimationDuration:boundsAnimationDuration];
     }
     
-    self.statusImageView.frame = CGRectMake(kMargin, (self.frame.size.height/2.0f) - (self.statusImageView.image.size.height/2.0f), self.statusImageView.image.size.width, self.statusImageView.image.size.height);
-    self.titleLabel.frame = CGRectMake(self.statusImageView.frame.origin.x + self.statusImageView.frame.size.width + kMargin, kMargin, maxLabelSize.width, titleLabelHeight);
-    self.subtitleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + (self.titleLabel.text == nil ? 0.0f : kMargin/2.0f), maxLabelSize.width, subtitleLabelHeight);
+    self.styleImageView.frame = CGRectMake(kMargin, (self.frame.size.height/2.f) - (self.styleImageView.image.size.height/2.f), self.styleImageView.image.size.width, self.styleImageView.image.size.height);
+    self.titleLabel.frame = CGRectMake(self.styleImageView.frame.origin.x + self.styleImageView.frame.size.width + kMargin, kMargin, maxLabelSize.width, titleLabelHeight);
+    self.subtitleLabel.frame = CGRectMake(self.titleLabel.frame.origin.x, self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height + (self.titleLabel.text == nil ? 0.f : kMargin/2.f), maxLabelSize.width, subtitleLabelHeight);
     
     if (animated) {
         [UIView commitAnimations];
@@ -531,7 +522,7 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
     
     if (self.showShadow) {
         CGRect oldShadowPath = CGPathGetPathBoundingBox(self.layer.shadowPath);
-        CGRect newShadowPath = CGRectMake(self.bounds.origin.x - kMargin, self.bounds.origin.y, self.bounds.size.width + kMargin*2.0f, self.bounds.size.height);
+        CGRect newShadowPath = CGRectMake(self.bounds.origin.x - kMargin, self.bounds.origin.y, self.bounds.size.width + kMargin*2.f, self.bounds.size.height);
         self.layer.shadowPath = [UIBezierPath bezierPathWithRect:newShadowPath].CGPath;
         
         if (animated) {
@@ -554,13 +545,13 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
     
     if (isAnimating) {
         CABasicAnimation *currentAnimation;
-        if (self.bannerState == ALAlertBannerStateShowing) {
+        if (self.state == ALAlertBannerStateShowing) {
             currentAnimation = (CABasicAnimation *)[self.layer animationForKey:kShowAlertBannerKey];
             currentAnimationKey = kShowAlertBannerKey;
-        } else if (self.bannerState == ALAlertBannerStateHiding) {
+        } else if (self.state == ALAlertBannerStateHiding) {
             currentAnimation = (CABasicAnimation *)[self.layer animationForKey:kHideAlertBannerKey];
             currentAnimationKey = kHideAlertBannerKey;
-        } else if (self.bannerState == ALAlertBannerStateMovingBackward || self.bannerState == ALAlertBannerStateMovingForward) {
+        } else if (self.state == ALAlertBannerStateMovingBackward || self.state == ALAlertBannerStateMovingForward) {
             currentAnimation = (CABasicAnimation *)[self.layer animationForKey:kMoveAlertBannerKey];
             currentAnimationKey = kMoveAlertBannerKey;
         } else
@@ -573,8 +564,8 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
         [self.layer removeAnimationForKey:currentAnimationKey];
     }
 
-    if (self.bannerState == ALAlertBannerStateHiding || self.bannerState == ALAlertBannerStateMovingBackward) {
-        switch (self.bannerPosition) {
+    if (self.state == ALAlertBannerStateHiding || self.state == ALAlertBannerStateMovingBackward) {
+        switch (self.position) {
             case ALAlertBannerPositionTop:
             case ALAlertBannerPositionUnderNavBar:
                 yPos -= self.layer.bounds.size.height;
@@ -595,7 +586,7 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
         positionAnimation.toValue = [NSValue valueWithCGPoint:newPos];
         
         //because the banner's location is relative to the height of the screen when in the bottom position, we should just immediately set it's position upon rotation events. this will prevent any ill-timed animations due to the presentation layer's position at the time of rotation
-        if (self.bannerPosition == ALAlertBannerPositionBottom) {
+        if (self.position == ALAlertBannerPositionBottom) {
             positionAnimationDuration = AL_DEVICE_ANIMATION_DURATION;
         }
         
@@ -615,22 +606,22 @@ ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *ic
 - (void)drawRect:(CGRect)rect {
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    UIColor *fillColor = (self.highlighted ? [self.bannerStyle.backgroundColor darkerColor] : self.bannerStyle.backgroundColor);
+    UIColor *fillColor = self.style.backgroundColor;
     
     NSArray *colorsArray = [NSArray arrayWithObjects:(id)[fillColor CGColor], (id)[[fillColor darkerColor] CGColor], nil];
     CGColorSpaceRef colorSpace =  CGColorSpaceCreateDeviceRGB();
-    const CGFloat locations[2] = {0.0f, 1.0f};
+    const CGFloat locations[2] = {0.f, 1.f};
     CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)colorsArray, locations);
     
-    CGContextDrawLinearGradient(context, gradient, CGPointZero, CGPointMake(0.0f, self.bounds.size.height), 0.0f);
+    CGContextDrawLinearGradient(context, gradient, CGPointZero, CGPointMake(0.f, self.bounds.size.height), 0.f);
     
     CGGradientRelease(gradient);
     CGColorSpaceRelease(colorSpace);
     
-    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.6f].CGColor);
-    CGContextFillRect(context, CGRectMake(0.0f, rect.size.height - 1.0f, rect.size.width, 1.0f));
-    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:1.0f green:1.0f blue:1.0f alpha:0.3f].CGColor);
-    CGContextFillRect(context, CGRectMake(0.0f, 0.0f, rect.size.width, 1.0f));
+    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:0.f green:0.f blue:0.f alpha:0.6f].CGColor);
+    CGContextFillRect(context, CGRectMake(0.f, rect.size.height - 1.f, rect.size.width, 1.f));
+    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:1.f green:1.f blue:1.f alpha:0.3f].CGColor);
+    CGContextFillRect(context, CGRectMake(0.f, 0.f, rect.size.width, 1.f));
 }
 
 @end

@@ -65,7 +65,7 @@ static NSString *loremIpsum[] = {
     
     self.secondsToShowSlider = [[UISlider alloc] init];
     self.secondsToShowSlider.continuous = YES;
-    self.secondsToShowSlider.minimumValue = 0.0f;
+    self.secondsToShowSlider.minimumValue = 0.f;
     self.secondsToShowSlider.maximumValue = 10.f;
     [self.secondsToShowSlider setValue:3.5f];
     [self.secondsToShowSlider addTarget:self action:@selector(secondsToShowSlider:) forControlEvents:UIControlEventValueChanged];
@@ -112,26 +112,9 @@ static NSString *loremIpsum[] = {
     self.animationDurationLabel.frame = CGRectMake(self.animationDurationSlider.frame.origin.x, self.animationDurationSlider.frame.origin.y + self.animationDurationSlider.frame.size.height, self.animationDurationSlider.frame.size.width, 20.f);
 }
 
-- (ALAlertBannerStyle *)randomStyle {
-    NSUInteger i = arc4random_uniform(4);
-    if (i == 0) {
-        return kALAlertBannerStyleSuccess;
-    }
-    else if (i == 1) {
-        return kALAlertBannerStyleFailure;
-    }
-    else if (i == 2) {
-        return kALAlertBannerStyleNotify;
-    }
-    else {
-        return kALAlertBannerStyleAlert;
-    }
-}
-
 - (void)showAlertBannerInView:(UIButton *)button {
     ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
-    ALAlertBannerStyle *randomStyle = self.randomStyle;
-    [[ALAlertBannerManager sharedManager] showAlertBannerInView:self.view style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum] tappedHandler:^(ALAlertBannerView *alertBanner) {
+    [[ALAlertBannerManager sharedManager] showAlertBannerInView:self.view style:self.randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum] tappedHandler:^(ALAlertBannerView *alertBanner) {
         
         NSLog(@"tapped!");
         [[ALAlertBannerManager sharedManager] hideAlertBanner:alertBanner];
@@ -142,8 +125,20 @@ static NSString *loremIpsum[] = {
 - (void)showAlertBannerInWindow:(UIButton *)button {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
-    ALAlertBannerStyle *randomStyle = self.randomStyle;
-    [[ALAlertBannerManager sharedManager] showAlertBannerInView:appDelegate.window style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum]];
+    [[ALAlertBannerManager sharedManager] showAlertBannerInView:appDelegate.window style:self.randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum]];
+}
+
+- (ALAlertBannerStyle *)randomStyle {
+    NSUInteger i = arc4random_uniform(4);
+    if (i == 0) {
+        return kALAlertBannerStyleSuccess;
+    } else if (i == 1) {
+        return kALAlertBannerStyleFailure;
+    } else if (i == 2) {
+        return kALAlertBannerStyleNotify;
+    } else {
+        return kALAlertBannerStyleAlert;
+    }
 }
 
 - (NSString *)randomLoremIpsum {

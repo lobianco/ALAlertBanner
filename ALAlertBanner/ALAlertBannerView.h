@@ -28,26 +28,26 @@
 @interface ALAlertBannerStyle : NSObject
 
 @property (nonatomic, strong, readonly) UIColor *backgroundColor;
-@property (nonatomic, strong, readonly) UIImage *icon;
+@property (nonatomic, strong, readonly) UIImage *image;
 
 @end
 
-FOUNDATION_EXTERN ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *icon);
+extern ALAlertBannerStyle *ALAlertBannerStyleMake(UIColor *backgroundColor, UIImage *image);
 
-#define kALAlertBannerBackgroundColorGreen [UIColor colorWithRed:(77/255.0f) green:(175/255.0f) blue:(67/255.0f) alpha:1.0f]
-#define kALAlertBannerBackgroundColorRed [UIColor colorWithRed:(173/255.0f) green:(48/255.0f) blue:(48/255.0f) alpha:1.0f]
-#define kALAlertBannerBackgroundColorBlue [UIColor colorWithRed:(48/255.0f) green:(110/255.0f) blue:(173/255.0f) alpha:1.0f]
-#define kALAlertBannerBackgroundColorYellow [UIColor colorWithRed:(211/255.0f) green:(209/255.0f) blue:(100/255.0f) alpha:1.0f]
+#define kALAlertBannerBackgroundColorGreen  [UIColor colorWithRed:(77/255.f) green:(175/255.f) blue:(67/255.f) alpha:1.f]
+#define kALAlertBannerBackgroundColorRed    [UIColor colorWithRed:(173/255.f) green:(48/255.f) blue:(48/255.f) alpha:1.f]
+#define kALAlertBannerBackgroundColorBlue   [UIColor colorWithRed:(48/255.f) green:(110/255.f) blue:(173/255.f) alpha:1.f]
+#define kALAlertBannerBackgroundColorYellow [UIColor colorWithRed:(211/255.f) green:(209/255.f) blue:(100/255.f) alpha:1.f]
 
-#define kALAlertBannerIconSuccess [UIImage imageNamed:@"bannerSuccess.png"]
-#define kALAlertBannerIconFailure [UIImage imageNamed:@"bannerFailure.png"]
-#define kALAlertBannerIconInfo [UIImage imageNamed:@"bannerNotify.png"]
-#define kALAlertBannerIconWarning [UIImage imageNamed:@"bannerAlert.png"]
+#define kALAlertBannerIconSuccess   [UIImage imageNamed:@"bannerSuccess.png"]
+#define kALAlertBannerIconFailure   [UIImage imageNamed:@"bannerFailure.png"]
+#define kALAlertBannerIconInfo      [UIImage imageNamed:@"bannerNotify.png"]
+#define kALAlertBannerIconWarning   [UIImage imageNamed:@"bannerAlert.png"]
 
-#define kALAlertBannerStyleSuccess ALAlertBannerStyleMake(kALAlertBannerBackgroundColorGreen, kALAlertBannerIconSuccess)
-#define kALAlertBannerStyleFailure ALAlertBannerStyleMake(kALAlertBannerBackgroundColorRed, kALAlertBannerIconFailure)
-#define kALAlertBannerStyleNotify ALAlertBannerStyleMake(kALAlertBannerBackgroundColorBlue, kALAlertBannerIconInfo)
-#define kALAlertBannerStyleAlert ALAlertBannerStyleMake(kALAlertBannerBackgroundColorYellow, kALAlertBannerIconWarning)
+#define kALAlertBannerStyleSuccess  ALAlertBannerStyleMake(kALAlertBannerBackgroundColorGreen, kALAlertBannerIconSuccess)
+#define kALAlertBannerStyleFailure  ALAlertBannerStyleMake(kALAlertBannerBackgroundColorRed, kALAlertBannerIconFailure)
+#define kALAlertBannerStyleNotify   ALAlertBannerStyleMake(kALAlertBannerBackgroundColorBlue, kALAlertBannerIconInfo)
+#define kALAlertBannerStyleAlert    ALAlertBannerStyleMake(kALAlertBannerBackgroundColorYellow, kALAlertBannerIconWarning)
 
 typedef enum {
     ALAlertBannerPositionTop = 0,
@@ -76,10 +76,10 @@ typedef enum {
 - (void)hideAlertBanner:(ALAlertBannerView *)alertBanner;
 @end
 
-@interface ALAlertBannerView : UIControl
+@interface ALAlertBannerView : UIView
 
-- (ALAlertBannerStyle *)bannerStyle;
-- (ALAlertBannerPosition)bannerPosition;
-- (ALAlertBannerState)bannerState;
+- (ALAlertBannerStyle *)style;
+- (ALAlertBannerPosition)position;
+- (ALAlertBannerState)state;
 
 @end
