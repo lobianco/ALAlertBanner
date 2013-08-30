@@ -20,7 +20,7 @@ I'll tell you why!
 * Auto-dismissal, and tap-to-dismiss functionality with optional tap response block
 * Lightweight, stable component with small memory footprint
 * Universal (iPhone and iPad) support
-* iOS 4.3<sup>[*note](#tested-environments)</sup> - 7 support
+* iOS 5.0 - iOS 7 support
 
 ### Behind the Scenes
 
@@ -53,7 +53,7 @@ If you can compile without errors, congratulations! You're one step closer to...
 
 ### Tested Environments
 
-ALAlertBanner has been tested to work on iOS 5.0, 5.1 and 6.0 (simulator), iOS 6.1 (device), and iOS 7.0 (simulator) with ARC enabled. It has **NOT** been tested on iOS 4.3 but it should work. If you have a 4.3 device and can verify this, please get in touch with me.
+ALAlertBanner has been tested to work on iOS 5.0, 5.1 and 6.0 (simulator), iOS 6.1 (device), and iOS 7.0 (simulator) with ARC enabled.
 
 ## Example Usage
 
@@ -83,31 +83,31 @@ A couple notes: ```title``` is limited to one line and will be truncated if nece
 ### Other methods of consideration:
 
 ```objc
--(void)showAlertBannerInView:(UIView*)view 
-                       style:(ALAlertBannerStyle)style 
-                    position:(ALAlertBannerPosition)position 
-                       title:(NSString*)title 
-                    subtitle:(NSString*)subtitle 
-                   hideAfter:(NSTimeInterval)secondsToShow;
+- (ALAlertBannerView *)showAlertBannerInView:(UIView*)view 
+                                       style:(ALAlertBannerStyle)style 
+                                    position:(ALAlertBannerPosition)position 
+                                       title:(NSString*)title 
+                                    subtitle:(NSString*)subtitle 
+                                   hideAfter:(NSTimeInterval)secondsToShow;
 ```
 
 Optional method to set the secondsToShow duration on a per-banner basis.
 
 ```objc
--(void)showAlertBannerInView:(UIView*)view 
-                       style:(ALAlertBannerStyle)style 
-                    position:(ALAlertBannerPosition)position 
-                       title:(NSString*)title 
-                    subtitle:(NSString*)subtitle 
-               tappedHandler:(void(^)(ALAlertBannerView *alertBanner))tappedBlock; 
+- (ALAlertBannerView *)showAlertBannerInView:(UIView*)view 
+                                       style:(ALAlertBannerStyle)style 
+                                    position:(ALAlertBannerPosition)position 
+                                       title:(NSString*)title 
+                                    subtitle:(NSString*)subtitle 
+                               tappedHandler:(void(^)(ALAlertBannerView *alertBanner))tappedBlock; 
 
--(void)showAlertBannerInView:(UIView*)view 
-                       style:(ALAlertBannerStyle)style 
-                    position:(ALAlertBannerPosition)position 
-                       title:(NSString*)title 
-                    subtitle:(NSString*)subtitle 
-                   hideAfter:(NSTimeInterval)secondsToShow 
-               tappedHandler:(void(^)(ALAlertBannerView *alertBanner))tappedBlock; 
+- (ALAlertBannerView *)showAlertBannerInView:(UIView*)view 
+                                       style:(ALAlertBannerStyle)style 
+                                    position:(ALAlertBannerPosition)position 
+                                       title:(NSString*)title 
+                                    subtitle:(NSString*)subtitle 
+                                   hideAfter:(NSTimeInterval)secondsToShow 
+                               tappedHandler:(void(^)(ALAlertBannerView *alertBanner))tappedBlock; 
 ```
 
 Optional methods to handle a tap on a banner. 
@@ -115,25 +115,25 @@ Optional methods to handle a tap on a banner.
 By default, supplying a tap handler will disable ```allowTapToDismiss``` on this particular banner. If you want to reinstate this behavior alongside the tap handler, you can call ```[[ALAlertBannerManager sharedManager] hideAlertBanner:alertBanner];``` in ```tappedBlock()```.
 
 ```objc
--(void)hideAlertBanner:(ALAlertBannerView *)alertBanner;
+- (void)hideAlertBanner:(ALAlertBannerView *)alertBanner;
 ```
 
 Immediately hide a specific alert banner.
 
 ```objc
--(NSArray *)alertBannersInView:(UIView*)view;
+- (NSArray *)alertBannersInView:(UIView*)view;
 ```
 
 Returns an array of all banners within a certain view.
 
 ```objc
--(void)hideAllAlertBanners;
+- (void)hideAllAlertBanners;
 ```
 
 Immediately hides all alert banners in all views.
 
 ```objc
--(void)hideAlertBannersInView:(UIView*)view;
+- (void)hideAlertBannersInView:(UIView*)view;
 ```
 
 Immediately hides all alert banners in a certain view.
