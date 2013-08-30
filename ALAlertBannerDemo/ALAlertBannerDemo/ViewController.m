@@ -31,8 +31,7 @@ static NSString *loremIpsum[] = {
 
 @implementation ViewController
 
--(id)init
-{
+- (id)init {
     self = [super init];
     if (self) {
         self.title = NSLocalizedString(@"ALAlertBanner", @"ALAlertBanner");
@@ -40,8 +39,7 @@ static NSString *loremIpsum[] = {
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
@@ -98,14 +96,12 @@ static NSString *loremIpsum[] = {
     [self.view addSubview:self.animationDurationLabel];
 }
 
--(void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self configureView];
 }
 
--(void)configureView
-{
+- (void)configureView {
     self.topButton.frame = CGRectMake(20, self.view.frame.size.height/2 - 80.f, (self.view.frame.size.width - 40.f)/3, 40.f);
     self.bottomButton.frame = CGRectMake(self.topButton.frame.origin.x + self.topButton.frame.size.width, self.topButton.frame.origin.y, self.topButton.frame.size.width, self.topButton.frame.size.height);
     self.underNavButton.frame = CGRectMake(self.bottomButton.frame.origin.x + self.bottomButton.frame.size.width, self.topButton.frame.origin.y, self.topButton.frame.size.width, self.topButton.frame.size.height);
@@ -116,10 +112,25 @@ static NSString *loremIpsum[] = {
     self.animationDurationLabel.frame = CGRectMake(self.animationDurationSlider.frame.origin.x, self.animationDurationSlider.frame.origin.y + self.animationDurationSlider.frame.size.height, self.animationDurationSlider.frame.size.width, 20.f);
 }
 
--(void)showAlertBannerInView:(UIButton*)button
-{
+- (ALAlertBannerStyle *)randomStyle {
+    NSUInteger i = arc4random_uniform(4);
+    if (i == 0) {
+        return kALAlertBannerStyleSuccess;
+    }
+    else if (i == 1) {
+        return kALAlertBannerStyleFailure;
+    }
+    else if (i == 2) {
+        return kALAlertBannerStyleNotify;
+    }
+    else {
+        return kALAlertBannerStyleAlert;
+    }
+}
+
+- (void)showAlertBannerInView:(UIButton *)button {
     ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
-    ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
+    ALAlertBannerStyle *randomStyle = self.randomStyle;
     [[ALAlertBannerManager sharedManager] showAlertBannerInView:self.view style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum] tappedHandler:^(ALAlertBannerView *alertBanner) {
         
         NSLog(@"tapped!");
@@ -128,63 +139,53 @@ static NSString *loremIpsum[] = {
     }];
 }
 
--(void)showAlertBannerInWindow:(UIButton*)button
-{
-    AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
+- (void)showAlertBannerInWindow:(UIButton *)button {
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
-    ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
+    ALAlertBannerStyle *randomStyle = self.randomStyle;
     [[ALAlertBannerManager sharedManager] showAlertBannerInView:appDelegate.window style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum]];
 }
 
--(NSString*)randomLoremIpsum
-{
+- (NSString *)randomLoremIpsum {
     static int arrayCount = sizeof(loremIpsum) / sizeof(loremIpsum[0]);
     return loremIpsum[arc4random_uniform(arrayCount)];
 }
 
--(void)secondsToShowSlider:(UISlider *)slider
-{
+- (void)secondsToShowSlider:(UISlider *)slider {
     CGFloat roundedValue = round(slider.value * 100)/100.0;
     [slider setValue:roundedValue animated:NO];
     self.secondsToShowLabel.text = [NSString stringWithFormat:@"Seconds to show: %.02f seconds", roundedValue];
 }
 
--(void)secondsToShowSliderTouchEnded:(UISlider *)slider
-{
+- (void)secondsToShowSliderTouchEnded:(UISlider *)slider {
     [[ALAlertBannerManager sharedManager] setSecondsToShow:slider.value];
 }
 
--(void)animationDurationSlider:(UISlider *)slider
-{
+- (void)animationDurationSlider:(UISlider *)slider {
     CGFloat roundedValue = round(slider.value * 100)/100.0;
     [slider setValue:roundedValue animated:NO];
     self.animationDurationLabel.text = [NSString stringWithFormat:@"Animation duration: %0.02f seconds", roundedValue];
 }
 
--(void)animationDurationSliderTouchEnded:(UISlider *)slider
-{
+- (void)animationDurationSliderTouchEnded:(UISlider *)slider {
     [[ALAlertBannerManager sharedManager] setShowAnimationDuration:slider.value];
     [[ALAlertBannerManager sharedManager] setHideAnimationDuration:slider.value];
 }
 
--(BOOL)shouldAutorotate
-{
+- (BOOL)shouldAutorotate {
     return YES;
 }
 
--(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-{
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
     return YES;
 }
 
--(void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     [super willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
     [self configureView];
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
