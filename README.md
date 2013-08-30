@@ -239,7 +239,7 @@ ALAlertBannerStyleNotify
 The banner will have a cute little info symbol and a nice blue gradient.
 
 ```objc
-ALAlertBannerStyleAlert
+ALAlertBannerStyleWarning
 ```
 
 The banner will have a cute little caution triangle and a nice yellow gradient.

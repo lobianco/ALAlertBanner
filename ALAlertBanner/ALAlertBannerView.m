@@ -182,7 +182,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
             self.styleImageView.image = [UIImage imageNamed:@"bannerNotify.png"];
             break;
             
-        case ALAlertBannerStyleAlert:
+        case ALAlertBannerStyleWarning:
             self.styleImageView.image = [UIImage imageNamed:@"bannerAlert.png"];
             
             //tone the shadows down a little for the yellow background
@@ -246,7 +246,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     if (!isSuperviewKindOfWindow && position == ALAlertBannerPositionUnderNavBar)
         [[NSException exceptionWithName:@"Bad ALAlertBannerStyle For View Type" reason:@"ALAlertBannerPositionUnderNavBar should only be used if you are presenting the alert banner on the AppDelegate window. Use ALAlertBannerPositionTop or ALAlertBannerPositionBottom for normal UIViews" userInfo:nil] raise];
     
-    alertBanner.titleLabel.text = title;
+    alertBanner.titleLabel.text = !title ? @" " : title;
     alertBanner.subtitleLabel.text = subtitle;
     alertBanner.style = style;
     alertBanner.position = position;
@@ -618,7 +618,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
         case ALAlertBannerStyleNotify:
             fillColor = [UIColor colorWithRed:(48/255.0) green:(110/255.0) blue:(173/255.0) alpha:1.f];
             break;
-        case ALAlertBannerStyleAlert:
+        case ALAlertBannerStyleWarning:
             fillColor = [UIColor colorWithRed:(211/255.0) green:(209/255.0) blue:(100/255.0) alpha:1.f];
             break;
     }
