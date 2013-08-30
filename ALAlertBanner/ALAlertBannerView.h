@@ -47,11 +47,9 @@ typedef enum {
     ALAlertBannerStateHidden
 } ALAlertBannerState;
 
-
 @class ALAlertBannerView;
 @protocol ALAlertBannerViewDelegate <NSObject>
 @required
-
 - (void)alertBannerWillShow:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
 - (void)alertBannerDidShow:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
 - (void)alertBannerWillHide:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
