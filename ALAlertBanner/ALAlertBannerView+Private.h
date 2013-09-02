@@ -40,19 +40,23 @@ static CGFloat const kStatusBarHeight = 20.f;
 
 @end
 
+@class ALAlertBannerView;
+@protocol ALAlertBannerViewDelegate <NSObject>
+@required
+- (void)alertBannerWillShow:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
+- (void)alertBannerDidShow:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
+- (void)alertBannerWillHide:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
+- (void)alertBannerDidHide:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
+- (void)hideAlertBanner:(ALAlertBannerView *)alertBanner;
+@end
+
 @interface ALAlertBannerView ()
 
 @property (nonatomic, weak) id <ALAlertBannerViewDelegate> delegate;
-
 @property (nonatomic) BOOL isScheduledToHide;
-@property (nonatomic) BOOL allowTapToDismiss;
 @property (nonatomic, copy) void(^tappedBlock)(ALAlertBannerView *);
-
 @property (nonatomic) NSTimeInterval fadeInDuration;
 @property (nonatomic) BOOL showShadow;
-@property (nonatomic) NSTimeInterval showAnimationDuration;
-@property (nonatomic) NSTimeInterval hideAnimationDuration;
-@property (nonatomic) CGFloat bannerOpacity;
 
 + (instancetype)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle;
 - (void)show;

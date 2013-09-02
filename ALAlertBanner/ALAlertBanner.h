@@ -25,7 +25,7 @@
 #import "ALAlertBannerManager.h"
 
 #if !__has_feature(objc_arc)
-#error ALAlertBanner requires to be built with ARC
+#error ALAlertBanner requires ARC
 #endif
 
 #if (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_5_0)

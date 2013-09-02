@@ -99,15 +99,11 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 @property (nonatomic, assign) ALAlertBannerStyle style;
 @property (nonatomic, assign) ALAlertBannerPosition position;
 @property (nonatomic, assign) ALAlertBannerState state;
-
 @property (nonatomic) NSTimeInterval fadeOutDuration;
-
 @property (nonatomic, readonly) BOOL isAnimating;
-
 @property (nonatomic, strong) UILabel *titleLabel;
 @property (nonatomic, strong) UILabel *subtitleLabel;
 @property (nonatomic, strong) UIImageView *styleImageView;
-
 @property (nonatomic) CGRect parentFrameUponCreation;
 
 @end
@@ -436,11 +432,6 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     else if ([[anim valueForKey:@"anim"] isEqualToString:kMoveAlertBannerKey] && flag) {
         self.state = ALAlertBannerStateVisible;
     }
-}
-
-- (void)didMoveToSuperview {
-    [super didMoveToSuperview];
-    //TODO: transform view for uiwindow
 }
 
 - (void)setInitialLayout {

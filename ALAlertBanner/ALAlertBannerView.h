@@ -47,20 +47,15 @@ typedef enum {
     ALAlertBannerStateHidden
 } ALAlertBannerState;
 
-@class ALAlertBannerView;
-@protocol ALAlertBannerViewDelegate <NSObject>
-@required
-- (void)alertBannerWillShow:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
-- (void)alertBannerDidShow:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
-- (void)alertBannerWillHide:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
-- (void)alertBannerDidHide:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
-- (void)hideAlertBanner:(ALAlertBannerView *)alertBanner;
-@end
-
 @interface ALAlertBannerView : UIView
 
 @property (nonatomic, readonly) ALAlertBannerStyle style;
 @property (nonatomic, readonly) ALAlertBannerPosition position;
 @property (nonatomic, readonly) ALAlertBannerState state;
+
+@property (nonatomic) BOOL allowTapToDismiss;
+@property (nonatomic) NSTimeInterval showAnimationDuration;
+@property (nonatomic) NSTimeInterval hideAnimationDuration;
+@property (nonatomic) CGFloat bannerOpacity;
 
 @end
