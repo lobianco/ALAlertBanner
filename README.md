@@ -244,15 +244,9 @@ The banner will have a cute little caution triangle and a nice yellow gradient.
 
 Did I mention they have cute little shapes and nice colorful gradients?
 
-## Known Issues
-
-* Alert banners won't rotate when added to a UIWindow. This is something I haven't added yet but will try to get to soon.
-* On the topic of rotation, ALAlertBanner listens for ```UIDeviceOrientationDidChangeNotification```  to handle rotation events. I'd prefer to listen for ```UIApplicationDidChangeStatusBarOrientationNotification``` instead but I need the bounds of the banner's superview to update before handling the rotation notification, and the only way to that seems to be by using ```UIDeviceOrientationDidChangeNotification```. If you have an idea on how to fix this, please let me know by submitting a new issue or sending me an email.
-* If you find any other bugs, please open a new issue. 
-
 ## Suggestions?
 
-Let me know!
+If you have any suggestions, let me know! If you find any bugs, please open a new issue. 
 
 ## Contact Me
 
