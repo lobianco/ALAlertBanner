@@ -30,13 +30,13 @@
 # pragma mark -
 # pragma mark Categories for Convenience
 
-@interface UIView (Convenience)
+@interface UIView (ALConvenience)
 
 @property (nonatomic, strong) NSMutableArray *alertBanners;
 
 @end
 
-@implementation UIView (Convenience)
+@implementation UIView (ALConvenience)
 
 @dynamic alertBanners;
 
@@ -99,7 +99,6 @@
 }
 
 - (void)showAlertBanner:(ALAlertBanner *)alertBanner hideAfter:(NSTimeInterval)delay {
-    
     if (![self.bannerViews containsObject:alertBanner.superview]) {
         [self.bannerViews addObject:alertBanner.superview];
     }
@@ -116,6 +115,7 @@
             semaphore = self.navBarPositionSemaphore;
             break;
     }
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -151,6 +151,7 @@
             semaphore = self.navBarPositionSemaphore;
             break;
     }
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
         dispatch_async(dispatch_get_main_queue(), ^{

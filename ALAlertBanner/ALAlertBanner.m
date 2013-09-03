@@ -254,7 +254,19 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 }
 
 # pragma mark -
-# pragma mark Class Methods
+# pragma mark Public Class Methods
+
++ (NSArray *)alertBannersInView:(UIView *)view {
+    return [[ALAlertBannerManager sharedManager] alertBannersInView:view];
+}
+
++ (void)hideAllAlertBanners {
+    [[ALAlertBannerManager sharedManager] hideAllAlertBanners];
+}
+
++ (void)hideAlertBannersInView:(UIView *)view {
+    [[ALAlertBannerManager sharedManager] hideAlertBannersInView:view];
+}
 
 + (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title {
     return [self alertBannerForView:view style:style position:position title:title subtitle:nil hideAfter:-1 tappedHandler:nil];
@@ -285,9 +297,8 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 
 + (ALAlertBanner *)createAlertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle {
     ALAlertBanner *alertBanner = [[ALAlertBanner alloc] init];
-    BOOL isSuperviewKindOfWindow = ([view isKindOfClass:[UIWindow class]]);
     
-    if (!isSuperviewKindOfWindow && position == ALAlertBannerPositionUnderNavBar)
+    if (![view isKindOfClass:[UIWindow class]] && position == ALAlertBannerPositionUnderNavBar)
         [[NSException exceptionWithName:@"Bad ALAlertBannerStyle For View Type" reason:@"ALAlertBannerPositionUnderNavBar should only be used if you are presenting the alert banner on the AppDelegate window. Use ALAlertBannerPositionTop or ALAlertBannerPositionBottom for normal UIViews" userInfo:nil] raise];
     
     alertBanner.titleLabel.text = !title ? @" " : title;
@@ -304,6 +315,9 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     return alertBanner;
 }
 
+# pragma mark -
+# pragma mark Public Instance Methods
+
 - (void)show {
     [self.delegate showAlertBanner:self hideAfter:self.secondsToShow];
 }
@@ -313,7 +327,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 }
 
 # pragma mark -
-# pragma mark Instance Methods
+# pragma mark Internal Instance Methods
 
 - (void)showAlertBanner {
     if (!CGRectEqualToRect(self.parentFrameUponCreation, self.superview.bounds)) {

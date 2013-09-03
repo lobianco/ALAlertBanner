@@ -127,4 +127,19 @@ typedef enum {
  */
 - (void)hide;
 
+/**
+ Returns an array of all banners within a certain view.
+ */
++ (NSArray *)alertBannersInView:(UIView *)view;
+
+/**
+ Immediately hides all alert banners in all views.
+ */
++ (void)hideAllAlertBanners;
+
+/**
+ Immediately hides all alert banners in a certain view.
+ */
++ (void)hideAlertBannersInView:(UIView *)view;
+
 @end
