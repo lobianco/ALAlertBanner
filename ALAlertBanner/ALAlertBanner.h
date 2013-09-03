@@ -69,7 +69,7 @@ typedef enum {
 @property (nonatomic) NSTimeInterval secondsToShow;
 
 /**
- Tapping on a banner will dismiss it early.
+ Tapping on a banner will immediately dismiss it.
  
  Default value is YES. If you supply a tappedHandler in one of the appropriate methods, this will be set to NO for that specific banner.
  */
@@ -97,25 +97,18 @@ typedef enum {
 @property (nonatomic) CGFloat bannerOpacity;
 
 /**
- The default methods to display a banner.
+ The default methods to customize and display a banner.
  */
-+ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title;
++ (ALAlertBanner *)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title;
 
-+ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle;
++ (ALAlertBanner *)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle;
 
 /**
- Optional method to set the secondsToShow duration on a per-banner basis.
- */
-+ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle hideAfter:(NSTimeInterval)secondsToShow;
-
-/**
- Optional methods to handle a tap on a banner.
+ Optional method to handle a tap on a banner.
  
  By default, supplying a tap handler will disable allowTapToDismiss on this particular banner. If you want to reinstate this behavior alongside the tap handler, you can call `[[ALAlertBannerManager sharedManager] hideAlertBanner:alertBanner];` in tappedBlock().
  */
-+ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle tappedHandler:(void(^)(ALAlertBanner *alertBanner))tappedBlock;
-
-+ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle hideAfter:(NSTimeInterval)secondsToShow tappedHandler:(void(^)(ALAlertBanner *alertBanner))tappedBlock;
++ (ALAlertBanner *)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle tappedHandler:(void(^)(ALAlertBanner *alertBanner))tappedBlock;
 
 /**
  Show the alert banner

@@ -99,7 +99,7 @@
 }
 
 # pragma mark -
-# pragma mark Delegate Methods
+# pragma mark ALAlertBannerViewDelegate Methods
 
 - (void)showAlertBanner:(ALAlertBanner *)alertBanner hideAfter:(NSTimeInterval)delay {
     
@@ -239,13 +239,6 @@
 # pragma mark Instance Methods
 
 - (NSArray *)alertBannersInView:(UIView *)view {
-    /*
-    NSMutableArray *arrayOfBanners = [[NSMutableArray alloc] init];
-    for (UIView *subview in view.subviews)
-        if ([subview isKindOfClass:[ALAlertBannerView class]])
-            [arrayOfBanners addObject:(ALAlertBannerView *)subview];
-     */
-    
     return [NSArray arrayWithArray:view.alertBanners];
 }
 

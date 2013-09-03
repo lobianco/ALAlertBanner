@@ -10,8 +10,6 @@ ALAlertBanner is a drop-in component for iOS (both iPhone and iPad) that allows 
 
 ### Why Use ALAlertBanner?
 
-I'll tell you why!
-
 * Portrait and landscape support
 * Many different style and position choices
 * Multiple banners can be shown on-screen simultaneously (even in different positions)
@@ -30,7 +28,7 @@ Installation is easy.
 
 ### Cocoapods
 
-1. Add ```pod 'ALAlertBanner', '~>0.2.2'``` to your Podfile
+1. Add ```pod 'ALAlertBanner', '~>0.3.0'``` to your Podfile
 2. ```#import <ALAlertBanner/ALAlertBanner.h>``` in your view of choice
 
 ### Manually
