@@ -23,10 +23,10 @@
  **/
 
 #if !__has_feature(objc_arc)
-    #error ALAlertBanner requires ARC
+    #error ALAlertBanner requires ARC be enabled
 #endif
 
-#if (__IPHONE_OS_VERSION_MAX_ALLOWED < __IPHONE_5_0)
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_5_0
     #error ALAlertBanner requires iOS 5.0 or higher
 #endif
 
@@ -123,7 +123,7 @@ typedef enum {
 - (void)show;
 
 /**
- Immediately hide this alert banner.
+ Immediately hide this alert banner, forgoing the secondsToShow value.
  */
 - (void)hide;
 

@@ -98,7 +98,12 @@
     return self;
 }
 
+# pragma mark -
+# pragma mark Delegate Methods
+
 - (void)showAlertBanner:(ALAlertBanner *)alertBanner hideAfter:(NSTimeInterval)delay {
+    
+    //keep track of all views we've added banners to, to deal with rotation events and hideAllAlertBanners
     if (![self.bannerViews containsObject:alertBanner.superview]) {
         [self.bannerViews addObject:alertBanner.superview];
     }
@@ -127,9 +132,6 @@
         });
     });
 }
-
-# pragma mark -
-# pragma mark Delegate Methods
 
 - (void)hideAlertBanner:(ALAlertBanner *)alertBanner {
     if (alertBanner.isScheduledToHide)

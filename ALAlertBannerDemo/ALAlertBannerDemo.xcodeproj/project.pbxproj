@@ -135,10 +135,10 @@
 		4FC799C617BC078A000AEC49 /* ALAlertBanner */ = {
 			isa = PBXGroup;
 			children = (
-				4FFBA6F717BE970700C2A7F2 /* ALAlertBannerManager.h */,
-				4FFBA6F817BE970700C2A7F2 /* ALAlertBannerManager.m */,
 				4FC799CA17BC078B000AEC49 /* ALAlertBanner.h */,
 				4FC799CB17BC078B000AEC49 /* ALAlertBanner.m */,
+				4FFBA6F717BE970700C2A7F2 /* ALAlertBannerManager.h */,
+				4FFBA6F817BE970700C2A7F2 /* ALAlertBannerManager.m */,
 				4F083ACB17D10C4500F1CB54 /* ALAlertBanner+Private.h */,
 				4FC799CE17BC07B7000AEC49 /* Images */,
 			);

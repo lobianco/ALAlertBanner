@@ -700,4 +700,36 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     CGContextFillRect(context, CGRectMake(0.f, 0.f, rect.size.width, 1.f));
 }
 
+- (NSString *)description {
+    NSString *styleString;
+    switch (self.style) {
+        case ALAlertBannerStyleSuccess:
+            styleString = @"ALAlertBannerStyleSuccess";
+            break;
+        case ALAlertBannerStyleFailure:
+            styleString = @"ALAlertBannerStyleFailure";
+            break;
+        case ALAlertBannerStyleNotify:
+            styleString = @"ALAlertBannerStyleNotify";
+            break;
+        case ALAlertBannerStyleWarning:
+            styleString = @"ALAlertBannerStyleWarning";
+            break;
+    }
+    NSString *positionString;
+    switch (self.position) {
+        case ALAlertBannerPositionTop:
+            positionString = @"ALAlertBannerPositionTop";
+            break;
+        case ALAlertBannerPositionBottom:
+            positionString = @"ALAlertBannerPositionBottom";
+            break;
+        case ALAlertBannerPositionUnderNavBar:
+            positionString = @"ALAlertBannerPositionUnderNavBar";
+            break;
+    }
+    NSString *descriptionString = [NSString stringWithFormat:@"<%@: %p; frame = %@; style = %@; position = %@; superview = <%@: %p>", self.class, self, NSStringFromCGRect(self.frame), styleString, positionString, self.superview.class, self.superview];
+    return descriptionString;
+}
+
 @end
