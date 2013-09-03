@@ -25,7 +25,7 @@
 #import "ALAlertBannerManager.h"
 #import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
-#import "ALAlertBannerView+Private.h"
+#import "ALAlertBanner+Private.h"
 
 # pragma mark -
 # pragma mark Categories for Convenience
@@ -92,12 +92,6 @@
         
         _bannerViews = [NSMutableArray new];
         
-        _secondsToShow = 3.5f;
-        _showAnimationDuration = 0.25f;
-        _hideAnimationDuration = 0.2f;
-        _allowTapToDismiss = YES;
-        _bannerOpacity = 0.93f;
-        
         //TODO: use UIApplicationDidChangeStatusBarOrientationNotification instead
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRotate:) name:UIDeviceOrientationDidChangeNotification object:nil];
@@ -105,9 +99,12 @@
     return self;
 }
 
-
-
-- (void)showAlertBanner:(ALAlertBannerView *)alertBanner hideAfter:(NSTimeInterval)delay {
+- (void)showAlertBanner:(ALAlertBanner *)alertBanner hideAfter:(NSTimeInterval)delay {
+    
+    if (![self.bannerViews containsObject:alertBanner.superview]) {
+        [self.bannerViews addObject:alertBanner.superview];
+    }
+    
     dispatch_semaphore_t semaphore;
     switch (alertBanner.position) {
         case ALAlertBannerPositionTop:
@@ -123,7 +120,7 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
         dispatch_async(dispatch_get_main_queue(), ^{
-            [alertBanner show];
+            [alertBanner showAlertBanner];
             
             if (delay > 0) {
                 [self performSelector:@selector(hideAlertBanner:) withObject:alertBanner afterDelay:delay];
@@ -135,10 +132,9 @@
 # pragma mark -
 # pragma mark Delegate Methods
 
-- (void)hideAlertBanner:(ALAlertBannerView *)alertBanner {
-    if (alertBanner.isScheduledToHide) {
+- (void)hideAlertBanner:(ALAlertBanner *)alertBanner {
+    if (alertBanner.isScheduledToHide)
         return;
-    }
     
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideAlertBanner:) object:alertBanner];
     
@@ -159,12 +155,12 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
         dispatch_async(dispatch_get_main_queue(), ^{
-            [alertBanner hide];
+            [alertBanner hideAlertBanner];
         });
     });
 }
 
-- (void)alertBannerWillShow:(ALAlertBannerView *)alertBanner inView:(UIView *)view {
+- (void)alertBannerWillShow:(ALAlertBanner *)alertBanner inView:(UIView *)view {
     //make copy so we can set shadow before pushing banners
     NSArray *bannersToPush = [NSArray arrayWithArray:view.alertBanners];
     NSMutableArray *bannersArray = view.alertBanners;
@@ -175,14 +171,14 @@
     //set shadow before pushing other banners, because the banner push may be delayed by the fade in duration (which is set at the same time as the shadow) on iOS7
     alertBanner.showShadow = (bannersInSamePosition.count > 1 ? NO : YES);
     
-    for (ALAlertBannerView *banner in bannersToPush) {
+    for (ALAlertBanner *banner in bannersToPush) {
         if (banner.position == alertBanner.position) {
-            [banner push:alertBanner.frame.size.height forward:YES delay:alertBanner.fadeInDuration];
+            [banner pushAlertBanner:alertBanner.frame.size.height forward:YES delay:alertBanner.fadeInDuration];
         }
     }
 }
 
-- (void)alertBannerDidShow:(ALAlertBannerView *)alertBanner inView:(UIView *)view {
+- (void)alertBannerDidShow:(ALAlertBanner *)alertBanner inView:(UIView *)view {
     dispatch_semaphore_t semaphore;
     switch (alertBanner.position) {
         case ALAlertBannerPositionTop:
@@ -198,20 +194,20 @@
     dispatch_semaphore_signal(semaphore);
 }
 
-- (void)alertBannerWillHide:(ALAlertBannerView *)alertBanner inView:(UIView *)view {
+- (void)alertBannerWillHide:(ALAlertBanner *)alertBanner inView:(UIView *)view {
     NSMutableArray *bannersArray = view.alertBanners;
     NSArray *bannersInSamePosition = [bannersArray filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.position == %i", alertBanner.position]];
     NSUInteger index = [bannersInSamePosition indexOfObject:alertBanner];
     if (index != NSNotFound && index > 0) {
         NSArray *bannersToPush = [bannersInSamePosition subarrayWithRange:NSMakeRange(0, index)];
 
-        for (ALAlertBannerView *banner in bannersToPush)
-            [banner push:-alertBanner.frame.size.height forward:NO delay:0.f];
+        for (ALAlertBanner *banner in bannersToPush)
+            [banner pushAlertBanner:-alertBanner.frame.size.height forward:NO delay:0.f];
     }
     
     else if (index == 0) {
         if (bannersInSamePosition.count > 1) {
-            ALAlertBannerView *nextAlertBanner = (ALAlertBannerView *)[bannersInSamePosition objectAtIndex:1];
+            ALAlertBanner *nextAlertBanner = (ALAlertBanner *)[bannersInSamePosition objectAtIndex:1];
             [nextAlertBanner setShowShadow:YES];
         }
         
@@ -219,7 +215,7 @@
     }
 }
 
-- (void)alertBannerDidHide:(ALAlertBannerView *)alertBanner inView:(UIView *)view {
+- (void)alertBannerDidHide:(ALAlertBanner *)alertBanner inView:(UIView *)view {
     NSMutableArray *bannersArray = view.alertBanners;
     dispatch_semaphore_t semaphore;
     switch (alertBanner.position) {
@@ -252,7 +248,7 @@
 }
 
 - (void)hideAlertBannersInView:(UIView *)view {
-    for (ALAlertBannerView *alertBanner in [self alertBannersInView:view]) {
+    for (ALAlertBanner *alertBanner in [self alertBannersInView:view]) {
         [self hideAlertBanner:alertBanner];
     }
 }
@@ -272,7 +268,7 @@
         CGFloat topYCoord = 0.f;
         if (AL_IOS_7_OR_GREATER)
             topYCoord += [UIApplication navigationBarHeight] + kStatusBarHeight;
-        for (ALAlertBannerView *alertBanner in [topBanners reverseObjectEnumerator]) {
+        for (ALAlertBanner *alertBanner in [topBanners reverseObjectEnumerator]) {
             [alertBanner updateSizeAndSubviewsAnimated:YES];
             [alertBanner updatePositionAfterRotationWithY:topYCoord animated:YES];
             topYCoord += alertBanner.layer.bounds.size.height;
@@ -280,7 +276,7 @@
         
         NSArray *bottomBanners = [view.alertBanners filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.position == %i", ALAlertBannerPositionBottom]];
         CGFloat bottomYCoord = view.bounds.size.height;
-        for (ALAlertBannerView *alertBanner in [bottomBanners reverseObjectEnumerator]) {
+        for (ALAlertBanner *alertBanner in [bottomBanners reverseObjectEnumerator]) {
             //update frame size before animating to new position
             [alertBanner updateSizeAndSubviewsAnimated:YES];
             bottomYCoord -= alertBanner.layer.bounds.size.height;

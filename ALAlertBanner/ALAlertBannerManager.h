@@ -23,51 +23,19 @@
  **/
 
 #import <Foundation/Foundation.h>
-#import "ALAlertBannerView.h"
+#import "ALAlertBanner.h"
 
 @interface ALAlertBannerManager : NSObject
-
-
-
-/**
- The length of time it takes a banner to transition on-screen. 
- 
- Default value is 0.25 seconds.
- */
-@property (nonatomic) NSTimeInterval showAnimationDuration;
-
-/**
- The length of time it takes a banner to transition off-screen. 
- 
- Default value is 0.2 seconds.
- */
-@property (nonatomic) NSTimeInterval hideAnimationDuration;
-
-/**
- Banner opacity, between 0 and 1. 
- 
- Default value is 0.93f.
- */
-@property (nonatomic, assign) CGFloat bannerOpacity;
-
-/**
- Tapping on a banner will dismiss it early. 
- 
- Default value is YES. If you supply a tappedHandler in one of the appropriate methods, this will be set to NO for that specific banner.
- */
-@property (nonatomic, assign) BOOL allowTapToDismiss;
 
 /**
  The global shared instance that manages the presentation and dismissal of alert banners.
  */
 + (ALAlertBannerManager *)sharedManager;
 
-
-
 /**
  Immediately hide a specific alert banner.
  */
-- (void)hideAlertBanner:(ALAlertBannerView *)alertBanner;
+- (void)hideAlertBanner:(ALAlertBanner *)alertBanner;
 
 /**
  Returns an array of all banners within a certain view.

@@ -17,7 +17,7 @@
 		4FC799BB17BC072A000AEC49 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FC799BA17BC072A000AEC49 /* Default@2x.png */; };
 		4FC799BD17BC072A000AEC49 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FC799BC17BC072A000AEC49 /* Default-568h@2x.png */; };
 		4FC799C517BC0758000AEC49 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FC799C417BC0758000AEC49 /* ViewController.m */; };
-		4FC799CD17BC078B000AEC49 /* ALAlertBannerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FC799CB17BC078B000AEC49 /* ALAlertBannerView.m */; };
+		4FC799CD17BC078B000AEC49 /* ALAlertBanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FC799CB17BC078B000AEC49 /* ALAlertBanner.m */; };
 		4FC799D317BC07B7000AEC49 /* bannerAlert@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FC799CF17BC07B7000AEC49 /* bannerAlert@2x.png */; };
 		4FC799D417BC07B7000AEC49 /* bannerFailure@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FC799D017BC07B7000AEC49 /* bannerFailure@2x.png */; };
 		4FC799D517BC07B7000AEC49 /* bannerNotify@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FC799D117BC07B7000AEC49 /* bannerNotify@2x.png */; };
@@ -31,7 +31,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		4F083ACB17D10C4500F1CB54 /* ALAlertBannerView+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ALAlertBannerView+Private.h"; sourceTree = "<group>"; };
+		4F083ACB17D10C4500F1CB54 /* ALAlertBanner+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ALAlertBanner+Private.h"; sourceTree = "<group>"; };
 		4FC799A317BC072A000AEC49 /* ALAlertBannerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ALAlertBannerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FC799A617BC072A000AEC49 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4FC799A817BC072A000AEC49 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -47,9 +47,8 @@
 		4FC799BC17BC072A000AEC49 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		4FC799C317BC0758000AEC49 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		4FC799C417BC0758000AEC49 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		4FC799C717BC078B000AEC49 /* ALAlertBanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALAlertBanner.h; sourceTree = "<group>"; };
-		4FC799CA17BC078B000AEC49 /* ALAlertBannerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALAlertBannerView.h; sourceTree = "<group>"; };
-		4FC799CB17BC078B000AEC49 /* ALAlertBannerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALAlertBannerView.m; sourceTree = "<group>"; };
+		4FC799CA17BC078B000AEC49 /* ALAlertBanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALAlertBanner.h; sourceTree = "<group>"; };
+		4FC799CB17BC078B000AEC49 /* ALAlertBanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALAlertBanner.m; sourceTree = "<group>"; };
 		4FC799CF17BC07B7000AEC49 /* bannerAlert@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bannerAlert@2x.png"; sourceTree = "<group>"; };
 		4FC799D017BC07B7000AEC49 /* bannerFailure@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bannerFailure@2x.png"; sourceTree = "<group>"; };
 		4FC799D117BC07B7000AEC49 /* bannerNotify@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bannerNotify@2x.png"; sourceTree = "<group>"; };
@@ -136,12 +135,11 @@
 		4FC799C617BC078A000AEC49 /* ALAlertBanner */ = {
 			isa = PBXGroup;
 			children = (
-				4FC799C717BC078B000AEC49 /* ALAlertBanner.h */,
 				4FFBA6F717BE970700C2A7F2 /* ALAlertBannerManager.h */,
 				4FFBA6F817BE970700C2A7F2 /* ALAlertBannerManager.m */,
-				4FC799CA17BC078B000AEC49 /* ALAlertBannerView.h */,
-				4FC799CB17BC078B000AEC49 /* ALAlertBannerView.m */,
-				4F083ACB17D10C4500F1CB54 /* ALAlertBannerView+Private.h */,
+				4FC799CA17BC078B000AEC49 /* ALAlertBanner.h */,
+				4FC799CB17BC078B000AEC49 /* ALAlertBanner.m */,
+				4F083ACB17D10C4500F1CB54 /* ALAlertBanner+Private.h */,
 				4FC799CE17BC07B7000AEC49 /* Images */,
 			);
 			name = ALAlertBanner;
@@ -239,7 +237,7 @@
 				4FC799B317BC072A000AEC49 /* main.m in Sources */,
 				4FC799B717BC072A000AEC49 /* AppDelegate.m in Sources */,
 				4FC799C517BC0758000AEC49 /* ViewController.m in Sources */,
-				4FC799CD17BC078B000AEC49 /* ALAlertBannerView.m in Sources */,
+				4FC799CD17BC078B000AEC49 /* ALAlertBanner.m in Sources */,
 				4FFBA6F917BE970700C2A7F2 /* ALAlertBannerManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

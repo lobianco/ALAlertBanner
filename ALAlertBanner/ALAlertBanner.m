@@ -22,9 +22,10 @@
  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  **/
 
-#import "ALAlertBannerView.h"
+#import "ALAlertBanner.h"
 #import <QuartzCore/QuartzCore.h>
-#import "ALAlertBannerView+Private.h"
+#import "ALAlertBanner+Private.h"
+#import "ALAlertBannerManager.h"
 
 static NSString * const kShowAlertBannerKey = @"showAlertBannerKey";
 static NSString * const kHideAlertBannerKey = @"hideAlertBannerKey";
@@ -94,7 +95,11 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 
 @end
 
-@interface ALAlertBannerView ()
+@interface ALAlertBanner ()
+{
+    @private
+    ALAlertBannerManager *manager;
+}
 
 @property (nonatomic, assign) ALAlertBannerStyle style;
 @property (nonatomic, assign) ALAlertBannerPosition position;
@@ -108,7 +113,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 
 @end
 
-@implementation ALAlertBannerView
+@implementation ALAlertBanner
 
 - (id)init {
     self = [super init];
@@ -127,8 +132,15 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     self.userInteractionEnabled = YES;
     self.alpha = 0.f;
     self.layer.shadowOpacity = 0.5f;
+    self.tag = arc4random_uniform(SHRT_MAX);
+    
     _fadeOutDuration = 0.2f;
-        
+    _showAnimationDuration = 0.25f;
+    _hideAnimationDuration = 0.2f;
+    _isScheduledToHide = NO;
+    _bannerOpacity = 0.93f;
+    _secondsToShow = 3.5;
+    
     _styleImageView = [[UIImageView alloc] init];
     [self addSubview:_styleImageView];
     
@@ -156,7 +168,10 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     _subtitleLabel.layer.shadowOffset = CGSizeMake(0.f, -1.f);
     _subtitleLabel.layer.shadowOpacity = 0.3f;
     _subtitleLabel.layer.shadowRadius = 0.f;
-    [self addSubview:_subtitleLabel];    
+    [self addSubview:_subtitleLabel];
+    
+    manager = [ALAlertBannerManager sharedManager];
+    self.delegate = (ALAlertBannerManager <ALAlertBannerViewDelegate> *)manager;
 }
 
 # pragma mark -
@@ -235,45 +250,32 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 # pragma mark -
 # pragma mark Class Methods
 
-+ (ALAlertBannerView *)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title {
-    return [self showAlertBannerInView:view style:style position:position title:title subtitle:nil tappedHandler:nil];
++ (ALAlertBanner *)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title {
+    return [self showAlertBannerInView:view style:style position:position title:title subtitle:nil hideAfter:-1 tappedHandler:nil];
 }
 
-+ (ALAlertBannerView *)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle {
-    return [self showAlertBannerInView:view style:style position:position title:title subtitle:subtitle tappedHandler:nil];
++ (ALAlertBanner *)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle {
+    return [self showAlertBannerInView:view style:style position:position title:title subtitle:subtitle hideAfter:-1 tappedHandler:nil];
 }
 
-+ (ALAlertBannerView *)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle hideAfter:(NSTimeInterval)secondsToShow {
++ (ALAlertBanner *)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle hideAfter:(NSTimeInterval)secondsToShow {
     return [self showAlertBannerInView:view style:style position:position title:title subtitle:subtitle hideAfter:secondsToShow tappedHandler:nil];
 }
 
-+ (ALAlertBannerView *)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle tappedHandler:(void (^)(ALAlertBannerView *))tappedBlock {
-    return [self showAlertBannerInView:view style:style position:position title:title subtitle:subtitle hideAfter:self.secondsToShow tappedHandler:tappedBlock];
++ (ALAlertBanner *)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle tappedHandler:(void (^)(ALAlertBanner *))tappedBlock {
+    return [self showAlertBannerInView:view style:style position:position title:title subtitle:subtitle hideAfter:-1 tappedHandler:tappedBlock];
 }
 
-+ (ALAlertBannerView *)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle hideAfter:(NSTimeInterval)secondsToShow tappedHandler:(void (^)(ALAlertBannerView *))tappedBlock {
-    ALAlertBannerView *alertBanner = [ALAlertBannerView alertBannerForView:view style:style position:position title:title subtitle:subtitle];
-    alertBanner.delegate = self;
-    alertBanner.tag = arc4random_uniform(SHRT_MAX);
-    alertBanner.showAnimationDuration = self.showAnimationDuration;
-    alertBanner.hideAnimationDuration = self.hideAnimationDuration;
-    alertBanner.allowTapToDismiss = tappedBlock ? NO : self.allowTapToDismiss;
-    alertBanner.isScheduledToHide = NO;
-    alertBanner.bannerOpacity = self.bannerOpacity;
++ (ALAlertBanner *)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle hideAfter:(NSTimeInterval)secondsToShow tappedHandler:(void (^)(ALAlertBanner *))tappedBlock {
+    ALAlertBanner *alertBanner = [ALAlertBanner alertBannerForView:view style:style position:position title:title subtitle:subtitle];
+    alertBanner.secondsToShow = secondsToShow == -1 ? alertBanner.secondsToShow : secondsToShow;
+    alertBanner.allowTapToDismiss = tappedBlock ? NO : alertBanner.allowTapToDismiss;
     alertBanner.tappedBlock = tappedBlock;
-    
-    //keep track of all views we've added banners to, to deal with rotation events and hideAllAlertBanners
-    if (![self.bannerViews containsObject:view]) {
-        [self.bannerViews addObject:view];
-    }
-    
-    [self showAlertBanner:alertBanner hideAfter:secondsToShow];
-    
     return alertBanner;
 }
 
-+ (ALAlertBannerView *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle {
-    ALAlertBannerView *alertBanner = [[ALAlertBannerView alloc] init];
++ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle {
+    ALAlertBanner *alertBanner = [[ALAlertBanner alloc] init];
     BOOL isSuperviewKindOfWindow = ([view isKindOfClass:[UIWindow class]]);
     
     if (!isSuperviewKindOfWindow && position == ALAlertBannerPositionUnderNavBar)
@@ -293,10 +295,14 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     return alertBanner;
 }
 
+- (void)show {
+    [self.delegate showAlertBanner:self hideAfter:self.secondsToShow];
+}
+
 # pragma mark -
 # pragma mark Instance Methods
 
-- (void)show {
+- (void)showAlertBanner {
     if (!CGRectEqualToRect(self.parentFrameUponCreation, self.superview.bounds)) {
         //if view size changed since this banner was created, reset layout
         [self setInitialLayout];
@@ -357,7 +363,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     } completion:nil];
 }
 
-- (void)hide {
+- (void)hideAlertBanner {
     [self.delegate alertBannerWillHide:self inView:self.superview];
     
     self.state = ALAlertBannerStateHiding;
@@ -403,7 +409,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     [self.layer addAnimation:moveLayer forKey:kHideAlertBannerKey];
 }
 
-- (void)push:(CGFloat)distance forward:(BOOL)forward delay:(double)delay {    
+- (void)pushAlertBanner:(CGFloat)distance forward:(BOOL)forward delay:(double)delay {
     self.state = (forward ? ALAlertBannerStateMovingForward : ALAlertBannerStateMovingBackward);
     
     CGFloat distanceToPush = distance;

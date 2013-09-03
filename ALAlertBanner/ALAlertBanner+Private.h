@@ -1,5 +1,5 @@
 /**
- ALAlertBannerView+Private.h
+ ALAlertBanner+Private.h
  
  Created by Anthony Lobianco on 8/12/13.
  Copyright (c) 2013 Anthony Lobianco. All rights reserved.
@@ -22,7 +22,7 @@
  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  **/
 
-#import "ALAlertBannerView.h"
+#import "ALAlertBanner.h"
 
 #define AL_IOS_7_OR_GREATER [UIDevice iOSVersion] >= 7.0
 
@@ -40,28 +40,30 @@ static CGFloat const kStatusBarHeight = 20.f;
 
 @end
 
-@class ALAlertBannerView;
+@class ALAlertBanner;
 @protocol ALAlertBannerViewDelegate <NSObject>
 @required
-- (void)alertBannerWillShow:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
-- (void)alertBannerDidShow:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
-- (void)alertBannerWillHide:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
-- (void)alertBannerDidHide:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
-- (void)hideAlertBanner:(ALAlertBannerView *)alertBanner;
+- (void)showAlertBanner:(ALAlertBanner *)alertBanner hideAfter:(NSTimeInterval)delay;
+- (void)hideAlertBanner:(ALAlertBanner *)alertBanner;
+
+- (void)alertBannerWillShow:(ALAlertBanner *)alertBanner inView:(UIView *)view;
+- (void)alertBannerDidShow:(ALAlertBanner *)alertBanner inView:(UIView *)view;
+- (void)alertBannerWillHide:(ALAlertBanner *)alertBanner inView:(UIView *)view;
+- (void)alertBannerDidHide:(ALAlertBanner *)alertBanner inView:(UIView *)view;
 @end
 
-@interface ALAlertBannerView ()
+@interface ALAlertBanner ()
 
 @property (nonatomic, weak) id <ALAlertBannerViewDelegate> delegate;
 @property (nonatomic) BOOL isScheduledToHide;
-@property (nonatomic, copy) void(^tappedBlock)(ALAlertBannerView *);
+@property (nonatomic, copy) void(^tappedBlock)(ALAlertBanner *);
 @property (nonatomic) NSTimeInterval fadeInDuration;
 @property (nonatomic) BOOL showShadow;
 
 + (instancetype)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle;
-- (void)show;
-- (void)hide;
-- (void)push:(CGFloat)distance forward:(BOOL)forward delay:(double)delay;
+- (void)showAlertBanner;
+- (void)hideAlertBanner;
+- (void)pushAlertBanner:(CGFloat)distance forward:(BOOL)forward delay:(double)delay;
 - (void)updateSizeAndSubviewsAnimated:(BOOL)animated;
 - (void)updatePositionAfterRotationWithY:(CGFloat)yPos animated:(BOOL)animated;
 
