@@ -24,8 +24,12 @@ static NSString *loremIpsum[] = {
 
 @property (nonatomic, strong) UISlider *secondsToShowSlider;
 @property (nonatomic, strong) UILabel *secondsToShowLabel;
+@property (nonatomic) NSTimeInterval secondsToShow;
+
 @property (nonatomic, strong) UISlider *animationDurationSlider;
 @property (nonatomic, strong) UILabel *animationDurationLabel;
+@property (nonatomic) NSTimeInterval showAnimationDuration;
+@property (nonatomic) NSTimeInterval hideAnimationDuration;
 
 @end
 
@@ -44,6 +48,10 @@ static NSString *loremIpsum[] = {
 	// Do any additional setup after loading the view.
     
     self.view.backgroundColor = [UIColor colorWithRed:243/255.0 green:247/255.0 blue:249/255.0 alpha:1.f];
+    
+    _secondsToShow = 3.5;
+    _showAnimationDuration = 0.25;
+    _hideAnimationDuration = 0.2;
         
     self.topButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     self.topButton.tag = ALAlertBannerPositionTop;
@@ -115,19 +123,32 @@ static NSString *loremIpsum[] = {
 - (void)showAlertBannerInView:(UIButton *)button {
     ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
     ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
+    /*
     [[ALAlertBannerManager sharedManager] showAlertBannerInView:self.view style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum] tappedHandler:^(ALAlertBannerView *alertBanner) {
         
         NSLog(@"tapped!");
         [[ALAlertBannerManager sharedManager] hideAlertBanner:alertBanner];
         
     }];
+     */
+    
+    ALAlertBanner *banner = [ALAlertBanner alertBannerForView:self.view style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum] tappedHandler:^(ALAlertBanner *alertBanner) {
+        
+        NSLog(@"tapped!");
+        [alertBanner hide];
+        
+    }];
+    banner.secondsToShow = self.secondsToShow;
+    banner.showAnimationDuration = self.showAnimationDuration;
+    banner.hideAnimationDuration = self.hideAnimationDuration;
+    [banner show];
 }
 
 - (void)showAlertBannerInWindow:(UIButton *)button {
-    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
-    ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
-    [[ALAlertBannerManager sharedManager] showAlertBannerInView:appDelegate.window style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum]];
+    //AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    //ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
+    //ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
+    //[[ALAlertBannerManager sharedManager] showAlertBannerInView:appDelegate.window style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum]];
 }
 
 - (NSString *)randomLoremIpsum {
@@ -142,7 +163,7 @@ static NSString *loremIpsum[] = {
 }
 
 - (void)secondsToShowSliderTouchEnded:(UISlider *)slider {
-    [[ALAlertBannerManager sharedManager] setSecondsToShow:slider.value];
+    [self setSecondsToShow:slider.value];
 }
 
 - (void)animationDurationSlider:(UISlider *)slider {
@@ -152,8 +173,8 @@ static NSString *loremIpsum[] = {
 }
 
 - (void)animationDurationSliderTouchEnded:(UISlider *)slider {
-    [[ALAlertBannerManager sharedManager] setShowAnimationDuration:slider.value];
-    [[ALAlertBannerManager sharedManager] setHideAnimationDuration:slider.value];
+    [self setShowAnimationDuration:slider.value];
+    [self setHideAnimationDuration:slider.value];
 }
 
 - (BOOL)shouldAutorotate {

@@ -23,7 +23,6 @@
  **/
 
 #import <Foundation/Foundation.h>
-#import "ALAlertBanner.h"
 
 @interface ALAlertBannerManager : NSObject
 
@@ -31,11 +30,6 @@
  The global shared instance that manages the presentation and dismissal of alert banners.
  */
 + (ALAlertBannerManager *)sharedManager;
-
-/**
- Immediately hide a specific alert banner.
- */
-- (void)hideAlertBanner:(ALAlertBanner *)alertBanner;
 
 /**
  Returns an array of all banners within a certain view.

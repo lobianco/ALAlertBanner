@@ -45,7 +45,6 @@ static CGFloat const kStatusBarHeight = 20.f;
 @required
 - (void)showAlertBanner:(ALAlertBanner *)alertBanner hideAfter:(NSTimeInterval)delay;
 - (void)hideAlertBanner:(ALAlertBanner *)alertBanner;
-
 - (void)alertBannerWillShow:(ALAlertBanner *)alertBanner inView:(UIView *)view;
 - (void)alertBannerDidShow:(ALAlertBanner *)alertBanner inView:(UIView *)view;
 - (void)alertBannerWillHide:(ALAlertBanner *)alertBanner inView:(UIView *)view;
@@ -60,7 +59,6 @@ static CGFloat const kStatusBarHeight = 20.f;
 @property (nonatomic) NSTimeInterval fadeInDuration;
 @property (nonatomic) BOOL showShadow;
 
-+ (instancetype)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle;
 - (void)showAlertBanner;
 - (void)hideAlertBanner;
 - (void)pushAlertBanner:(CGFloat)distance forward:(BOOL)forward delay:(double)delay;

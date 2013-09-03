@@ -39,8 +39,6 @@
 @implementation UIView (Convenience)
 
 @dynamic alertBanners;
-//
-//static char ALAlertBannerAlertBanners;
 
 - (void)setAlertBanners:(NSMutableArray *)alertBanners {
     objc_setAssociatedObject(self, @selector(alertBanners), alertBanners, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -54,6 +52,7 @@
     }
     return alertBannersArray;
 }
+
 @end
 
 @interface ALAlertBannerManager () <ALAlertBannerViewDelegate>
