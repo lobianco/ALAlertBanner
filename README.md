@@ -49,11 +49,11 @@ If you can compile without errors, congratulations! You're one step closer to...
 
 ### Tested Environments
 
-ALAlertBanner has been tested to work on iOS 5.0, 5.1 and 6.0 (simulator), iOS 6.1 (device), and iOS 7.0 (simulator) with ARC enabled.
+ALAlertBanner has been tested to work on iOS 5.0, 5.1 and 6.0 (simulator), iOS 6.1 (device), and iOS 7.0 (simulator). ALAlertBanner requires that ARC be enabled.
 
 ## Example Usage
 
-You should use the ```ALAlertBannerManager``` singleton object to manage all banners. You can easily present a banner in a regular ```UIView``` like so:
+ALAlertBanner is simple to use. You'll create a banner, (optionally) customize it, and then tell it display itself like so:
 
 ```objc
 [[ALAlertBannerManager sharedManager] showAlertBannerInView:self.view 
@@ -63,7 +63,7 @@ You should use the ```ALAlertBannerManager``` singleton object to manage all ban
                                                    subtitle:@"Here's a banner. Look how easy that was."];
 ```
 
-or in a ```UIWindow```:
+You can also present it in a ```UIWindow```:
 
 ```objc
 AppDelegate *appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
