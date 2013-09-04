@@ -60,7 +60,7 @@ ALAlertBanner *banner = [ALAlertBanner alertBannerForView:self.view
                                                     style:ALAlertBannerStyleSuccess 
                                                  position:ALAlertBannerPositionTop 
                                                     title:@"Success!" 
-                                                 subtitle:@"Here's a banner. Look how easy that was."]; 
+                                                 subtitle:@"Here's a banner. That was easy."]; 
 
 /* 
  optionally customize banner properties here...
@@ -77,7 +77,7 @@ ALAlertBanner *banner = [ALAlertBanner alertBannerForView:appDelegate.window
                                                     style:ALAlertBannerStyleNotify 
                                                  position:ALAlertBannerPositionUnderNavBar 
                                                     title:@"Notify!" 
-                                                 subtitle:@"Here's another banner, and it is nice and comfy in its UIWindow"]; 
+                                                 subtitle:@"Here's another banner."]; 
 [banner show];
 ```
 
