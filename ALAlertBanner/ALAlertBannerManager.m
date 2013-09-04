@@ -102,12 +102,6 @@
 # pragma mark ALAlertBannerViewDelegate Methods
 
 - (void)showAlertBanner:(ALAlertBanner *)alertBanner hideAfter:(NSTimeInterval)delay {
-    
-    //keep track of all views we've added banners to, to deal with rotation events and hideAllAlertBanners
-    if (![self.bannerViews containsObject:alertBanner.superview]) {
-        [self.bannerViews addObject:alertBanner.superview];
-    }
-    
     dispatch_semaphore_t semaphore;
     switch (alertBanner.position) {
         case ALAlertBannerPositionTop:
@@ -163,6 +157,11 @@
 }
 
 - (void)alertBannerWillShow:(ALAlertBanner *)alertBanner inView:(UIView *)view {
+    //keep track of all views we've added banners to, to deal with rotation events and hideAllAlertBanners
+    if (![self.bannerViews containsObject:view]) {
+        [self.bannerViews addObject:view];
+    }
+    
     //make copy so we can set shadow before pushing banners
     NSArray *bannersToPush = [NSArray arrayWithArray:view.alertBanners];
     NSMutableArray *bannersArray = view.alertBanners;
@@ -232,6 +231,9 @@
             break;
     }
     [bannersArray removeObject:alertBanner];
+    if (bannersArray.count == 0) {
+        [self.bannerViews removeObject:view];
+    }
     dispatch_semaphore_signal(semaphore);
 }
 
