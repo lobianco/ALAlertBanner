@@ -126,33 +126,28 @@ static NSString *loremIpsum[] = {
 - (void)showAlertBannerInView:(UIButton *)button {
     ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
     ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
-    ALAlertBanner *banner = [ALAlertBanner showAlertBannerInView:self.view style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum] tappedHandler:^(ALAlertBanner *alertBanner) {
-        
+    ALAlertBanner *banner = [ALAlertBanner alertBannerForView:self.view style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum] tappedBlock:^(ALAlertBanner *alertBanner) {
         NSLog(@"tapped!");
         [alertBanner hide];
-        
     }];
     banner.secondsToShow = self.secondsToShow;
     banner.showAnimationDuration = self.showAnimationDuration;
     banner.hideAnimationDuration = self.hideAnimationDuration;
-    //[banner show];
+    [banner show];
 }
 
 - (void)showAlertBannerInWindow:(UIButton *)button {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
     ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
-    ALAlertBanner *banner = [ALAlertBanner showAlertBannerInView:appDelegate.window style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum] tappedHandler:^(ALAlertBanner *alertBanner) {
-        
+    ALAlertBanner *banner = [ALAlertBanner alertBannerForView:appDelegate.window style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum] tappedBlock:^(ALAlertBanner *alertBanner) {
         NSLog(@"tapped!");
         [alertBanner hide];
-        
     }];
-    
     banner.secondsToShow = self.secondsToShow;
     banner.showAnimationDuration = self.showAnimationDuration;
     banner.hideAnimationDuration = self.hideAnimationDuration;
-    //[banner show];
+    [banner show];
 }
 
 - (void)alertBannersInView {

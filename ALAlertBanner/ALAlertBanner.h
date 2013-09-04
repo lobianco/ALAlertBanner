@@ -99,16 +99,16 @@ typedef enum {
 /**
  The default methods to customize and display a banner.
  */
-+ (ALAlertBanner *)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title;
++ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title;
 
-+ (ALAlertBanner *)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle;
++ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle;
 
 /**
  Optional method to handle a tap on a banner.
  
  By default, supplying a tap handler will disable allowTapToDismiss on this particular banner. If you want to reinstate this behavior alongside the tap handler, you can call `[[ALAlertBannerManager sharedManager] hideAlertBanner:alertBanner];` in tappedBlock().
  */
-+ (ALAlertBanner *)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle tappedHandler:(void(^)(ALAlertBanner *alertBanner))tappedBlock;
++ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle tappedBlock:(void(^)(ALAlertBanner *alertBanner))tappedBlock;
 
 /**
  Show the alert banner
@@ -126,12 +126,12 @@ typedef enum {
 + (NSArray *)alertBannersInView:(UIView *)view;
 
 /**
- Immediately hides all alert banners in all views.
+ Immediately hides all alert banners in all views, forgoing their secondsToShow values.
  */
 + (void)hideAllAlertBanners;
 
 /**
- Immediately hides all alert banners in a certain view.
+ Immediately hides all alert banners in a certain view, forgoing their secondsToShow values.
  */
 + (void)hideAlertBannersInView:(UIView *)view;
 

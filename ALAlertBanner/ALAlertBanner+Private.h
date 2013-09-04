@@ -55,7 +55,7 @@ static CGFloat const kStatusBarHeight = 20.f;
 
 @property (nonatomic, weak) id <ALAlertBannerViewDelegate> delegate;
 @property (nonatomic) BOOL isScheduledToHide;
-@property (nonatomic, copy) void(^tappedBlock)(ALAlertBanner *);
+@property (nonatomic, copy) void(^tappedBlock)(ALAlertBanner *alertBanner);
 @property (nonatomic) NSTimeInterval fadeInDuration;
 @property (nonatomic) BOOL showShadow;
 

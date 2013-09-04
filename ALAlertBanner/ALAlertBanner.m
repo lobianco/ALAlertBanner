@@ -144,6 +144,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     _isScheduledToHide = NO;
     _bannerOpacity = 0.93f;
     _secondsToShow = 3.5;
+    _allowTapToDismiss = YES;
     
     manager = [ALAlertBannerManager sharedManager];
     self.delegate = (ALAlertBannerManager <ALAlertBannerViewDelegate> *)manager;
@@ -246,6 +247,14 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     [self.layer addAnimation:fadeShadow forKey:@"shadowRadius"];
 }
 
+- (void)setAllowTapToDismiss:(BOOL)allowTapToDismiss {
+    if (self.tappedBlock && allowTapToDismiss) {
+        NSLog(@"allowTapToDismiss should be set to NO when a tappedBlock is supplied. If you want to reinstate the tap to dismiss behavior, call [alertBanner hide] in tappedBlock.");
+        return;
+    }
+    _allowTapToDismiss = allowTapToDismiss;
+}
+
 - (BOOL)isAnimating {
     return (self.state == ALAlertBannerStateShowing ||
             self.state == ALAlertBannerStateHiding ||
@@ -268,19 +277,18 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     [[ALAlertBannerManager sharedManager] hideAlertBannersInView:view];
 }
 
-+ (ALAlertBanner *)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title {
-    return [self showAlertBannerInView:view style:style position:position title:title subtitle:nil tappedHandler:nil];
++ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title {
+    return [self alertBannerForView:view style:style position:position title:title subtitle:nil tappedBlock:nil];
 }
 
-+ (ALAlertBanner *)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle {
-    return [self showAlertBannerInView:view style:style position:position title:title subtitle:subtitle tappedHandler:nil];
++ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle {
+    return [self alertBannerForView:view style:style position:position title:title subtitle:subtitle tappedBlock:nil];
 }
 
-+ (ALAlertBanner *)showAlertBannerInView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle tappedHandler:(void (^)(ALAlertBanner *))tappedBlock {
++ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle tappedBlock:(void (^)(ALAlertBanner *alertBanner))tappedBlock {
     ALAlertBanner *alertBanner = [ALAlertBanner createAlertBannerForView:view style:style position:position title:title subtitle:subtitle];
     alertBanner.allowTapToDismiss = tappedBlock ? NO : alertBanner.allowTapToDismiss;
     alertBanner.tappedBlock = tappedBlock;
-    [alertBanner show];
     return alertBanner;
 }
 
