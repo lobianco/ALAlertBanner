@@ -249,7 +249,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 
 - (void)setAllowTapToDismiss:(BOOL)allowTapToDismiss {
     if (self.tappedBlock && allowTapToDismiss) {
-        NSLog(@"allowTapToDismiss should be set to NO when a tappedBlock is supplied. If you want to reinstate the tap to dismiss behavior, call [alertBanner hide] in tappedBlock.");
+        NSLog(@"allowTapToDismiss should be set to NO when a tappedBlock is used. If you want to reinstate the tap to dismiss behavior, call [alertBanner hide] in tappedBlock.");
         return;
     }
     _allowTapToDismiss = allowTapToDismiss;
@@ -299,7 +299,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     ALAlertBanner *alertBanner = [[ALAlertBanner alloc] init];
     
     if (![view isKindOfClass:[UIWindow class]] && position == ALAlertBannerPositionUnderNavBar)
-        [[NSException exceptionWithName:@"Bad ALAlertBannerStyle For View Type" reason:@"ALAlertBannerPositionUnderNavBar should only be used if you are presenting the alert banner on the AppDelegate window. Use ALAlertBannerPositionTop or ALAlertBannerPositionBottom for normal UIViews" userInfo:nil] raise];
+        [[NSException exceptionWithName:@"Wrong ALAlertBannerStyle For View Type" reason:@"ALAlertBannerPositionUnderNavBar should only be used if you are presenting the alert banner on the AppDelegate window. Use ALAlertBannerPositionTop or ALAlertBannerPositionBottom for normal UIViews" userInfo:nil] raise];
     
     alertBanner.titleLabel.text = !title ? @" " : title;
     alertBanner.subtitleLabel.text = subtitle;
