@@ -112,4 +112,8 @@ typedef enum {
 -(void)updateSizeAndSubviewsAnimated:(BOOL)animated;
 -(void)updatePositionAfterRotationWithY:(CGFloat)yPos animated:(BOOL)animated;
 
+#pragma mark - Configurable colors:
+
++(void)setColor:(UIColor *)color forBannerStyle:(ALAlertBannerStyle)style;
++(UIColor *)colorFrBannerStyle:(ALAlertBannerStyle)style;
 @end

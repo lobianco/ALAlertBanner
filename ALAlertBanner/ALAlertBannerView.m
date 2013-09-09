@@ -633,21 +633,8 @@ static CGFloat const kRotationDurationIPad = 0.4f;
 {
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    UIColor *fillColor;
-    switch (self.style) {
-        case ALAlertBannerStyleSuccess:
-            fillColor = [UIColor colorWithRed:(77/255.0) green:(175/255.0) blue:(67/255.0) alpha:1.f];
-            break;
-        case ALAlertBannerStyleFailure:
-            fillColor = [UIColor colorWithRed:(173/255.0) green:(48/255.0) blue:(48/255.0) alpha:1.f];
-            break;
-        case ALAlertBannerStyleNotify:
-            fillColor = [UIColor colorWithRed:(48/255.0) green:(110/255.0) blue:(173/255.0) alpha:1.f];
-            break;
-        case ALAlertBannerStyleAlert:
-            fillColor = [UIColor colorWithRed:(211/255.0) green:(209/255.0) blue:(100/255.0) alpha:1.f];
-            break;
-    }
+    UIColor *fillColor = [ALAlertBannerView colorFrBannerStyle:self.style];
+
     
     NSArray *colorsArray = [NSArray arrayWithObjects:(id)[fillColor CGColor], (id)[[fillColor darkerColor] CGColor], nil];
     CGColorSpaceRef colorSpace =  CGColorSpaceCreateDeviceRGB();
@@ -664,5 +651,39 @@ static CGFloat const kRotationDurationIPad = 0.4f;
     CGContextSetFillColorWithColor(context, [UIColor colorWithRed:1 green:1 blue:1 alpha:0.3].CGColor);
     CGContextFillRect(context, CGRectMake(0, 0, rect.size.width, 1.f));
 }
+
+
+#pragma mark - Configurable colors:
+
++(NSMutableDictionary *)colors{
+    
+    static dispatch_once_t pred;
+    static NSMutableDictionary *shared = nil;
+    
+    dispatch_once(&pred, ^{
+        shared = [[NSMutableDictionary alloc] initWithDictionary:
+                  @{
+                  @(ALAlertBannerStyleSuccess) : [UIColor colorWithRed:(77/255.0) green:(175/255.0) blue:(67/255.0) alpha:1.f],
+                  @(ALAlertBannerStyleFailure) : [UIColor colorWithRed:(173/255.0) green:(48/255.0) blue:(48/255.0) alpha:1.f],
+                  @(ALAlertBannerStyleNotify) : [UIColor colorWithRed:(48/255.0) green:(110/255.0) blue:(173/255.0) alpha:1.f],
+                  @(ALAlertBannerStyleAlert) : [UIColor colorWithRed:(211/255.0) green:(209/255.0) blue:(100/255.0) alpha:1.f],
+                  }];
+        
+        //[shared printEntityList];
+    });
+    return shared;
+}
++(void)setColor:(UIColor *)color forBannerStyle:(ALAlertBannerStyle)style{
+    
+    [[ALAlertBannerView colors] setObject:color forKey:@(style)];
+    
+}
++(UIColor *)colorFrBannerStyle:(ALAlertBannerStyle)style{
+    
+    
+    UIColor *fillColor = [[ALAlertBannerView colors] objectForKey:@(style)];
+    return fillColor;
+}
+
 
 @end
