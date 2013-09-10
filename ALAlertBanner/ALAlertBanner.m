@@ -41,7 +41,7 @@ static NSString * const kMoveAlertBannerKey = @"moveAlertBannerKey";
 
 static CGFloat const kMargin = 10.f;
 static CGFloat const kNavigationBarHeightDefault = 44.f;
-static CGFloat const kNavigationBarHeightiOS7Landscape = 32.f;
+static CGFloat const kNavigationBarHeightLandscape = 32.f;
 
 static CFTimeInterval const kRotationDurationIphone = 0.3;
 static CFTimeInterval const kRotationDurationIPad = 0.4;
@@ -95,8 +95,8 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 
 + (CGFloat)navigationBarHeight {
     //if we're on iOS7 or later, return new landscape navBar height
-    if (AL_IOS_7_OR_GREATER && UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
-        return kNavigationBarHeightiOS7Landscape;
+    if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
+        return kNavigationBarHeightLandscape;
     
     return kNavigationBarHeightDefault;
 }
@@ -566,7 +566,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
         
     CGRect oldBounds = self.layer.bounds;
     CGRect newBounds = oldBounds;
-    newBounds.size = CGSizeMake(self.superview.frame.size.width, heightForSelf);
+    newBounds.size = CGSizeMake(self.superview.bounds.size.width, heightForSelf);
     self.layer.bounds = newBounds;
     
     if (animated) {

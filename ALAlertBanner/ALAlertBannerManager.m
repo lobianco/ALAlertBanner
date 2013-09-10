@@ -62,8 +62,6 @@
 @property (nonatomic) dispatch_semaphore_t navBarPositionSemaphore;
 @property (nonatomic, strong) NSMutableArray *bannerViews;
 
-- (void)didRotate:(NSNotification *)note;
-
 @end
 
 @implementation ALAlertBannerManager
@@ -90,10 +88,6 @@
         dispatch_semaphore_signal(_navBarPositionSemaphore);
         
         _bannerViews = [NSMutableArray new];
-        
-        //TODO: use UIApplicationDidChangeStatusBarOrientationNotification instead
-        [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRotate:) name:UIDeviceOrientationDidChangeNotification object:nil];
     }
     return self;
 }
@@ -157,9 +151,10 @@
 }
 
 - (void)alertBannerWillShow:(ALAlertBanner *)alertBanner inView:(UIView *)view {
-    //keep track of all views we've added banners to, to deal with rotation events and hideAllAlertBanners
+    //keep track of all views we've added banners to, to deal with rotation events and hideAllAlertBanners. also start observing view's frame
     if (![self.bannerViews containsObject:view]) {
         [self.bannerViews addObject:view];
+        [self observeView:view];
     }
     
     //make copy so we can set shadow before pushing banners
@@ -233,6 +228,7 @@
     [bannersArray removeObject:alertBanner];
     if (bannersArray.count == 0) {
         [self.bannerViews removeObject:view];
+        [self stopObservingView:view];
     }
     dispatch_semaphore_signal(semaphore);
 }
@@ -259,33 +255,44 @@
 # pragma mark -
 # pragma mark Private Methods
 
-- (void)didRotate:(NSNotification *)note {    
-    for (UIView *view in self.bannerViews) {
-        NSArray *topBanners = [view.alertBanners filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.position == %i", ALAlertBannerPositionTop]];
-        CGFloat topYCoord = 0.f;
-        if (AL_IOS_7_OR_GREATER)
-            topYCoord += [UIApplication navigationBarHeight] + kStatusBarHeight;
-        for (ALAlertBanner *alertBanner in [topBanners reverseObjectEnumerator]) {
-            [alertBanner updateSizeAndSubviewsAnimated:YES];
-            [alertBanner updatePositionAfterRotationWithY:topYCoord animated:YES];
-            topYCoord += alertBanner.layer.bounds.size.height;
-        }
-        
-        NSArray *bottomBanners = [view.alertBanners filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.position == %i", ALAlertBannerPositionBottom]];
-        CGFloat bottomYCoord = view.bounds.size.height;
-        for (ALAlertBanner *alertBanner in [bottomBanners reverseObjectEnumerator]) {
-            //update frame size before animating to new position
-            [alertBanner updateSizeAndSubviewsAnimated:YES];
-            bottomYCoord -= alertBanner.layer.bounds.size.height;
-            [alertBanner updatePositionAfterRotationWithY:bottomYCoord animated:YES];
-        }
-        
-        //TODO: rotation for UIWindow
+- (void)observeView:(UIView *)view {
+    [view addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+}
+
+- (void)stopObservingView:(UIView *)view {
+    [view removeObserver:self forKeyPath:@"frame"];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    CGRect oldRect = [[change objectForKey:NSKeyValueChangeOldKey] CGRectValue];
+    CGRect newRect = [[change objectForKey:NSKeyValueChangeNewKey] CGRectValue];
+    //when kvo'ing a view's frame, the frame changes multiple times during a rotation due to the navigation bar resizing, thus firing this method multiple times. test the new and old height and if the difference between them is 12.f, that *usually* means that the nav bar just resized itself. this solution is hackish and should be fixed.
+    if (!CGRectEqualToRect(oldRect, newRect) && fabsf(oldRect.size.height - newRect.size.height) == 12.f) {
+        [self rotateBannersInView:(UIView*)object];
     }
 }
 
-- (void)dealloc {
-    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+- (void)rotateBannersInView:(UIView *)view {
+    NSArray *topBanners = [view.alertBanners filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.position == %i", ALAlertBannerPositionTop]];
+    CGFloat topYCoord = 0.f;
+    if (AL_IOS_7_OR_GREATER)
+        topYCoord += [UIApplication navigationBarHeight] + kStatusBarHeight;
+    for (ALAlertBanner *alertBanner in [topBanners reverseObjectEnumerator]) {
+        [alertBanner updateSizeAndSubviewsAnimated:YES];
+        [alertBanner updatePositionAfterRotationWithY:topYCoord animated:YES];
+        topYCoord += alertBanner.layer.bounds.size.height;
+    }
+    
+    NSArray *bottomBanners = [view.alertBanners filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.position == %i", ALAlertBannerPositionBottom]];
+    CGFloat bottomYCoord = view.bounds.size.height;
+    for (ALAlertBanner *alertBanner in [bottomBanners reverseObjectEnumerator]) {
+        //update frame size before animating to new position
+        [alertBanner updateSizeAndSubviewsAnimated:YES];
+        bottomYCoord -= alertBanner.layer.bounds.size.height;
+        [alertBanner updatePositionAfterRotationWithY:bottomYCoord animated:YES];
+    }
+    
+    //TODO: rotation for UIWindow
 }
 
 @end
