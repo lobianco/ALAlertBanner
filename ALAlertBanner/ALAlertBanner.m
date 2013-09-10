@@ -22,6 +22,14 @@
  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  **/
 
+#if !__has_feature(objc_arc)
+#error ALAlertBanner requires that ARC be enabled
+#endif
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_5_0
+#error ALAlertBanner requires iOS 5.0 or higher
+#endif
+
 #import "ALAlertBanner.h"
 #import <QuartzCore/QuartzCore.h>
 #import "ALAlertBanner+Private.h"
