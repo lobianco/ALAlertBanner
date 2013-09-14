@@ -26,13 +26,16 @@
 #error ALAlertBanner requires that ARC be enabled
 #endif
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_5_0
+
+#if (__LP64__ || (TARGET_OS_EMBEDDED && !TARGET_OS_IPHONE) || TARGET_OS_WIN32 || NS_BUILD_32_LIKE_64) && __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_6_0
+#error ALAlertBanner requires iOS 6.0 or higher when built for 64-bit
+#elseif __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_5_0
 #error ALAlertBanner requires iOS 5.0 or higher
 #endif
 
-#import "ALAlertBanner.h"
+#import "ALAlertBannerView.h"
 #import <QuartzCore/QuartzCore.h>
-#import "ALAlertBanner+Private.h"
+#import "ALAlertBannerView+Private.h"
 #import "ALAlertBannerManager.h"
 
 static NSString * const kShowAlertBannerKey = @"showAlertBannerKey";
@@ -49,7 +52,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 #define AL_DEVICE_ANIMATION_DURATION UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? kRotationDurationIPad : kRotationDurationIphone;
 
 //macros referenced from MBProgressHUD. cheers to @matej
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_7_0
     #define AL_SINGLELINE_TEXT_HEIGHT(text, font) [text length] > 0 ? [text sizeWithAttributes:nil].height : 0.f;
     #define AL_MULTILINE_TEXT_HEIGHT(text, font, maxSize, mode) [text length] > 0 ? [text boundingRectWithSize:maxSize \
                                                                                                        options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) \
@@ -70,9 +73,10 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 @implementation UIColor (LightAndDark)
 
 - (UIColor *)darkerColor {
-    float h, s, b, a;
-    if ([self getHue:&h saturation:&s brightness:&b alpha:&a])
-        return [UIColor colorWithHue:h saturation:s brightness:b * 0.75 alpha:a];
+    CGFloat h, s, b, a = 0.0f; //CGFloat not float !!!!!
+    if ([self getHue:&h saturation:&s brightness:&b alpha:&a]) {
+        return [UIColor colorWithHue:h saturation:s brightness:b * 0.75f alpha:a];
+    }
     return nil;
 }
 
@@ -103,7 +107,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 
 @end
 
-@interface ALAlertBanner () {
+@interface ALAlertBannerView () {
     @private
     ALAlertBannerManager *manager;
 }
@@ -120,7 +124,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 
 @end
 
-@implementation ALAlertBanner
+@implementation ALAlertBannerView
 
 - (id)init {
     self = [super init];
@@ -192,23 +196,23 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 # pragma mark -
 # pragma mark Custom Setters & Getters
 
--(void)setStyle:(ALAlertBannerStyle)style {
+- (void)setStyle:(ALAlertBannerStyle)style {
     _style = style;
     
-    switch (style) {
-        case ALAlertBannerStyleSuccess:
+    switch (style.statusIcon) {
+        case ALAlertBannerIconSuccess:
             self.styleImageView.image = [UIImage imageNamed:@"bannerSuccess.png"];
             break;
             
-        case ALAlertBannerStyleFailure:
+        case ALAlertBannerIconFailure:
             self.styleImageView.image = [UIImage imageNamed:@"bannerFailure.png"];
             break;
             
-        case ALAlertBannerStyleNotify:
+        case ALAlertBannerIconNotify:
             self.styleImageView.image = [UIImage imageNamed:@"bannerNotify.png"];
             break;
             
-        case ALAlertBannerStyleWarning:
+        case ALAlertBannerIconWarning:
             self.styleImageView.image = [UIImage imageNamed:@"bannerAlert.png"];
             
             //tone the shadows down a little for the yellow background
@@ -285,16 +289,16 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     [[ALAlertBannerManager sharedManager] hideAlertBannersInView:view];
 }
 
-+ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title {
++ (ALAlertBannerView *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title {
     return [self alertBannerForView:view style:style position:position title:title subtitle:nil tappedBlock:nil];
 }
 
-+ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle {
++ (ALAlertBannerView *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle {
     return [self alertBannerForView:view style:style position:position title:title subtitle:subtitle tappedBlock:nil];
 }
 
-+ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle tappedBlock:(void (^)(ALAlertBanner *alertBanner))tappedBlock {
-    ALAlertBanner *alertBanner = [ALAlertBanner createAlertBannerForView:view style:style position:position title:title subtitle:subtitle];
++ (ALAlertBannerView *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle tappedBlock:(void (^)(ALAlertBannerView *alertBanner))tappedBlock {
+    ALAlertBannerView *alertBanner = [ALAlertBannerView createAlertBannerForView:view style:style position:position title:title subtitle:subtitle];
     alertBanner.allowTapToDismiss = tappedBlock ? NO : alertBanner.allowTapToDismiss;
     alertBanner.tappedBlock = tappedBlock;
     return alertBanner;
@@ -303,8 +307,8 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 # pragma mark -
 # pragma mark Internal Class Methods
 
-+ (ALAlertBanner *)createAlertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle {
-    ALAlertBanner *alertBanner = [[ALAlertBanner alloc] init];
++ (ALAlertBannerView *)createAlertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle {
+    ALAlertBannerView *alertBanner = [[ALAlertBannerView alloc] init];
     
     if (![view isKindOfClass:[UIWindow class]] && position == ALAlertBannerPositionUnderNavBar)
         [[NSException exceptionWithName:@"Wrong ALAlertBannerStyle For View Type" reason:@"ALAlertBannerPositionUnderNavBar should only be used if you are presenting the alert banner on the AppDelegate window. Use ALAlertBannerPositionTop or ALAlertBannerPositionBottom for normal UIViews" userInfo:nil] raise];
@@ -476,7 +480,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 # pragma mark -
 # pragma mark Touch Recognition
 
--(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     if (self.state != ALAlertBannerStateVisible)
         return;
     
@@ -677,18 +681,18 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     UIColor *fillColor;
-    switch (self.style) {
-        case ALAlertBannerStyleSuccess:
-            fillColor = [UIColor colorWithRed:(77/255.0) green:(175/255.0) blue:(67/255.0) alpha:1.f];
+    switch (self.style.backgroundColor) {
+        case ALAlertBannerColorGreen:
+            fillColor = [UIColor colorWithRed:(77/255.0f) green:(175/255.0f) blue:(67/255.0f) alpha:1.f];
             break;
-        case ALAlertBannerStyleFailure:
-            fillColor = [UIColor colorWithRed:(173/255.0) green:(48/255.0) blue:(48/255.0) alpha:1.f];
+        case ALAlertBannerColorRed:
+            fillColor = [UIColor colorWithRed:(173/255.0f) green:(48/255.0f) blue:(48/255.0f) alpha:1.f];
             break;
-        case ALAlertBannerStyleNotify:
-            fillColor = [UIColor colorWithRed:(48/255.0) green:(110/255.0) blue:(173/255.0) alpha:1.f];
+        case ALAlertBannerColorBlue:
+            fillColor = [UIColor colorWithRed:(48/255.0f) green:(110/255.0f) blue:(173/255.0f) alpha:1.f];
             break;
-        case ALAlertBannerStyleWarning:
-            fillColor = [UIColor colorWithRed:(211/255.0) green:(209/255.0) blue:(100/255.0) alpha:1.f];
+        case ALAlertBannerColorYellow:
+            fillColor = [UIColor colorWithRed:(211/255.0f) green:(209/255.0f) blue:(100/255.0f) alpha:1.f];
             break;
     }
     
@@ -709,21 +713,38 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 }
 
 - (NSString *)description {
-    NSString *styleString;
-    switch (self.style) {
-        case ALAlertBannerStyleSuccess:
-            styleString = @"ALAlertBannerStyleSuccess";
+    NSMutableString *styleString = [NSMutableString string];
+    
+    switch (self.style.backgroundColor) {
+        case ALAlertBannerColorGreen:
+            [styleString appendString:@"<ALAlertBannerColorGreen, "];
             break;
-        case ALAlertBannerStyleFailure:
-            styleString = @"ALAlertBannerStyleFailure";
+        case ALAlertBannerColorRed:
+            [styleString appendString:@"<ALAlertBannerColorRed, "];
             break;
-        case ALAlertBannerStyleNotify:
-            styleString = @"ALAlertBannerStyleNotify";
+        case ALAlertBannerColorBlue:
+            [styleString appendString:@"<ALAlertBannerColorBlue, "];
             break;
-        case ALAlertBannerStyleWarning:
-            styleString = @"ALAlertBannerStyleWarning";
+        case ALAlertBannerColorYellow:
+            [styleString appendString:@"<ALAlertBannerColorYellow, "];
             break;
     }
+    
+    switch (self.style.statusIcon) {
+        case ALAlertBannerIconSuccess:
+            [styleString appendString:@"ALAlertBannerIconSuccess>"];
+            break;
+        case ALAlertBannerIconFailure:
+            [styleString appendString:@"ALAlertBannerIconFailure>"];
+            break;
+        case ALAlertBannerIconNotify:
+            [styleString appendString:@"ALAlertBannerIconNotify>"];
+            break;
+        case ALAlertBannerIconWarning:
+            [styleString appendString:@"ALAlertBannerIconWarning>"];
+            break;
+    }
+    
     NSString *positionString;
     switch (self.position) {
         case ALAlertBannerPositionTop:
