@@ -24,8 +24,12 @@ static NSString *loremIpsum[] = {
 
 @property (nonatomic, strong) UISlider *secondsToShowSlider;
 @property (nonatomic, strong) UILabel *secondsToShowLabel;
+@property (nonatomic) NSTimeInterval secondsToShow;
+
 @property (nonatomic, strong) UISlider *animationDurationSlider;
 @property (nonatomic, strong) UILabel *animationDurationLabel;
+@property (nonatomic) NSTimeInterval showAnimationDuration;
+@property (nonatomic) NSTimeInterval hideAnimationDuration;
 
 @end
 
@@ -43,7 +47,14 @@ static NSString *loremIpsum[] = {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Hide All Alert Banners" style:UIBarButtonItemStyleBordered target:[ALAlertBanner class] action:@selector(hideAllAlertBanners)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Print Alert Banners In View" style:UIBarButtonItemStyleBordered target:self action:@selector(alertBannersInView)];
+    
     self.view.backgroundColor = [UIColor colorWithRed:243/255.0 green:247/255.0 blue:249/255.0 alpha:1.f];
+    
+    _secondsToShow = 3.5;
+    _showAnimationDuration = 0.25;
+    _hideAnimationDuration = 0.2;
         
     self.topButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     self.topButton.tag = ALAlertBannerPositionTop;
@@ -59,13 +70,13 @@ static NSString *loremIpsum[] = {
     
     self.underNavButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     self.underNavButton.tag = ALAlertBannerPositionUnderNavBar;
-    [self.underNavButton setTitle:@"Under Nav" forState:UIControlStateNormal];
+    [self.underNavButton setTitle:@"UIWindow" forState:UIControlStateNormal];
     [self.underNavButton addTarget:self action:@selector(showAlertBannerInWindow:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.underNavButton];
     
     self.secondsToShowSlider = [[UISlider alloc] init];
     self.secondsToShowSlider.continuous = YES;
-    self.secondsToShowSlider.minimumValue = 0.0f;
+    self.secondsToShowSlider.minimumValue = 0.f;
     self.secondsToShowSlider.maximumValue = 10.f;
     [self.secondsToShowSlider setValue:3.5f];
     [self.secondsToShowSlider addTarget:self action:@selector(secondsToShowSlider:) forControlEvents:UIControlEventValueChanged];
@@ -112,38 +123,36 @@ static NSString *loremIpsum[] = {
     self.animationDurationLabel.frame = CGRectMake(self.animationDurationSlider.frame.origin.x, self.animationDurationSlider.frame.origin.y + self.animationDurationSlider.frame.size.height, self.animationDurationSlider.frame.size.width, 20.f);
 }
 
-- (ALAlertBannerStyle *)randomStyle {
-    NSUInteger i = arc4random_uniform(4);
-    if (i == 0) {
-        return kALAlertBannerStyleSuccess;
-    }
-    else if (i == 1) {
-        return kALAlertBannerStyleFailure;
-    }
-    else if (i == 2) {
-        return kALAlertBannerStyleNotify;
-    }
-    else {
-        return kALAlertBannerStyleAlert;
-    }
-}
-
 - (void)showAlertBannerInView:(UIButton *)button {
     ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
-    ALAlertBannerStyle *randomStyle = self.randomStyle;
-    [[ALAlertBannerManager sharedManager] showAlertBannerInView:self.view style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum] tappedHandler:^(ALAlertBannerView *alertBanner) {
-        
+    ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
+    ALAlertBanner *banner = [ALAlertBanner alertBannerForView:self.view style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum] tappedBlock:^(ALAlertBanner *alertBanner) {
         NSLog(@"tapped!");
-        [[ALAlertBannerManager sharedManager] hideAlertBanner:alertBanner];
-        
+        [alertBanner hide];
     }];
+    banner.secondsToShow = self.secondsToShow;
+    banner.showAnimationDuration = self.showAnimationDuration;
+    banner.hideAnimationDuration = self.hideAnimationDuration;
+    [banner show];
 }
 
 - (void)showAlertBannerInWindow:(UIButton *)button {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
     ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
-    ALAlertBannerStyle *randomStyle = self.randomStyle;
-    [[ALAlertBannerManager sharedManager] showAlertBannerInView:appDelegate.window style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum]];
+    ALAlertBanner *banner = [ALAlertBanner alertBannerForView:appDelegate.window style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum] tappedBlock:^(ALAlertBanner *alertBanner) {
+        NSLog(@"tapped!");
+        [alertBanner hide];
+    }];
+    banner.secondsToShow = self.secondsToShow;
+    banner.showAnimationDuration = self.showAnimationDuration;
+    banner.hideAnimationDuration = self.hideAnimationDuration;
+    [banner show];
+}
+
+- (void)alertBannersInView {
+    NSArray *banners = [ALAlertBanner alertBannersInView:self.view];
+    NSLog(@"%@", banners);
 }
 
 - (NSString *)randomLoremIpsum {
@@ -158,7 +167,7 @@ static NSString *loremIpsum[] = {
 }
 
 - (void)secondsToShowSliderTouchEnded:(UISlider *)slider {
-    [[ALAlertBannerManager sharedManager] setSecondsToShow:slider.value];
+    [self setSecondsToShow:slider.value];
 }
 
 - (void)animationDurationSlider:(UISlider *)slider {
@@ -168,8 +177,8 @@ static NSString *loremIpsum[] = {
 }
 
 - (void)animationDurationSliderTouchEnded:(UISlider *)slider {
-    [[ALAlertBannerManager sharedManager] setShowAnimationDuration:slider.value];
-    [[ALAlertBannerManager sharedManager] setHideAnimationDuration:slider.value];
+    [self setShowAnimationDuration:slider.value];
+    [self setHideAnimationDuration:slider.value];
 }
 
 - (BOOL)shouldAutorotate {

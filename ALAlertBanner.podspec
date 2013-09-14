@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 	s.name			= 'ALAlertBanner'
-	s.version		= '0.2.1'
+	s.version		= '0.3.0'
 	s.summary		= 'A clean and simple alert banner for iPhone and iPad'
 	s.homepage		= 'https://github.com/alobi/ALAlertBanner'
 	s.author		= { 'Anthony Lobianco' => 'anthony@lobian.co' }
