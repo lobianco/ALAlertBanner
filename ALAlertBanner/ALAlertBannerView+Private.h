@@ -22,7 +22,7 @@
  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  **/
 
-#import "ALAlertBanner.h"
+#import "ALAlertBannerView.h"
 
 #define AL_IOS_7_OR_GREATER [UIDevice iOSVersion] >= 7.0
 
@@ -40,22 +40,22 @@ static CGFloat const kStatusBarHeight = 20.f;
 
 @end
 
-@class ALAlertBanner;
+@class ALAlertBannerView;
 @protocol ALAlertBannerViewDelegate <NSObject>
 @required
-- (void)showAlertBanner:(ALAlertBanner *)alertBanner hideAfter:(NSTimeInterval)delay;
-- (void)hideAlertBanner:(ALAlertBanner *)alertBanner;
-- (void)alertBannerWillShow:(ALAlertBanner *)alertBanner inView:(UIView *)view;
-- (void)alertBannerDidShow:(ALAlertBanner *)alertBanner inView:(UIView *)view;
-- (void)alertBannerWillHide:(ALAlertBanner *)alertBanner inView:(UIView *)view;
-- (void)alertBannerDidHide:(ALAlertBanner *)alertBanner inView:(UIView *)view;
+- (void)showAlertBanner:(ALAlertBannerView *)alertBanner hideAfter:(NSTimeInterval)delay;
+- (void)hideAlertBanner:(ALAlertBannerView *)alertBanner;
+- (void)alertBannerWillShow:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
+- (void)alertBannerDidShow:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
+- (void)alertBannerWillHide:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
+- (void)alertBannerDidHide:(ALAlertBannerView *)alertBanner inView:(UIView *)view;
 @end
 
-@interface ALAlertBanner ()
+@interface ALAlertBannerView ()
 
 @property (nonatomic, weak) id <ALAlertBannerViewDelegate> delegate;
 @property (nonatomic) BOOL isScheduledToHide;
-@property (nonatomic, copy) void(^tappedBlock)(ALAlertBanner *alertBanner);
+@property (nonatomic, copy) void(^tappedBlock)(ALAlertBannerView *alertBanner);
 @property (nonatomic) NSTimeInterval fadeInDuration;
 @property (nonatomic) BOOL showShadow;
 
