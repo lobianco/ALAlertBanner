@@ -92,7 +92,7 @@ static NSString *loremIpsum[] = {
     
     self.animationDurationSlider = [[UISlider alloc] init];
     self.animationDurationSlider.continuous = YES;
-    self.animationDurationSlider.minimumValue = 0.1f;
+    self.animationDurationSlider.minimumValue = 0.01f;
     self.animationDurationSlider.maximumValue = 2.f;
     [self.animationDurationSlider setValue:0.25f];
     [self.animationDurationSlider addTarget:self action:@selector(animationDurationSlider:) forControlEvents:UIControlEventValueChanged];
