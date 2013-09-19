@@ -47,8 +47,8 @@ static NSString *loremIpsum[] = {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Hide All Alert Banners" style:UIBarButtonItemStyleBordered target:[ALAlertBanner class] action:@selector(hideAllAlertBanners)];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Print Alert Banners In View" style:UIBarButtonItemStyleBordered target:self action:@selector(alertBannersInView)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Hide All" style:UIBarButtonItemStyleBordered target:[ALAlertBanner class] action:@selector(hideAllAlertBanners)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Log Banners" style:UIBarButtonItemStyleBordered target:self action:@selector(alertBannersInView)];
     
     self.view.backgroundColor = [UIColor colorWithRed:243/255.0 green:247/255.0 blue:249/255.0 alpha:1.f];
     
