@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "ALAlertBanner.h"
 #import "AppDelegate.h"
+#import "TableViewController.h"
 
 static NSString *loremIpsum[] = {
     @"Aliquam facilisis gravida ipsum, eu varius lacus lobortis eu. Fusce ac suscipit elit, eu varius tortor. Sed sed vestibulum ante. Integer eu orci eget felis pulvinar scelerisque. Etiam euismod risus ipsum.",
@@ -43,12 +44,16 @@ static NSString *loremIpsum[] = {
     return self;
 }
 
+- (void)push {
+    [self.navigationController pushViewController:[[TableViewController alloc] init] animated:YES];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Hide All" style:UIBarButtonItemStyleBordered target:[ALAlertBanner class] action:@selector(hideAllAlertBanners)];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Log Banners" style:UIBarButtonItemStyleBordered target:self action:@selector(alertBannersInView)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Table" style:UIBarButtonItemStyleBordered target:self action:@selector(push)];
     
     self.view.backgroundColor = [UIColor colorWithRed:243/255.0 green:247/255.0 blue:249/255.0 alpha:1.f];
     
@@ -148,11 +153,6 @@ static NSString *loremIpsum[] = {
     banner.showAnimationDuration = self.showAnimationDuration;
     banner.hideAnimationDuration = self.hideAnimationDuration;
     [banner show];
-}
-
-- (void)alertBannersInView {
-    NSArray *banners = [ALAlertBanner alertBannersInView:self.view];
-    NSLog(@"%@", banners);
 }
 
 - (NSString *)randomLoremIpsum {

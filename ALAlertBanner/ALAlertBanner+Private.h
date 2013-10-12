@@ -64,5 +64,6 @@ static CGFloat const kStatusBarHeight = 20.f;
 - (void)pushAlertBanner:(CGFloat)distance forward:(BOOL)forward delay:(double)delay;
 - (void)updateSizeAndSubviewsAnimated:(BOOL)animated;
 - (void)updatePositionAfterRotationWithY:(CGFloat)yPos animated:(BOOL)animated;
+- (id)nextAvailableViewController:(id)view;
 
 @end

@@ -530,8 +530,12 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
         case ALAlertBannerPositionTop:
             initialYCoord = -heightForSelf;
             if (isSuperviewKindOfWindow) initialYCoord += kStatusBarHeight;
-            if (AL_IOS_7_OR_GREATER)
-                initialYCoord += [UIApplication navigationBarHeight] + kStatusBarHeight;
+            if (AL_IOS_7_OR_GREATER) {
+                id nextResponder = [self nextAvailableViewController:self];
+                if (![nextResponder isKindOfClass:[UITableViewController class]]) {
+                    initialYCoord += [(UIViewController*)nextResponder topLayoutGuide].length;
+                }
+            }
             break;
         case ALAlertBannerPositionBottom:
             initialYCoord = superview.bounds.size.height;
@@ -706,6 +710,17 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     CGContextFillRect(context, CGRectMake(0.f, rect.size.height - 1.f, rect.size.width, 1.f));
     CGContextSetFillColorWithColor(context, [UIColor colorWithRed:1.f green:1.f blue:1.f alpha:0.3f].CGColor);
     CGContextFillRect(context, CGRectMake(0.f, 0.f, rect.size.width, 1.f));
+}
+
+- (id)nextAvailableViewController:(id)view {
+    id nextResponder = [view nextResponder];
+    if ([nextResponder isKindOfClass:[UIViewController class]]) {
+        return nextResponder;
+    } else if ([nextResponder isKindOfClass:[UIView class]]) {
+        return [self nextAvailableViewController:nextResponder];
+    } else {
+        return nil;
+    }
 }
 
 - (NSString *)description {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		203ADC231809F1B9001E4C68 /* TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 203ADC221809F1B9001E4C68 /* TableViewController.m */; };
 		4FC799A717BC072A000AEC49 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FC799A617BC072A000AEC49 /* UIKit.framework */; };
 		4FC799A917BC072A000AEC49 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FC799A817BC072A000AEC49 /* Foundation.framework */; };
 		4FC799AB17BC072A000AEC49 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FC799AA17BC072A000AEC49 /* CoreGraphics.framework */; };
@@ -31,6 +32,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		203ADC211809F1B9001E4C68 /* TableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewController.h; sourceTree = "<group>"; };
+		203ADC221809F1B9001E4C68 /* TableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewController.m; sourceTree = "<group>"; };
 		4F083ACB17D10C4500F1CB54 /* ALAlertBanner+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ALAlertBanner+Private.h"; sourceTree = "<group>"; };
 		4FC799A317BC072A000AEC49 /* ALAlertBannerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ALAlertBannerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FC799A617BC072A000AEC49 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -113,6 +116,8 @@
 				4FC799B617BC072A000AEC49 /* AppDelegate.m */,
 				4FC799C317BC0758000AEC49 /* ViewController.h */,
 				4FC799C417BC0758000AEC49 /* ViewController.m */,
+				203ADC211809F1B9001E4C68 /* TableViewController.h */,
+				203ADC221809F1B9001E4C68 /* TableViewController.m */,
 				4FC799AD17BC072A000AEC49 /* Supporting Files */,
 			);
 			path = ALAlertBannerDemo;
@@ -234,6 +239,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				203ADC231809F1B9001E4C68 /* TableViewController.m in Sources */,
 				4FC799B317BC072A000AEC49 /* main.m in Sources */,
 				4FC799B717BC072A000AEC49 /* AppDelegate.m in Sources */,
 				4FC799C517BC0758000AEC49 /* ViewController.m in Sources */,

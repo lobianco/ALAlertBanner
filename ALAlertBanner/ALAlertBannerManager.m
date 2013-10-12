@@ -263,8 +263,13 @@
     for (UIView *view in self.bannerViews) {
         NSArray *topBanners = [view.alertBanners filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.position == %i", ALAlertBannerPositionTop]];
         CGFloat topYCoord = 0.f;
-        if (AL_IOS_7_OR_GREATER)
-            topYCoord += [UIApplication navigationBarHeight] + kStatusBarHeight;
+        if (AL_IOS_7_OR_GREATER && topBanners.count > 0) {
+            ALAlertBanner *firstBanner = (ALAlertBanner *)[topBanners objectAtIndex:0];
+            id nextResponder = [firstBanner nextAvailableViewController:firstBanner];
+            if (![nextResponder isKindOfClass:[UITableViewController class]]) {
+                topYCoord += [(UIViewController*)nextResponder topLayoutGuide].length;
+            }
+        }
         for (ALAlertBanner *alertBanner in [topBanners reverseObjectEnumerator]) {
             [alertBanner updateSizeAndSubviewsAnimated:YES];
             [alertBanner updatePositionAfterRotationWithY:topYCoord animated:YES];
