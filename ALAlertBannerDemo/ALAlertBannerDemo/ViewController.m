@@ -44,10 +44,6 @@ static NSString *loremIpsum[] = {
     return self;
 }
 
-- (void)push {
-    [self.navigationController pushViewController:[[TableViewController alloc] init] animated:YES];
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
@@ -153,6 +149,10 @@ static NSString *loremIpsum[] = {
     banner.showAnimationDuration = self.showAnimationDuration;
     banner.hideAnimationDuration = self.hideAnimationDuration;
     [banner show];
+}
+
+- (void)push {
+    [self.navigationController pushViewController:[[TableViewController alloc] init] animated:YES];
 }
 
 - (NSString *)randomLoremIpsum {
