@@ -46,6 +46,8 @@ static CGFloat const kNavigationBarHeightiOS7Landscape = 32.f;
 static CFTimeInterval const kRotationDurationIphone = 0.3;
 static CFTimeInterval const kRotationDurationIPad = 0.4;
 
+static CGFloat const kForceHideAnimationDuration = 0.1f;
+
 #define AL_DEVICE_ANIMATION_DURATION UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? kRotationDurationIPad : kRotationDurationIphone;
 
 //macros referenced from MBProgressHUD. cheers to @matej
@@ -153,6 +155,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     _bannerOpacity = 0.93f;
     _secondsToShow = 3.5;
     _allowTapToDismiss = YES;
+    _shouldForceHide = NO;
     
     manager = [ALAlertBannerManager sharedManager];
     self.delegate = (ALAlertBannerManager <ALAlertBannerViewDelegate> *)manager;
@@ -285,6 +288,10 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     [[ALAlertBannerManager sharedManager] hideAlertBannersInView:view];
 }
 
++ (void)forceHideAllAlertBannersInView:(UIView *)view {
+    [[ALAlertBannerManager sharedManager] forceHideAllAlertBannersInView:view];
+}
+
 + (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title {
     return [self alertBannerForView:view style:style position:position title:title subtitle:nil tappedBlock:nil];
 }
@@ -331,7 +338,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 }
 
 - (void)hide {
-    [self.delegate hideAlertBanner:self];
+    [self.delegate hideAlertBanner:self forced:NO];
 }
 
 # pragma mark -
@@ -412,7 +419,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
         CABasicAnimation *moveMaskDown = [CABasicAnimation animationWithKeyPath:@"position"];
         moveMaskDown.fromValue = [NSValue valueWithCGPoint:currentPoint];
         moveMaskDown.toValue = [NSValue valueWithCGPoint:newPoint];
-        moveMaskDown.duration = self.hideAnimationDuration;
+        moveMaskDown.duration = self.shouldForceHide ? kForceHideAnimationDuration : self.hideAnimationDuration;
         moveMaskDown.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
         
         [self.layer.mask addAnimation:moveMaskDown forKey:@"position"];
@@ -436,7 +443,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     CABasicAnimation *moveLayer = [CABasicAnimation animationWithKeyPath:@"position"];
     moveLayer.fromValue = [NSValue valueWithCGPoint:oldPoint];
     moveLayer.toValue = [NSValue valueWithCGPoint:newPoint];
-    moveLayer.duration = self.hideAnimationDuration;
+    moveLayer.duration = self.shouldForceHide ? kForceHideAnimationDuration : self.hideAnimationDuration;
     moveLayer.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
     moveLayer.delegate = self;
     [moveLayer setValue:kHideAlertBannerKey forKey:@"anim"];
@@ -484,7 +491,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
         self.tappedBlock(self);
     
     if (self.allowTapToDismiss)
-        [self.delegate hideAlertBanner:self];
+        [self.delegate hideAlertBanner:self forced:NO];
 }
 
 # pragma mark -
@@ -497,7 +504,7 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
     }
     
     else if ([[anim valueForKey:@"anim"] isEqualToString:kHideAlertBannerKey] && flag) {
-        [UIView animateWithDuration:self.fadeOutDuration delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
+        [UIView animateWithDuration:self.shouldForceHide ? kForceHideAnimationDuration : self.fadeOutDuration delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
             self.alpha = 0.f;
         } completion:^(BOOL finished) {
             self.state = ALAlertBannerStateHidden;

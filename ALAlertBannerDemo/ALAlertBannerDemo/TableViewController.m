@@ -8,6 +8,7 @@
 
 #import "TableViewController.h"
 #import "ALAlertBanner.h"
+#import "AppDelegate.h"
 
 @interface TableViewController ()
 
@@ -28,23 +29,21 @@
 {
     [super viewDidLoad];
 
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Banner" style:UIBarButtonItemStyleBordered target:self action:@selector(show)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Banner" style:UIBarButtonItemStyleBordered target:self action:@selector(showAlertBannerInView)];
 }
 
-- (void)show {
-    ALAlertBannerPosition position = ALAlertBannerPositionTop;
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [ALAlertBanner forceHideAllAlertBannersInView:self.view];
+}
+
+- (void)showAlertBannerInView {
     ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
-    ALAlertBanner *banner = [ALAlertBanner alertBannerForView:self.view style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:@"This is an alert banner in a table." tappedBlock:^(ALAlertBanner *alertBanner) {
+    ALAlertBanner *banner = [ALAlertBanner alertBannerForView:self.view style:randomStyle position:ALAlertBannerPositionTop title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[AppDelegate randomLoremIpsum] tappedBlock:^(ALAlertBanner *alertBanner) {
         NSLog(@"tapped!");
         [alertBanner hide];
     }];
     [banner show];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - Table view data source

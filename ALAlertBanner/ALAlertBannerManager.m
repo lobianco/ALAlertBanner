@@ -128,32 +128,43 @@
 }
 
 - (void)hideAlertBanner:(ALAlertBanner *)alertBanner {
-    if (alertBanner.isScheduledToHide)
+    [self hideAlertBanner:alertBanner forced:NO];
+}
+
+- (void)hideAlertBanner:(ALAlertBanner *)alertBanner forced:(BOOL)forced {
+    if (alertBanner.isScheduledToHide) {
         return;
+    }
     
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideAlertBanner:) object:alertBanner];
     
-    alertBanner.isScheduledToHide = YES;
-    
-    dispatch_semaphore_t semaphore;
-    switch (alertBanner.position) {
-        case ALAlertBannerPositionTop:
-            semaphore = self.topPositionSemaphore;
-            break;
-        case ALAlertBannerPositionBottom:
-            semaphore = self.bottomPositionSemaphore;
-            break;
-        case ALAlertBannerPositionUnderNavBar:
-            semaphore = self.navBarPositionSemaphore;
-            break;
+    if (forced) {
+        alertBanner.shouldForceHide = YES;
+        [alertBanner hideAlertBanner];
     }
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [alertBanner hideAlertBanner];
+    else {
+        alertBanner.isScheduledToHide = YES;
+        
+        dispatch_semaphore_t semaphore;
+        switch (alertBanner.position) {
+            case ALAlertBannerPositionTop:
+                semaphore = self.topPositionSemaphore;
+                break;
+            case ALAlertBannerPositionBottom:
+                semaphore = self.bottomPositionSemaphore;
+                break;
+            case ALAlertBannerPositionUnderNavBar:
+                semaphore = self.navBarPositionSemaphore;
+                break;
+        }
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [alertBanner hideAlertBanner];
+            });
         });
-    });
+    }
 }
 
 - (void)alertBannerWillShow:(ALAlertBanner *)alertBanner inView:(UIView *)view {
@@ -218,23 +229,25 @@
 
 - (void)alertBannerDidHide:(ALAlertBanner *)alertBanner inView:(UIView *)view {
     NSMutableArray *bannersArray = view.alertBanners;
-    dispatch_semaphore_t semaphore;
-    switch (alertBanner.position) {
-        case ALAlertBannerPositionTop:
-            semaphore = self.topPositionSemaphore;
-            break;
-        case ALAlertBannerPositionBottom:
-            semaphore = self.bottomPositionSemaphore;
-            break;
-        case ALAlertBannerPositionUnderNavBar:
-            semaphore = self.navBarPositionSemaphore;
-            break;
-    }
     [bannersArray removeObject:alertBanner];
     if (bannersArray.count == 0) {
         [self.bannerViews removeObject:view];
     }
-    dispatch_semaphore_signal(semaphore);
+    if (!alertBanner.shouldForceHide) {
+        dispatch_semaphore_t semaphore;
+        switch (alertBanner.position) {
+            case ALAlertBannerPositionTop:
+                semaphore = self.topPositionSemaphore;
+                break;
+            case ALAlertBannerPositionBottom:
+                semaphore = self.bottomPositionSemaphore;
+                break;
+            case ALAlertBannerPositionUnderNavBar:
+                semaphore = self.navBarPositionSemaphore;
+                break;
+        }
+        dispatch_semaphore_signal(semaphore);
+    }
 }
 
 # pragma mark -
@@ -246,13 +259,19 @@
 
 - (void)hideAlertBannersInView:(UIView *)view {
     for (ALAlertBanner *alertBanner in [self alertBannersInView:view]) {
-        [self hideAlertBanner:alertBanner];
+        [self hideAlertBanner:alertBanner forced:NO];
     }
 }
 
 - (void)hideAllAlertBanners {
     for (UIView *view in self.bannerViews) {
         [self hideAlertBannersInView:view];
+    }
+}
+
+- (void)forceHideAllAlertBannersInView:(UIView *)view {
+    for (ALAlertBanner *alertBanner in [self alertBannersInView:view]) {
+        [self hideAlertBanner:alertBanner forced:YES];
     }
 }
 

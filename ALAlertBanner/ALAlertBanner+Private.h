@@ -44,7 +44,7 @@ static CGFloat const kStatusBarHeight = 20.f;
 @protocol ALAlertBannerViewDelegate <NSObject>
 @required
 - (void)showAlertBanner:(ALAlertBanner *)alertBanner hideAfter:(NSTimeInterval)delay;
-- (void)hideAlertBanner:(ALAlertBanner *)alertBanner;
+- (void)hideAlertBanner:(ALAlertBanner *)alertBanner forced:(BOOL)forced;
 - (void)alertBannerWillShow:(ALAlertBanner *)alertBanner inView:(UIView *)view;
 - (void)alertBannerDidShow:(ALAlertBanner *)alertBanner inView:(UIView *)view;
 - (void)alertBannerWillHide:(ALAlertBanner *)alertBanner inView:(UIView *)view;
@@ -58,6 +58,7 @@ static CGFloat const kStatusBarHeight = 20.f;
 @property (nonatomic, copy) void(^tappedBlock)(ALAlertBanner *alertBanner);
 @property (nonatomic) NSTimeInterval fadeInDuration;
 @property (nonatomic) BOOL showShadow;
+@property (nonatomic) BOOL shouldForceHide;
 
 - (void)showAlertBanner;
 - (void)hideAlertBanner;

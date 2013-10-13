@@ -127,4 +127,9 @@ typedef enum {
  */
 + (void)hideAlertBannersInView:(UIView *)view;
 
+/**
+ Immediately force hide all alert banners, forgoing their dismissal animations. Call this in viewWillDisappear: of your view controller if necessary.
+ */
++ (void)forceHideAllAlertBannersInView:(UIView *)view;
+
 @end

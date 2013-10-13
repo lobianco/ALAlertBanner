@@ -11,12 +11,6 @@
 #import "AppDelegate.h"
 #import "TableViewController.h"
 
-static NSString *loremIpsum[] = {
-    @"Aliquam facilisis gravida ipsum, eu varius lacus lobortis eu. Fusce ac suscipit elit, eu varius tortor. Sed sed vestibulum ante. Integer eu orci eget felis pulvinar scelerisque. Etiam euismod risus ipsum.",
-    @"Nunc id dictum enim. Nulla facilisi.",
-    @"Mauris fermentum tellus in ligula laoreet accumsan. Nullam felis ipsum, ultrices id lacus a, accumsan tempor sapien hala shishkabob."
-};
-
 @interface ViewController ()
 
 @property (nonatomic, strong) UIButton *topButton;
@@ -113,6 +107,11 @@ static NSString *loremIpsum[] = {
     [self configureView];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [ALAlertBanner forceHideAllAlertBannersInView:self.view];
+}
+
 - (void)configureView {
     self.topButton.frame = CGRectMake(20, self.view.frame.size.height/2 - 80.f, (self.view.frame.size.width - 40.f)/3, 40.f);
     self.bottomButton.frame = CGRectMake(self.topButton.frame.origin.x + self.topButton.frame.size.width, self.topButton.frame.origin.y, self.topButton.frame.size.width, self.topButton.frame.size.height);
@@ -127,7 +126,7 @@ static NSString *loremIpsum[] = {
 - (void)showAlertBannerInView:(UIButton *)button {
     ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
     ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
-    ALAlertBanner *banner = [ALAlertBanner alertBannerForView:self.view style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum] tappedBlock:^(ALAlertBanner *alertBanner) {
+    ALAlertBanner *banner = [ALAlertBanner alertBannerForView:self.view style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[AppDelegate randomLoremIpsum] tappedBlock:^(ALAlertBanner *alertBanner) {
         NSLog(@"tapped!");
         [alertBanner hide];
     }];
@@ -141,7 +140,7 @@ static NSString *loremIpsum[] = {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
     ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
-    ALAlertBanner *banner = [ALAlertBanner alertBannerForView:appDelegate.window style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[self randomLoremIpsum] tappedBlock:^(ALAlertBanner *alertBanner) {
+    ALAlertBanner *banner = [ALAlertBanner alertBannerForView:appDelegate.window style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[AppDelegate randomLoremIpsum] tappedBlock:^(ALAlertBanner *alertBanner) {
         NSLog(@"tapped!");
         [alertBanner hide];
     }];
@@ -153,11 +152,6 @@ static NSString *loremIpsum[] = {
 
 - (void)push {
     [self.navigationController pushViewController:[[TableViewController alloc] init] animated:YES];
-}
-
-- (NSString *)randomLoremIpsum {
-    static int arrayCount = sizeof(loremIpsum) / sizeof(loremIpsum[0]);
-    return loremIpsum[arc4random_uniform(arrayCount)];
 }
 
 - (void)secondsToShowSlider:(UISlider *)slider {

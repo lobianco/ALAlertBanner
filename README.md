@@ -122,6 +122,14 @@ Immediately hides all alert banners in all views, forgoing their ```secondsToSho
 
 Immediately hides all alert banners in a certain view, forgoing their ```secondsToShow``` values.
 
+```objc
++ (void)forceHideAllAlertBannersInView:(UIView *)view;
+```
+
+Immediately force hide all alert banners, forgoing their dismissal animations. Call this in ```viewWillDisappear:``` of your view controller if necessary.
+
+**Note:** If you are push or pop view controllers that have banners in them, you must call ```forceHideAllAlertBannersInView:``` in your view controller's ```viewWillDisappear:``` method. Otherwise the animation singleton might get confused and neglect its duties.
+
 ### Banner Properties
 
 ALAlertBanner has the following editable properties:
