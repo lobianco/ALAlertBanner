@@ -539,8 +539,11 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
             if (isSuperviewKindOfWindow) initialYCoord += kStatusBarHeight;
             if (AL_IOS_7_OR_GREATER) {
                 id nextResponder = [self nextAvailableViewController:self];
-                if (![nextResponder isKindOfClass:[UITableViewController class]]) {
-                    initialYCoord += [(UIViewController*)nextResponder topLayoutGuide].length;
+                if (nextResponder) {
+                    UIViewController *vc = nextResponder;
+                    if (!(vc.automaticallyAdjustsScrollViewInsets && [vc.view isKindOfClass:[UIScrollView class]])) {
+                        initialYCoord += [vc topLayoutGuide].length;
+                    }
                 }
             }
             break;
