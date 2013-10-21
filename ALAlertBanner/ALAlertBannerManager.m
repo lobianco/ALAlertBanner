@@ -285,8 +285,11 @@
         if (AL_IOS_7_OR_GREATER && topBanners.count > 0) {
             ALAlertBanner *firstBanner = (ALAlertBanner *)[topBanners objectAtIndex:0];
             id nextResponder = [firstBanner nextAvailableViewController:firstBanner];
-            if (![nextResponder isKindOfClass:[UITableViewController class]]) {
-                topYCoord += [(UIViewController*)nextResponder topLayoutGuide].length;
+            if (nextResponder) {
+                UIViewController *vc = nextResponder;
+                if (!(vc.automaticallyAdjustsScrollViewInsets && [vc.view isKindOfClass:[UIScrollView class]])) {
+                    topYCoord += [vc topLayoutGuide].length;
+                }
             }
         }
         for (ALAlertBanner *alertBanner in [topBanners reverseObjectEnumerator]) {
