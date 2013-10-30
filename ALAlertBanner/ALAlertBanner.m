@@ -537,6 +537,7 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
         case ALAlertBannerPositionTop:
             initialYCoord = -heightForSelf;
             if (isSuperviewKindOfWindow) initialYCoord += kStatusBarHeight;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
             if (AL_IOS_7_OR_GREATER) {
                 id nextResponder = [self nextAvailableViewController:self];
                 if (nextResponder) {
@@ -546,6 +547,7 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
                     }
                 }
             }
+#endif
             break;
         case ALAlertBannerPositionBottom:
             initialYCoord = superview.bounds.size.height;
