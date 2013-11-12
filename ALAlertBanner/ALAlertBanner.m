@@ -97,7 +97,7 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
 
 + (CGFloat)navigationBarHeight {
     //if we're on iOS7 or later, return new landscape navBar height
-    if (AL_IOS_7_OR_GREATER && UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]))
+    if (AL_IOS_7_OR_GREATER && UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation]) && [UIDevice currentDevice].userInterfaceIdiom != UIUserInterfaceIdiomPad)
         return kNavigationBarHeightiOS7Landscape;
     
     return kNavigationBarHeightDefault;
