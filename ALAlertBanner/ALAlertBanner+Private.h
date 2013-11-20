@@ -26,17 +26,16 @@
 
 #define AL_IOS_7_OR_GREATER [UIDevice iOSVersion] >= 7.0
 
-static CGFloat const kStatusBarHeight = 20.f;
-
 @interface UIDevice (ALSystemVersion)
 
 + (float)iOSVersion;
 
 @end
 
-@interface UIApplication (ALNavigationBarHeight)
+@interface UIApplication (ALApplicationBarHeights)
 
 + (CGFloat)navigationBarHeight;
++ (CGFloat)statusBarHeight;
 
 @end
 
