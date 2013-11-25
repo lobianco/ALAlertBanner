@@ -93,7 +93,7 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
 
 @end
 
-@implementation UIApplication (ALNavigationBarHeight)
+@implementation UIApplication (ALApplicationBarHeights)
 
 + (CGFloat)navigationBarHeight {
     //if we're on iOS7 or later, return new landscape navBar height
@@ -101,6 +101,10 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
         return kNavigationBarHeightiOS7Landscape;
     
     return kNavigationBarHeightDefault;
+}
+
++ (CGFloat)statusBarHeight {
+	return [UIApplication sharedApplication].statusBarFrame.size.height;
 }
 
 @end
@@ -536,7 +540,7 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
     switch (self.position) {
         case ALAlertBannerPositionTop:
             initialYCoord = -heightForSelf;
-            if (isSuperviewKindOfWindow) initialYCoord += kStatusBarHeight;
+            if (isSuperviewKindOfWindow) initialYCoord += [UIApplication statusBarHeight];
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
             if (AL_IOS_7_OR_GREATER) {
                 id nextResponder = [self nextAvailableViewController:self];
@@ -553,7 +557,7 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
             initialYCoord = superview.bounds.size.height;
             break;
         case ALAlertBannerPositionUnderNavBar:
-            initialYCoord = -heightForSelf + [UIApplication navigationBarHeight] + kStatusBarHeight;
+            initialYCoord = -heightForSelf + [UIApplication navigationBarHeight] + [UIApplication statusBarHeight];
             break;
     }
     frame.origin.y = initialYCoord;
