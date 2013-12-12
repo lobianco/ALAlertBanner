@@ -65,7 +65,7 @@
     
     self.underNavButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     self.underNavButton.tag = ALAlertBannerPositionUnderNavBar;
-    [self.underNavButton setTitle:@"UIWindow" forState:UIControlStateNormal];
+    [self.underNavButton setTitle:@"Custom" forState:UIControlStateNormal];
     [self.underNavButton addTarget:self action:@selector(showAlertBannerInWindow:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.underNavButton];
     
@@ -115,7 +115,7 @@
 - (void)configureView {
     self.topButton.frame = CGRectMake(20, self.view.frame.size.height/2 - 80.f, (self.view.frame.size.width - 40.f)/3, 40.f);
     self.bottomButton.frame = CGRectMake(self.topButton.frame.origin.x + self.topButton.frame.size.width, self.topButton.frame.origin.y, self.topButton.frame.size.width, self.topButton.frame.size.height);
-    self.underNavButton.frame = CGRectMake(self.bottomButton.frame.origin.x + self.bottomButton.frame.size.width, self.topButton.frame.origin.y, self.topButton.frame.size.width, self.topButton.frame.size.height);
+    self.underNavButton.frame = CGRectMake(0, self.view.bounds.size.height - 44, self.topButton.frame.size.width, self.topButton.frame.size.height);
     
     self.secondsToShowSlider.frame = CGRectMake(self.topButton.frame.origin.x, self.topButton.frame.origin.y + self.topButton.frame.size.height + 20.f, self.view.frame.size.width - 40.f, 20.f);
     self.secondsToShowLabel.frame = CGRectMake(self.secondsToShowSlider.frame.origin.x, self.secondsToShowSlider.frame.origin.y + self.secondsToShowSlider.frame.size.height, self.secondsToShowSlider.frame.size.width, 20.f);
@@ -126,10 +126,13 @@
 - (void)showAlertBannerInView:(UIButton *)button {
     ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
     ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
-    ALAlertBanner *banner = [ALAlertBanner alertBannerForView:self.view style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[AppDelegate randomLoremIpsum] tappedBlock:^(ALAlertBanner *alertBanner) {
+  
+    ALAlertBanner *banner = [ALAlertBanner alertBannerForView:self.view style:randomStyle  position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[AppDelegate randomLoremIpsum] tappedBlock:^(ALAlertBanner *alertBanner) {
         NSLog(@"tapped!");
         [alertBanner hide];
     }];
+    
+    
     banner.secondsToShow = self.secondsToShow;
     banner.showAnimationDuration = self.showAnimationDuration;
     banner.hideAnimationDuration = self.hideAnimationDuration;
@@ -138,12 +141,27 @@
 
 - (void)showAlertBannerInWindow:(UIButton *)button {
     AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
+    ALAlertBannerStyle randomStyle = ALAlertBannerStyleCustom;//(ALAlertBannerStyle)(arc4random_uniform(4));
     ALAlertBannerPosition position = (ALAlertBannerPosition)button.tag;
     ALAlertBanner *banner = [ALAlertBanner alertBannerForView:appDelegate.window style:randomStyle position:position title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[AppDelegate randomLoremIpsum] tappedBlock:^(ALAlertBanner *alertBanner) {
         NSLog(@"tapped!");
         [alertBanner hide];
     }];
+    
+    if (randomStyle == ALAlertBannerStyleCustom) {
+        banner.frame =CGRectMake(0, 0, 320, 100);
+        banner.backgroundColor = [UIColor colorWithRed:0.933 green:0.922 blue:0.941 alpha:1.000];
+        banner.styleImageView.frame = CGRectMake(0, 0, 100, 95);
+        int randomImage = (int)(arc4random_uniform(4));
+        banner.styleImageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%d",randomImage]];
+        NSLog(@"randomImage:%d",randomImage);
+        banner.titleLabel.frame =CGRectMake(100, 0, 200, 20);
+        banner.titleLabel.textColor = [UIColor colorWithRed:0.231 green:0.231 blue:0.235 alpha:1.000];
+        banner.subtitleLabel.frame =CGRectMake(100, 0, 200, 100);
+        banner.subtitleLabel.textColor = [UIColor colorWithRed:0.231 green:0.231 blue:0.235 alpha:1.000];
+    }
+
+    
     banner.secondsToShow = self.secondsToShow;
     banner.showAnimationDuration = self.showAnimationDuration;
     banner.hideAnimationDuration = self.hideAnimationDuration;
