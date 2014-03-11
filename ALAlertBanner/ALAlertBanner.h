@@ -113,6 +113,11 @@ typedef enum {
 - (void)hide;
 
 /**
+  Change title and delay hiding.
+*/
+- (void)changeTitle:(NSString *)title subtitle:(NSString *)subtitle;
+
+/**
  Returns an array of all banners within a certain view.
  */
 + (NSArray *)alertBannersInView:(UIView *)view;
