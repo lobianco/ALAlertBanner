@@ -580,12 +580,12 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
     }
 }
 
-- (void)setTitle:(NSString *)titleText subtitle:(NSString *)subtitleText animated:(BOOL)animated {
+- (void)setTitle:(NSString *)titleText subtitle:(NSString *)subtitleText {
     self.titleLabel.text = titleText;
     self.subtitleLabel.text = subtitleText;
 
     CGFloat origHeight = self.bounds.size.height;
-    [self updateSizeAndSubviewsAnimated:animated];
+    [self updateSizeAndSubviewsAnimated:YES];
     [self.delegate alertBanner:self willChangeHeight:origHeight toHeight:self.bounds.size.height inView:self.superview];
 }
 

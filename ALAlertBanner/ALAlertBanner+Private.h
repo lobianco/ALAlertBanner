@@ -66,7 +66,7 @@
 - (void)pushAlertBanner:(CGFloat)distance forward:(BOOL)forward delay:(double)delay;
 - (void)updateSizeAndSubviewsAnimated:(BOOL)animated;
 - (void)updatePositionAfterRotationWithY:(CGFloat)yPos animated:(BOOL)animated;
-- (void)setTitle:(NSString *)titleText subtitle:(NSString *)subtitleText animated:(BOOL)animated;
+- (void)setTitle:(NSString *)titleText subtitle:(NSString *)subtitleText;
 - (id)nextAvailableViewController:(id)view;
 
 @end
