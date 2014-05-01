@@ -53,6 +53,26 @@ typedef enum {
 @property (nonatomic, readonly) ALAlertBannerPosition position;
 @property (nonatomic, readonly) ALAlertBannerState state;
 
+//
+// Appearance modifiers
+//
+
+/* Uses NSAttributedString keys to specify the font, text color, and shadow properties  */
+@property (nonatomic) NSDictionary *titleTextAttributes UI_APPEARANCE_SELECTOR;
+@property (nonatomic) NSDictionary *subtitleTextAttributes UI_APPEARANCE_SELECTOR;
+@property (nonatomic) NSNumber *drawsGradient UI_APPEARANCE_SELECTOR;
+@property (nonatomic) NSNumber *drawsStrokes UI_APPEARANCE_SELECTOR;
+@property (nonatomic) NSNumber *shadowRadius UI_APPEARANCE_SELECTOR;
+@property (nonatomic) UIColor *successFillColor UI_APPEARANCE_SELECTOR;
+@property (nonatomic) UIColor *failureFillColor UI_APPEARANCE_SELECTOR;
+@property (nonatomic) UIColor *notifyFillColor UI_APPEARANCE_SELECTOR;
+@property (nonatomic) UIColor *warningFillColor UI_APPEARANCE_SELECTOR;
+@property (nonatomic) UIImage *successImage UI_APPEARANCE_SELECTOR;
+@property (nonatomic) UIImage *failureImage UI_APPEARANCE_SELECTOR;
+@property (nonatomic) UIImage *notifyImage UI_APPEARANCE_SELECTOR;
+@property (nonatomic) UIImage *warningImage UI_APPEARANCE_SELECTOR;
+@property (nonatomic) NSNumber *opacity UI_APPEARANCE_SELECTOR;
+
 /**
  Length of time in seconds that a banner should show before auto-hiding.
  

@@ -22,7 +22,6 @@
 		4FC799D317BC07B7000AEC49 /* bannerAlert@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FC799CF17BC07B7000AEC49 /* bannerAlert@2x.png */; };
 		4FC799D417BC07B7000AEC49 /* bannerFailure@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FC799D017BC07B7000AEC49 /* bannerFailure@2x.png */; };
 		4FC799D517BC07B7000AEC49 /* bannerNotify@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FC799D117BC07B7000AEC49 /* bannerNotify@2x.png */; };
-		4FC799D617BC07B7000AEC49 /* bannerSuccess@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FC799D217BC07B7000AEC49 /* bannerSuccess@2x.png */; };
 		4FC799D817BC07D5000AEC49 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FC799D717BC07D5000AEC49 /* QuartzCore.framework */; };
 		4FC799DD17BC33D0000AEC49 /* bannerAlert.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FC799D917BC33D0000AEC49 /* bannerAlert.png */; };
 		4FC799DE17BC33D0000AEC49 /* bannerFailure.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FC799DA17BC33D0000AEC49 /* bannerFailure.png */; };
@@ -55,7 +54,6 @@
 		4FC799CF17BC07B7000AEC49 /* bannerAlert@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bannerAlert@2x.png"; sourceTree = "<group>"; };
 		4FC799D017BC07B7000AEC49 /* bannerFailure@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bannerFailure@2x.png"; sourceTree = "<group>"; };
 		4FC799D117BC07B7000AEC49 /* bannerNotify@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bannerNotify@2x.png"; sourceTree = "<group>"; };
-		4FC799D217BC07B7000AEC49 /* bannerSuccess@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bannerSuccess@2x.png"; sourceTree = "<group>"; };
 		4FC799D717BC07D5000AEC49 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		4FC799D917BC33D0000AEC49 /* bannerAlert.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bannerAlert.png; sourceTree = "<group>"; };
 		4FC799DA17BC33D0000AEC49 /* bannerFailure.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bannerFailure.png; sourceTree = "<group>"; };
@@ -157,7 +155,6 @@
 				4FC799CF17BC07B7000AEC49 /* bannerAlert@2x.png */,
 				4FC799D017BC07B7000AEC49 /* bannerFailure@2x.png */,
 				4FC799D117BC07B7000AEC49 /* bannerNotify@2x.png */,
-				4FC799D217BC07B7000AEC49 /* bannerSuccess@2x.png */,
 				4FC799D917BC33D0000AEC49 /* bannerAlert.png */,
 				4FC799DA17BC33D0000AEC49 /* bannerFailure.png */,
 				4FC799DB17BC33D0000AEC49 /* bannerNotify.png */,
@@ -224,7 +221,6 @@
 				4FC799D317BC07B7000AEC49 /* bannerAlert@2x.png in Resources */,
 				4FC799D417BC07B7000AEC49 /* bannerFailure@2x.png in Resources */,
 				4FC799D517BC07B7000AEC49 /* bannerNotify@2x.png in Resources */,
-				4FC799D617BC07B7000AEC49 /* bannerSuccess@2x.png in Resources */,
 				4FC799DD17BC33D0000AEC49 /* bannerAlert.png in Resources */,
 				4FC799DE17BC33D0000AEC49 /* bannerFailure.png in Resources */,
 				4FC799DF17BC33D0000AEC49 /* bannerNotify.png in Resources */,
