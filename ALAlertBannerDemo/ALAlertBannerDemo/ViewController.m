@@ -44,6 +44,10 @@
     [[ALAlertBanner appearance] setDrawsGradient:@NO];
     [[ALAlertBanner appearance] setDrawsStrokes:@NO];
     [[ALAlertBanner appearance] setShadowRadius:@0.f];
+    [[ALAlertBanner appearance] setSuccessFillColor:[UIColor colorWithRed:0/255.f green:200/255.f blue:175/255.f alpha:.5f]];
+    [[ALAlertBanner appearance] setFailureFillColor:[UIColor colorWithRed:255/255.f green:45/255.f blue:85/255.f alpha:.6f]];
+    [[ALAlertBanner appearance] setWarningFillColor:[UIColor colorWithWhite:1.f alpha:.5f]];
+    [[ALAlertBanner appearance] setNotifyFillColor:[UIColor colorWithWhite:1.f alpha:.5f]];
 
 	// Do any additional setup after loading the view.
 

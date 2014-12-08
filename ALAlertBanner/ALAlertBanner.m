@@ -123,7 +123,7 @@ lineBreakMode:mode].height) : 0.f;
 @property (nonatomic, strong) UILabel *subtitleLabel;
 @property (nonatomic, strong) UIImageView *styleImageView;
 @property (nonatomic) CGRect parentFrameUponCreation;
-@property (nonatomic, strong) UIVisualEffectView *blurView;
+@property (nonatomic, strong) UIView *blurView;
 @property (nonatomic, strong) UIView *contentView;
 
 @end
@@ -154,7 +154,6 @@ lineBreakMode:mode].height) : 0.f;
 }
 
 - (void)setupInitialValues {
-    //TODO - showsShadow
     _fadeOutDuration = 0.2;
     _showAnimationDuration = 0.25;
     _hideAnimationDuration = 0.2;
@@ -169,14 +168,13 @@ lineBreakMode:mode].height) : 0.f;
     _drawsGradient = @YES;
     _drawsStrokes = @YES;
     _shadowRadius = @0.f;
-    _successImage = [UIImage imageNamed:@"bannerSuccess.png"];
-    _failureImage = [UIImage imageNamed:@"bannerFailure.png"];
-    _notifyImage = [UIImage imageNamed:@"bannerNotify.png"];
-    _warningImage = [UIImage imageNamed:@"bannerAlert.png"];
-    _successFillColor = [UIColor colorWithRed:(77/255.0) green:(175/255.0) blue:(67/255.0) alpha:1.f];
-    _failureFillColor = [UIColor colorWithRed:(173/255.0) green:(48/255.0) blue:(48/255.0) alpha:1.f];
-    _warningFillColor = [UIColor colorWithRed:(211/255.0) green:(209/255.0) blue:(100/255.0) alpha:1.f];
-    _notifyFillColor = [UIColor colorWithRed:(48/255.0) green:(110/255.0) blue:(173/255.0) alpha:1.f];
+
+    //blurEffect as UIAppearanceSelector; UIBlurEffectStyleExtraLight for white
+
+//    _successFillColor = [UIColor colorWithRed:(77/255.0) green:(175/255.0) blue:(67/255.0) alpha:.5f];
+//    _failureFillColor = [UIColor colorWithRed:(173/255.0) green:(48/255.0) blue:(48/255.0) alpha:.5f];
+//    _warningFillColor = [UIColor colorWithRed:(211/255.0) green:(209/255.0) blue:(100/255.0) alpha:.5f];
+//    _notifyFillColor = [UIColor colorWithRed:(48/255.0) green:(110/255.0) blue:(173/255.0) alpha:.5f];
 
     NSShadow *titleShadow = [[NSShadow alloc] init];
     [titleShadow setShadowColor:[UIColor colorWithWhite:0.f alpha:.3f]];
@@ -184,12 +182,12 @@ lineBreakMode:mode].height) : 0.f;
     [titleShadow setShadowOffset:CGSizeMake(0.f, -1.f)];
 
     _titleTextAttributes = @{
-                             NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.f],
+                             NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.f],
                              NSForegroundColorAttributeName : [UIColor colorWithWhite:1.f alpha:1.f]
                              };
 
     _subtitleTextAttributes = @{
-                                NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue" size:14.f],
+                                NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue" size:15.f],
                                 NSForegroundColorAttributeName : [UIColor colorWithWhite:1.f alpha:0.8f]
                                 };
 
@@ -198,26 +196,46 @@ lineBreakMode:mode].height) : 0.f;
 }
 
 - (void)setupSubviews {
-    _styleImageView = [[UIImageView alloc] init];
+    self.styleImageView = [[UIImageView alloc] init];
     [self applyStyling];
-
-    UIBlurEffect * effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-    self.blurView = [[UIVisualEffectView alloc] initWithEffect:effect];
-    [self.blurView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
-    [self insertSubview:self.blurView atIndex:0];
 
     self.contentView = [[UIView alloc] initWithFrame:self.bounds];
     self.contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    [self.blurView.contentView addSubview:self.contentView];
 
-    [self.contentView setBackgroundColor:[UIColor colorWithRed:0/255.f green:200/255.f blue:175/255.f alpha:.5f]]; //TODO - should be a UIAppearance selector
-//    [self.contentView setBackgroundColor:[UIColor colorWithRed:255/255.f green:45/255.f blue:85/255.f alpha:.6f]]; //TODO - should be a UIAppearance selector
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    UIBlurEffect *effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
+    self.blurView = [[UIVisualEffectView alloc] initWithEffect:effect];
+    [[(UIVisualEffectView *)self.blurView contentView] addSubview:self.contentView];
+#else
+    self.blurView = [[UIView alloc] initWithFrame:self.bounds];
+    self.blurView.backgroundColor = [UIColor colorWithWhite:1.f alpha:.9];
+    [self.blurView addSubview:self.contentView];
+#endif
 
+    [self.blurView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+    [self insertSubview:self.blurView atIndex:0];
     [self.contentView addSubview:self.titleLabel];
     [self.contentView addSubview:self.subtitleLabel];
 }
 
 - (void)applyStyling {
+    switch (self.style) {
+        case ALAlertBannerStyleSuccess:
+            [self.contentView setBackgroundColor:_successFillColor];
+            break;
+        case ALAlertBannerStyleFailure:
+            [self.contentView setBackgroundColor:_failureFillColor];
+            break;
+        case ALAlertBannerStyleNotify:
+            [self.contentView setBackgroundColor:_notifyFillColor];
+            break;
+        case ALAlertBannerStyleWarning:
+            [self.contentView setBackgroundColor:_warningFillColor];
+            break;
+        default:
+            break;
+    }
+
     if (!_titleLabel) {
         _titleLabel = [[UILabel alloc] init];
     }
@@ -385,8 +403,8 @@ lineBreakMode:mode].height) : 0.f;
 + (ALAlertBanner *)createAlertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle {
     ALAlertBanner *alertBanner = [[ALAlertBanner alloc] init];
 
-//    if (![view isKindOfClass:[UIWindow class]] && position == ALAlertBannerPositionUnderNavBar)
-//        [[NSException exceptionWithName:@"Wrong ALAlertBannerPosition For View Type" reason:@"ALAlertBannerPositionUnderNavBar should only be used if you are presenting the alert banner on the AppDelegate window. Use ALAlertBannerPositionTop or ALAlertBannerPositionBottom for normal UIViews" userInfo:nil] raise];
+    if (![view isKindOfClass:[UIWindow class]] && position == ALAlertBannerPositionUnderNavBar)
+        [[NSException exceptionWithName:@"Wrong ALAlertBannerPosition For View Type" reason:@"ALAlertBannerPositionUnderNavBar should only be used if you are presenting the alert banner on the AppDelegate window. Use ALAlertBannerPositionTop or ALAlertBannerPositionBottom for normal UIViews" userInfo:nil] raise];
 
     view = [[ALAlertBannerManager sharedManager] alertBannerWindow];
 
@@ -634,15 +652,6 @@ lineBreakMode:mode].height) : 0.f;
     frame.origin.y = initialYCoord;
     self.frame = frame;
 
-
-    //On iOS 8 only do we add these
-
-//    UIBlurEffect * effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-//    self.blurView = [[UIVisualEffectView alloc] initWithEffect:effect];
-//    [self.blurView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
-//    [self insertSubview:self.blurView atIndex:0];
-
-//    [viewWithBlurredBackground setBackgroundColor:[UIColor colorWithRed:0/255.f green:200/255.f blue:175/255.f alpha:.5f]];
     [self.blurView setFrame:self.bounds];
 
     //if position is under the nav bar, add a mask
@@ -775,50 +784,6 @@ lineBreakMode:mode].height) : 0.f;
     }
 }
 
-//- (void)drawRect:(CGRect)rect {
-//    CGContextRef context = UIGraphicsGetCurrentContext();
-//
-//    UIColor *fillColor;
-//    switch (self.style) {
-//        case ALAlertBannerStyleSuccess:
-//            fillColor = [self successFillColor];
-//            break;
-//        case ALAlertBannerStyleFailure:
-//            fillColor = [self failureFillColor];
-//            break;
-//        case ALAlertBannerStyleNotify:
-//            fillColor = [self notifyFillColor];
-//            break;
-//        case ALAlertBannerStyleWarning:
-//            fillColor = [self warningFillColor];
-//            break;
-//    }
-//
-//    NSArray *colorsArray = nil;
-//
-//    if ([self.drawsGradient boolValue]) {
-//        colorsArray = @[(id)[fillColor CGColor], (id)[[fillColor darkerColor] CGColor]];
-//    } else {
-//        colorsArray = @[(id)[fillColor CGColor]];
-//    }
-//
-//    CGColorSpaceRef colorSpace =  CGColorSpaceCreateDeviceRGB();
-//    const CGFloat locations[2] = {0.f, 1.f};
-//    CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)colorsArray, locations);
-//
-//    CGContextDrawLinearGradient(context, gradient, CGPointZero, CGPointMake(0.f, self.bounds.size.height), 0.f);
-//
-//    CGGradientRelease(gradient);
-//    CGColorSpaceRelease(colorSpace);
-//
-//    if ([self.drawsStrokes boolValue]) {
-//        CGContextSetFillColorWithColor(context, [UIColor colorWithRed:0.f green:0.f blue:0.f alpha:0.6f].CGColor);
-//        CGContextFillRect(context, CGRectMake(0.f, rect.size.height - 1.f, rect.size.width, 1.f));
-//        CGContextSetFillColorWithColor(context, [UIColor colorWithRed:1.f green:1.f blue:1.f alpha:0.3f].CGColor);
-//        CGContextFillRect(context, CGRectMake(0.f, 0.f, rect.size.width, 1.f));
-//    }
-//}
-
 - (id)nextAvailableViewController:(id)view {
     id nextResponder = [view nextResponder];
     if ([nextResponder isKindOfClass:[UIViewController class]]) {
@@ -939,28 +904,28 @@ lineBreakMode:mode].height) : 0.f;
 - (void)setSuccessFillColor:(UIColor *)successFillColor {
   if (_successFillColor != successFillColor) {
     _successFillColor = successFillColor;
-    [self setNeedsDisplay];
+    [self applyStyling];
   }
 }
 
 - (void)setFailureFillColor:(UIColor *)failureFillColor {
     if (_failureFillColor != failureFillColor) {
         _failureFillColor = failureFillColor;
-        [self setNeedsDisplay];
+        [self applyStyling];
     }
 }
 
 - (void)setWarningFillColor:(UIColor *)warningFillColor {
     if (_warningFillColor != warningFillColor) {
         _warningFillColor = warningFillColor;
-        [self setNeedsDisplay];
+        [self applyStyling];
     }
 }
 
 - (void)setNotifyFillColor:(UIColor *)notifyFillColor {
     if (_notifyFillColor != notifyFillColor) {
         _notifyFillColor = notifyFillColor;
-        [self setNeedsDisplay];
+        [self applyStyling];
     }
 }
 
@@ -992,7 +957,5 @@ lineBreakMode:mode].height) : 0.f;
         return nil;
     }
 }
-
-
 
 @end
