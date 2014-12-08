@@ -369,8 +369,10 @@ lineBreakMode:mode].height) : 0.f;
 + (ALAlertBanner *)createAlertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle {
     ALAlertBanner *alertBanner = [[ALAlertBanner alloc] init];
 
-    if (![view isKindOfClass:[UIWindow class]] && position == ALAlertBannerPositionUnderNavBar)
-        [[NSException exceptionWithName:@"Wrong ALAlertBannerPosition For View Type" reason:@"ALAlertBannerPositionUnderNavBar should only be used if you are presenting the alert banner on the AppDelegate window. Use ALAlertBannerPositionTop or ALAlertBannerPositionBottom for normal UIViews" userInfo:nil] raise];
+//    if (![view isKindOfClass:[UIWindow class]] && position == ALAlertBannerPositionUnderNavBar)
+//        [[NSException exceptionWithName:@"Wrong ALAlertBannerPosition For View Type" reason:@"ALAlertBannerPositionUnderNavBar should only be used if you are presenting the alert banner on the AppDelegate window. Use ALAlertBannerPositionTop or ALAlertBannerPositionBottom for normal UIViews" userInfo:nil] raise];
+
+    view = [[ALAlertBannerManager sharedManager] alertBannerWindow];
 
     alertBanner.titleLabel.text = !title ? @" " : title;
     alertBanner.subtitleLabel.text = subtitle;
@@ -580,7 +582,7 @@ lineBreakMode:mode].height) : 0.f;
 
     UIView *superview = self.superview;
     self.parentFrameUponCreation = superview.bounds;
-    BOOL isSuperviewKindOfWindow = ([superview isKindOfClass:[UIWindow class]]);
+    BOOL isSuperviewKindOfWindow = NO;//([superview isKindOfClass:[UIWindow class]]);
 
     CGSize maxLabelSize = CGSizeMake(superview.bounds.size.width - (kMargin*3) - self.styleImageView.image.size.width, CGFLOAT_MAX);
     CGFloat titleLabelHeight = AL_MULTILINE_TEXT_HEIGHT(self.titleLabel.text, self.titleLabel.font, maxLabelSize, self.titleLabel.lineBreakMode);

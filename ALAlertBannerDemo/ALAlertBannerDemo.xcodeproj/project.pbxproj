@@ -28,6 +28,7 @@
 		4FC799DF17BC33D0000AEC49 /* bannerNotify.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FC799DB17BC33D0000AEC49 /* bannerNotify.png */; };
 		4FC799E017BC33D0000AEC49 /* bannerSuccess.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FC799DC17BC33D0000AEC49 /* bannerSuccess.png */; };
 		4FFBA6F917BE970700C2A7F2 /* ALAlertBannerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FFBA6F817BE970700C2A7F2 /* ALAlertBannerManager.m */; };
+		90081A901A35310C00BB7749 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 90081A8F1A35310C00BB7749 /* Images.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +62,7 @@
 		4FC799DC17BC33D0000AEC49 /* bannerSuccess.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bannerSuccess.png; sourceTree = "<group>"; };
 		4FFBA6F717BE970700C2A7F2 /* ALAlertBannerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALAlertBannerManager.h; sourceTree = "<group>"; };
 		4FFBA6F817BE970700C2A7F2 /* ALAlertBannerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALAlertBannerManager.m; sourceTree = "<group>"; };
+		90081A8F1A35310C00BB7749 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +118,7 @@
 				4FC799C417BC0758000AEC49 /* ViewController.m */,
 				203ADC211809F1B9001E4C68 /* TableViewController.h */,
 				203ADC221809F1B9001E4C68 /* TableViewController.m */,
+				90081A8F1A35310C00BB7749 /* Images.xcassets */,
 				4FC799AD17BC072A000AEC49 /* Supporting Files */,
 			);
 			path = ALAlertBannerDemo;
@@ -223,6 +226,7 @@
 				4FC799D517BC07B7000AEC49 /* bannerNotify@2x.png in Resources */,
 				4FC799DD17BC33D0000AEC49 /* bannerAlert.png in Resources */,
 				4FC799DE17BC33D0000AEC49 /* bannerFailure.png in Resources */,
+				90081A901A35310C00BB7749 /* Images.xcassets in Resources */,
 				4FC799DF17BC33D0000AEC49 /* bannerNotify.png in Resources */,
 				4FC799E017BC33D0000AEC49 /* bannerSuccess.png in Resources */,
 			);
@@ -319,6 +323,7 @@
 		4FC799C117BC072A000AEC49 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ALAlertBannerDemo/ALAlertBannerDemo-Prefix.pch";
 				INFOPLIST_FILE = "ALAlertBannerDemo/ALAlertBannerDemo-Info.plist";
@@ -331,6 +336,7 @@
 		4FC799C217BC072A000AEC49 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ALAlertBannerDemo/ALAlertBannerDemo-Prefix.pch";
 				INFOPLIST_FILE = "ALAlertBannerDemo/ALAlertBannerDemo-Info.plist";

@@ -36,4 +36,6 @@
 - (void)hideAlertBannersInView:(UIView *)view;
 - (void)forceHideAllAlertBannersInView:(UIView *)view;
 
+@property (nonatomic, strong) UIWindow *alertBannerWindow;
+
 @end

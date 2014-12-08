@@ -61,6 +61,7 @@
 @property (nonatomic) dispatch_semaphore_t bottomPositionSemaphore;
 @property (nonatomic) dispatch_semaphore_t navBarPositionSemaphore;
 @property (nonatomic, strong) NSMutableArray *bannerViews;
+@property (nonatomic, strong) UIWindow *applicationWindow;
 
 - (void)didRotate:(NSNotification *)note;
 
@@ -188,6 +189,10 @@
             [banner pushAlertBanner:alertBanner.frame.size.height forward:YES delay:alertBanner.fadeInDuration];
         }
     }
+
+    if (self.bannerViews.count && !self.alertBannerWindow.keyWindow) {
+        [self.alertBannerWindow makeKeyAndVisible];
+    }
 }
 
 - (void)alertBannerDidShow:(ALAlertBanner *)alertBanner inView:(UIView *)view {
@@ -247,6 +252,11 @@
                 break;
         }
         dispatch_semaphore_signal(semaphore);
+    }
+
+    if (!self.bannerViews.count) {
+        [self.alertBannerWindow setHidden:YES];
+        [self.applicationWindow makeKeyAndVisible];
     }
 }
 
@@ -315,6 +325,18 @@
 
 - (void)dealloc {
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+}
+
+- (UIWindow *)alertBannerWindow {
+    if (_alertBannerWindow) {
+        return _alertBannerWindow;
+    } else {
+        self.applicationWindow = [[UIApplication sharedApplication] windows][0];
+        _alertBannerWindow = [[UIWindow alloc] initWithFrame:self.applicationWindow.frame];
+        _alertBannerWindow.windowLevel = UIWindowLevelStatusBar + 1;
+        
+        return _alertBannerWindow;
+    }
 }
 
 @end
