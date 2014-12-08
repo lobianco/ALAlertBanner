@@ -327,12 +327,12 @@
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 }
 
-- (UIWindow *)alertBannerWindow {
+- (ALAlertWindow *)alertBannerWindow {
     if (_alertBannerWindow) {
         return _alertBannerWindow;
     } else {
         self.applicationWindow = [[UIApplication sharedApplication] windows][0];
-        _alertBannerWindow = [[UIWindow alloc] initWithFrame:self.applicationWindow.frame];
+        _alertBannerWindow = [[ALAlertWindow alloc] initWithFrame:self.applicationWindow.frame];
         _alertBannerWindow.windowLevel = UIWindowLevelStatusBar + 1;
         
         return _alertBannerWindow;

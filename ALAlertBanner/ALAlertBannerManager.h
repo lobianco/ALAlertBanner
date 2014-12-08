@@ -23,6 +23,7 @@
  **/
 
 #import <Foundation/Foundation.h>
+#import "ALAlertWindow.h"
 
 @interface ALAlertBannerManager : NSObject
 
@@ -36,6 +37,6 @@
 - (void)hideAlertBannersInView:(UIView *)view;
 - (void)forceHideAllAlertBannersInView:(UIView *)view;
 
-@property (nonatomic, strong) UIWindow *alertBannerWindow;
+@property (nonatomic, strong) ALAlertWindow *alertBannerWindow;
 
 @end
