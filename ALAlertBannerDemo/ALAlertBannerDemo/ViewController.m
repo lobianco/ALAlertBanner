@@ -51,11 +51,12 @@
                                                    NSForegroundColorAttributeName : [UIColor whiteColor]
                                                    };
 
-    [[ALAlertBanner appearance] setTitleTextAttributes:titleAppearanceAttributes];
-    [[ALAlertBanner appearance] setSubtitleTextAttributes:subtitleAppearanceAttributes];
+//    [[ALAlertBanner appearance] setTitleTextAttributes:titleAppearanceAttributes];
+//    [[ALAlertBanner appearance] setSubtitleTextAttributes:subtitleAppearanceAttributes];
     [[ALAlertBanner appearance] setDrawsGradient:@NO];
     [[ALAlertBanner appearance] setDrawsStrokes:@NO];
     [[ALAlertBanner appearance] setShadowRadius:@1.f];
+
 
 	// Do any additional setup after loading the view.
 
@@ -117,6 +118,12 @@
     self.animationDurationLabel.text = @"Animation duration: 0.25 seconds";
     self.animationDurationLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:self.animationDurationLabel];
+
+//    [self.view setBackgroundColor:[UIColor redColor]];
+
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background1.jpg"]];
+    [self.view insertSubview:imageView atIndex:0];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated {

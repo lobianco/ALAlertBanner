@@ -123,6 +123,7 @@ lineBreakMode:mode].height) : 0.f;
 @property (nonatomic, strong) UILabel *subtitleLabel;
 @property (nonatomic, strong) UIImageView *styleImageView;
 @property (nonatomic) CGRect parentFrameUponCreation;
+@property (nonatomic) UIVisualEffectView *blurView;
 
 @end
 
@@ -152,23 +153,25 @@ lineBreakMode:mode].height) : 0.f;
 }
 
 - (void)setupInitialValues {
+    //TODO - showsShadow
     _fadeOutDuration = 0.2;
     _showAnimationDuration = 0.25;
     _hideAnimationDuration = 0.2;
     _isScheduledToHide = NO;
-    _bannerOpacity = 0.93f;
+    _bannerOpacity = 1.f;
     _secondsToShow = 3.5;
     _allowTapToDismiss = YES;
     _shouldForceHide = NO;
 
-    _opacity = @0.93f;
+    _opacity = @1.f;
+    _drawsShadows = @NO;
     _drawsGradient = @YES;
     _drawsStrokes = @YES;
-    _shadowRadius = @3.f;
-    _successImage = [UIImage imageNamed:@"bannerSuccess.png"];
-    _failureImage = [UIImage imageNamed:@"bannerFailure.png"];
-    _notifyImage = [UIImage imageNamed:@"bannerNotify.png"];
-    _warningImage = [UIImage imageNamed:@"bannerAlert.png"];
+    _shadowRadius = @0.f;
+//    _successImage = [UIImage imageNamed:@"bannerSuccess.png"];
+//    _failureImage = [UIImage imageNamed:@"bannerFailure.png"];
+//    _notifyImage = [UIImage imageNamed:@"bannerNotify.png"];
+//    _warningImage = [UIImage imageNamed:@"bannerAlert.png"];
     _successFillColor = [UIColor colorWithRed:(77/255.0) green:(175/255.0) blue:(67/255.0) alpha:1.f];
     _failureFillColor = [UIColor colorWithRed:(173/255.0) green:(48/255.0) blue:(48/255.0) alpha:1.f];
     _warningFillColor = [UIColor colorWithRed:(211/255.0) green:(209/255.0) blue:(100/255.0) alpha:1.f];
@@ -180,15 +183,13 @@ lineBreakMode:mode].height) : 0.f;
     [titleShadow setShadowOffset:CGSizeMake(0.f, -1.f)];
 
     _titleTextAttributes = @{
-                             NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:15.f],
-                             NSShadowAttributeName : titleShadow,
-                             NSForegroundColorAttributeName : [UIColor colorWithRed:0.f green:0 blue:0 alpha:1.f]
+                             NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Medium" size:16.f],
+                             NSForegroundColorAttributeName : [UIColor colorWithWhite:1.f alpha:1.f]
                              };
 
     _subtitleTextAttributes = @{
-                                NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue" size:12.f],
-                                NSShadowAttributeName : titleShadow,
-                                NSForegroundColorAttributeName : [UIColor colorWithWhite:1.f alpha:0.9f]
+                                NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue" size:14.f],
+                                NSForegroundColorAttributeName : [UIColor colorWithWhite:1.f alpha:0.8f]
                                 };
 
     manager = [ALAlertBannerManager sharedManager];
@@ -198,9 +199,21 @@ lineBreakMode:mode].height) : 0.f;
 - (void)setupSubviews {
     _styleImageView = [[UIImageView alloc] init];
     [self applyStyling];
-    [self addSubview:_styleImageView];
-    [self addSubview:_titleLabel];
-    [self addSubview:_subtitleLabel];
+
+    UIBlurEffect * effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+    self.blurView = [[UIVisualEffectView alloc] initWithEffect:effect];
+    [self.blurView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+    [self insertSubview:self.blurView atIndex:0];
+
+    UIView *contentView = [[UIView alloc] initWithFrame:self.bounds];
+    contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    [self.blurView.contentView addSubview:contentView];
+
+    [contentView setBackgroundColor:[UIColor colorWithRed:0/255.f green:200/255.f blue:175/255.f alpha:.5f]]; //TODO - should be a UIAppearance selector
+    [contentView setBackgroundColor:[UIColor colorWithRed:255/255.f green:45/255.f blue:85/255.f alpha:.7f]]; //TODO - should be a UIAppearance selector
+
+    [contentView addSubview:self.titleLabel];
+    [contentView addSubview:self.subtitleLabel];
 }
 
 - (void)applyStyling {
@@ -281,37 +294,39 @@ lineBreakMode:mode].height) : 0.f;
 }
 
 - (void)setShowShadow:(BOOL)showShadow {
-    _showShadow = showShadow;
+    if (self.drawsShadows.boolValue) {
+        _showShadow = showShadow;
 
-    CGFloat oldShadowRadius = self.layer.shadowRadius;
-    CGFloat newShadowRadius;
+        CGFloat oldShadowRadius = self.layer.shadowRadius;
+        CGFloat newShadowRadius;
 
-    if (showShadow) {
-        newShadowRadius = [self.shadowRadius floatValue];
-        self.layer.shadowColor = [UIColor blackColor].CGColor;
-        self.layer.shadowOffset = CGSizeMake(0.f, self.position == ALAlertBannerPositionBottom ? -1.f : 1.f);
-        CGRect shadowPath = CGRectMake(self.bounds.origin.x - kMargin, self.bounds.origin.y, self.bounds.size.width + kMargin*2.f, self.bounds.size.height);
-        self.layer.shadowPath = [UIBezierPath bezierPathWithRect:shadowPath].CGPath;
+        if (showShadow) {
+            newShadowRadius = [self.shadowRadius floatValue];
+            self.layer.shadowColor = [UIColor blackColor].CGColor;
+            self.layer.shadowOffset = CGSizeMake(0.f, self.position == ALAlertBannerPositionBottom ? -1.f : 1.f);
+            CGRect shadowPath = CGRectMake(self.bounds.origin.x - kMargin, self.bounds.origin.y, self.bounds.size.width + kMargin*2.f, self.bounds.size.height);
+            self.layer.shadowPath = [UIBezierPath bezierPathWithRect:shadowPath].CGPath;
 
-        self.fadeInDuration = 0.15f;
-    } else {
-        newShadowRadius = 0.f;
-        self.layer.shadowRadius = 0.f;
-        self.layer.shadowOffset = CGSizeZero;
+            self.fadeInDuration = 0.15f;
+        } else {
+            newShadowRadius = 0.f;
+            self.layer.shadowRadius = 0.f;
+            self.layer.shadowOffset = CGSizeZero;
 
-        //if on iOS7, keep fade in duration at a value greater than 0 so it doesn't instantly appear behind the translucent nav bar
-        self.fadeInDuration = (AL_IOS_7_OR_GREATER && self.position == ALAlertBannerPositionTop) ? 0.15f : 0.f;
+            //if on iOS7, keep fade in duration at a value greater than 0 so it doesn't instantly appear behind the translucent nav bar
+            self.fadeInDuration = (AL_IOS_7_OR_GREATER && self.position == ALAlertBannerPositionTop) ? 0.15f : 0.f;
+        }
+
+        self.layer.shouldRasterize = YES;
+        self.layer.rasterizationScale = [UIScreen mainScreen].scale;
+        self.layer.shadowRadius = newShadowRadius;
+
+        CABasicAnimation *fadeShadow = [CABasicAnimation animationWithKeyPath:@"shadowRadius"];
+        fadeShadow.fromValue = [NSNumber numberWithFloat:oldShadowRadius];
+        fadeShadow.toValue = [NSNumber numberWithFloat:newShadowRadius];
+        fadeShadow.duration = self.fadeOutDuration;
+        [self.layer addAnimation:fadeShadow forKey:@"shadowRadius"];
     }
-
-    self.layer.shouldRasterize = YES;
-    self.layer.rasterizationScale = [UIScreen mainScreen].scale;
-    self.layer.shadowRadius = newShadowRadius;
-
-    CABasicAnimation *fadeShadow = [CABasicAnimation animationWithKeyPath:@"shadowRadius"];
-    fadeShadow.fromValue = [NSNumber numberWithFloat:oldShadowRadius];
-    fadeShadow.toValue = [NSNumber numberWithFloat:newShadowRadius];
-    fadeShadow.duration = self.fadeOutDuration;
-    [self.layer addAnimation:fadeShadow forKey:@"shadowRadius"];
 }
 
 - (void)setAllowTapToDismiss:(BOOL)allowTapToDismiss {
@@ -618,6 +633,17 @@ lineBreakMode:mode].height) : 0.f;
     frame.origin.y = initialYCoord;
     self.frame = frame;
 
+
+    //On iOS 8 only do we add these
+
+//    UIBlurEffect * effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+//    self.blurView = [[UIVisualEffectView alloc] initWithEffect:effect];
+//    [self.blurView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+//    [self insertSubview:self.blurView atIndex:0];
+
+//    [viewWithBlurredBackground setBackgroundColor:[UIColor colorWithRed:0/255.f green:200/255.f blue:175/255.f alpha:.5f]];
+    [self.blurView setFrame:self.bounds];
+
     //if position is under the nav bar, add a mask
     if (self.position == ALAlertBannerPositionUnderNavBar) {
         CAShapeLayer *maskLayer = [[CAShapeLayer alloc] init];
@@ -748,49 +774,49 @@ lineBreakMode:mode].height) : 0.f;
     }
 }
 
-- (void)drawRect:(CGRect)rect {
-    CGContextRef context = UIGraphicsGetCurrentContext();
-
-    UIColor *fillColor;
-    switch (self.style) {
-        case ALAlertBannerStyleSuccess:
-            fillColor = [self successFillColor];
-            break;
-        case ALAlertBannerStyleFailure:
-            fillColor = [self failureFillColor];
-            break;
-        case ALAlertBannerStyleNotify:
-            fillColor = [self notifyFillColor];
-            break;
-        case ALAlertBannerStyleWarning:
-            fillColor = [self warningFillColor];
-            break;
-    }
-
-    NSArray *colorsArray = nil;
-
-    if ([self.drawsGradient boolValue]) {
-        colorsArray = @[(id)[fillColor CGColor], (id)[[fillColor darkerColor] CGColor]];
-    } else {
-        colorsArray = @[(id)[fillColor CGColor]];
-    }
-
-    CGColorSpaceRef colorSpace =  CGColorSpaceCreateDeviceRGB();
-    const CGFloat locations[2] = {0.f, 1.f};
-    CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)colorsArray, locations);
-
-    CGContextDrawLinearGradient(context, gradient, CGPointZero, CGPointMake(0.f, self.bounds.size.height), 0.f);
-
-    CGGradientRelease(gradient);
-    CGColorSpaceRelease(colorSpace);
-
-    if ([self.drawsStrokes boolValue]) {
-        CGContextSetFillColorWithColor(context, [UIColor colorWithRed:0.f green:0.f blue:0.f alpha:0.6f].CGColor);
-        CGContextFillRect(context, CGRectMake(0.f, rect.size.height - 1.f, rect.size.width, 1.f));
-        CGContextSetFillColorWithColor(context, [UIColor colorWithRed:1.f green:1.f blue:1.f alpha:0.3f].CGColor);
-        CGContextFillRect(context, CGRectMake(0.f, 0.f, rect.size.width, 1.f));
-    }
-}
+//- (void)drawRect:(CGRect)rect {
+//    CGContextRef context = UIGraphicsGetCurrentContext();
+//
+//    UIColor *fillColor;
+//    switch (self.style) {
+//        case ALAlertBannerStyleSuccess:
+//            fillColor = [self successFillColor];
+//            break;
+//        case ALAlertBannerStyleFailure:
+//            fillColor = [self failureFillColor];
+//            break;
+//        case ALAlertBannerStyleNotify:
+//            fillColor = [self notifyFillColor];
+//            break;
+//        case ALAlertBannerStyleWarning:
+//            fillColor = [self warningFillColor];
+//            break;
+//    }
+//
+//    NSArray *colorsArray = nil;
+//
+//    if ([self.drawsGradient boolValue]) {
+//        colorsArray = @[(id)[fillColor CGColor], (id)[[fillColor darkerColor] CGColor]];
+//    } else {
+//        colorsArray = @[(id)[fillColor CGColor]];
+//    }
+//
+//    CGColorSpaceRef colorSpace =  CGColorSpaceCreateDeviceRGB();
+//    const CGFloat locations[2] = {0.f, 1.f};
+//    CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)colorsArray, locations);
+//
+//    CGContextDrawLinearGradient(context, gradient, CGPointZero, CGPointMake(0.f, self.bounds.size.height), 0.f);
+//
+//    CGGradientRelease(gradient);
+//    CGColorSpaceRelease(colorSpace);
+//
+//    if ([self.drawsStrokes boolValue]) {
+//        CGContextSetFillColorWithColor(context, [UIColor colorWithRed:0.f green:0.f blue:0.f alpha:0.6f].CGColor);
+//        CGContextFillRect(context, CGRectMake(0.f, rect.size.height - 1.f, rect.size.width, 1.f));
+//        CGContextSetFillColorWithColor(context, [UIColor colorWithRed:1.f green:1.f blue:1.f alpha:0.3f].CGColor);
+//        CGContextFillRect(context, CGRectMake(0.f, 0.f, rect.size.width, 1.f));
+//    }
+//}
 
 - (id)nextAvailableViewController:(id)view {
     id nextResponder = [view nextResponder];
@@ -852,6 +878,13 @@ lineBreakMode:mode].height) : 0.f;
 - (void)setDrawsGradient:(NSNumber *)drawsGradient {
     if (_drawsGradient != drawsGradient) {
         _drawsGradient = drawsGradient;
+        [self setNeedsDisplay];
+    }
+}
+
+- (void)setDrawsShadows:(NSNumber *)drawsShadows {
+    if (_drawsShadows != drawsShadows) {
+        _drawsShadows = drawsShadows;
         [self setNeedsDisplay];
     }
 }

@@ -62,6 +62,7 @@ typedef enum {
 @property (nonatomic) NSDictionary *subtitleTextAttributes UI_APPEARANCE_SELECTOR;
 @property (nonatomic) NSNumber *drawsGradient UI_APPEARANCE_SELECTOR;
 @property (nonatomic) NSNumber *drawsStrokes UI_APPEARANCE_SELECTOR;
+@property (nonatomic) NSNumber *drawsShadows UI_APPEARANCE_SELECTOR;
 @property (nonatomic) NSNumber *shadowRadius UI_APPEARANCE_SELECTOR;
 @property (nonatomic) UIColor *successFillColor UI_APPEARANCE_SELECTOR;
 @property (nonatomic) UIColor *failureFillColor UI_APPEARANCE_SELECTOR;
