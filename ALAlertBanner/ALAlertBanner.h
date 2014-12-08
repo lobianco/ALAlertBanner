@@ -60,6 +60,13 @@ typedef enum {
 /* Uses NSAttributedString keys to specify the font, text color, and shadow properties  */
 @property (nonatomic) NSDictionary *titleTextAttributes UI_APPEARANCE_SELECTOR;
 @property (nonatomic) NSDictionary *subtitleTextAttributes UI_APPEARANCE_SELECTOR;
+
+@property (nonatomic) NSDictionary *notifyTitleTextAttributes UI_APPEARANCE_SELECTOR;
+@property (nonatomic) NSDictionary *notifySubtitleTextAttributes UI_APPEARANCE_SELECTOR;
+
+@property (nonatomic) NSDictionary *warningTitleTextAttributes UI_APPEARANCE_SELECTOR;
+@property (nonatomic) NSDictionary *warningSubtitleTextAttributes UI_APPEARANCE_SELECTOR;
+
 @property (nonatomic) NSNumber *drawsGradient UI_APPEARANCE_SELECTOR;
 @property (nonatomic) NSNumber *drawsStrokes UI_APPEARANCE_SELECTOR;
 @property (nonatomic) NSNumber *drawsShadows UI_APPEARANCE_SELECTOR;

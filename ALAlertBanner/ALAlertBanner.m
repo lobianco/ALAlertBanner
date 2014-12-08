@@ -219,6 +219,10 @@ lineBreakMode:mode].height) : 0.f;
 }
 
 - (void)applyStyling {
+
+    NSDictionary *titleTextAttributes = self.titleTextAttributes;
+    NSDictionary *subtitleTextAttributes = self.subtitleTextAttributes;
+
     switch (self.style) {
         case ALAlertBannerStyleSuccess:
             [self.contentView setBackgroundColor:_successFillColor];
@@ -228,9 +232,16 @@ lineBreakMode:mode].height) : 0.f;
             break;
         case ALAlertBannerStyleNotify:
             [self.contentView setBackgroundColor:_notifyFillColor];
+
+            if (self.notifyTitleTextAttributes) titleTextAttributes = self.notifyTitleTextAttributes;
+            if (self.notifySubtitleTextAttributes) subtitleTextAttributes = self.notifySubtitleTextAttributes;
+
             break;
         case ALAlertBannerStyleWarning:
             [self.contentView setBackgroundColor:_warningFillColor];
+
+            if (self.warningTitleTextAttributes) titleTextAttributes = self.warningTitleTextAttributes;
+            if (self.warningSubtitleTextAttributes) subtitleTextAttributes = self.warningSubtitleTextAttributes;
             break;
         default:
             break;
@@ -243,8 +254,8 @@ lineBreakMode:mode].height) : 0.f;
     _titleLabel.backgroundColor = [UIColor clearColor];
     _titleLabel.font = [self titleFont];
 
-    if (_titleTextAttributes[NSForegroundColorAttributeName]) {
-        _titleLabel.textColor = _titleTextAttributes[NSForegroundColorAttributeName];
+    if (titleTextAttributes[NSForegroundColorAttributeName]) {
+        _titleLabel.textColor = titleTextAttributes[NSForegroundColorAttributeName];
     }
 
     _titleLabel.textAlignment = NSTextAlignmentLeft;
@@ -253,7 +264,7 @@ lineBreakMode:mode].height) : 0.f;
     _titleLabel.backgroundColor = [UIColor clearColor];
 
     if (self.titleTextAttributes[NSShadowAttributeName]) {
-        NSShadow *shadow = self.titleTextAttributes[NSShadowAttributeName];
+        NSShadow *shadow = titleTextAttributes[NSShadowAttributeName];
         _titleLabel.layer.shadowColor = [(UIColor *)shadow.shadowColor CGColor];
         _titleLabel.layer.shadowOffset = shadow.shadowOffset;
         _titleLabel.layer.shadowRadius = shadow.shadowBlurRadius;
@@ -269,8 +280,8 @@ lineBreakMode:mode].height) : 0.f;
     _subtitleLabel.backgroundColor = [UIColor clearColor];
     _subtitleLabel.font = [self subtitleFont];
 
-    if (_subtitleTextAttributes[NSForegroundColorAttributeName]) {
-        _subtitleLabel.textColor = _subtitleTextAttributes[NSForegroundColorAttributeName];
+    if (subtitleTextAttributes[NSForegroundColorAttributeName]) {
+        _subtitleLabel.textColor = subtitleTextAttributes[NSForegroundColorAttributeName];
     }
     _subtitleLabel.textAlignment = NSTextAlignmentLeft;
     _subtitleLabel.numberOfLines = 0;
@@ -837,6 +848,34 @@ lineBreakMode:mode].height) : 0.f;
 - (void)setSubtitleTextAttributes:(NSDictionary *)subtitleTextAttributes {
     if (_subtitleTextAttributes != subtitleTextAttributes) {
         _subtitleTextAttributes = subtitleTextAttributes;
+        [self applyStyling];
+    }
+}
+
+- (void)setNotifyTitleTextAttributes:(NSDictionary *)notifyTitleTextAttributes {
+    if (_notifyTitleTextAttributes != notifyTitleTextAttributes) {
+        _notifyTitleTextAttributes = notifyTitleTextAttributes;
+        [self applyStyling];
+    }
+}
+
+- (void)setNotifySubtitleTextAttributes:(NSDictionary *)notifySubtitleTextAttributes {
+    if (_notifySubtitleTextAttributes != notifySubtitleTextAttributes) {
+        _notifySubtitleTextAttributes = notifySubtitleTextAttributes;
+        [self applyStyling];
+    }
+}
+
+- (void)setWarningTextAttributes:(NSDictionary *)warningTitleTextAttributes {
+    if (_warningTitleTextAttributes != warningTitleTextAttributes) {
+        _warningTitleTextAttributes = warningTitleTextAttributes;
+        [self applyStyling];
+    }
+}
+
+- (void)setWarningSubtitleTextAttributes:(NSDictionary *)warningSubtitleTextAttributes {
+    if (_warningSubtitleTextAttributes != warningSubtitleTextAttributes) {
+        _warningSubtitleTextAttributes = warningSubtitleTextAttributes;
         [self applyStyling];
     }
 }

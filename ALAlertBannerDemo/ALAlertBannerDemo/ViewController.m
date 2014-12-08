@@ -49,6 +49,26 @@
     [[ALAlertBanner appearance] setWarningFillColor:[UIColor colorWithWhite:1.f alpha:.5f]];
     [[ALAlertBanner appearance] setNotifyFillColor:[UIColor colorWithWhite:1.f alpha:.5f]];
 
+    [[ALAlertBanner appearance] setNotifyTitleTextAttributes:@{
+                                                                NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.f],
+                                                                NSForegroundColorAttributeName : [UIColor colorWithWhite:0.f alpha:1.f]
+                                                                }];
+
+    [[ALAlertBanner appearance] setNotifySubtitleTextAttributes:@{
+                                                                  NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue" size:15.f],
+                                                                  NSForegroundColorAttributeName : [UIColor colorWithWhite:0.f alpha:0.8f]
+                                                               }];
+
+    [[ALAlertBanner appearance] setWarningTitleTextAttributes:@{
+                                                               NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Medium" size:17.f],
+                                                               NSForegroundColorAttributeName : [UIColor colorWithWhite:0.f alpha:1.f]
+                                                               }];
+
+    [[ALAlertBanner appearance] setWarningSubtitleTextAttributes:@{
+                                                                  NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue" size:15.f],
+                                                                  NSForegroundColorAttributeName : [UIColor colorWithWhite:0.f alpha:0.8f]
+                                                                  }];
+
 	// Do any additional setup after loading the view.
 
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Hide All" style:UIBarButtonItemStyleBordered target:[ALAlertBanner class] action:@selector(hideAllAlertBanners)];
