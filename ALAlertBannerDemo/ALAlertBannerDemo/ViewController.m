@@ -41,22 +41,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    NSDictionary *titleAppearanceAttributes = @{
-                                                NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue-Bold" size:[UIFont systemFontSize]],
-                                                NSForegroundColorAttributeName : [UIColor whiteColor],
-                                                };
-
-    NSDictionary *subtitleAppearanceAttributes = @{
-                                                   NSFontAttributeName : [UIFont fontWithName:@"HelveticaNeue" size:[UIFont systemFontSize]],
-                                                   NSForegroundColorAttributeName : [UIColor whiteColor]
-                                                   };
-
-//    [[ALAlertBanner appearance] setTitleTextAttributes:titleAppearanceAttributes];
-//    [[ALAlertBanner appearance] setSubtitleTextAttributes:subtitleAppearanceAttributes];
     [[ALAlertBanner appearance] setDrawsGradient:@NO];
     [[ALAlertBanner appearance] setDrawsStrokes:@NO];
-    [[ALAlertBanner appearance] setShadowRadius:@1.f];
-
+    [[ALAlertBanner appearance] setShadowRadius:@0.f];
 
 	// Do any additional setup after loading the view.
 
@@ -71,18 +58,21 @@
 
     self.topButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     self.topButton.tag = ALAlertBannerPositionTop;
+    [self.topButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.topButton setTitle:@"Top" forState:UIControlStateNormal];
     [self.topButton addTarget:self action:@selector(showAlertBannerInView:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.topButton];
 
     self.bottomButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     self.bottomButton.tag = ALAlertBannerPositionBottom;
+    [self.bottomButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.bottomButton setTitle:@"Bottom" forState:UIControlStateNormal];
     [self.bottomButton addTarget:self action:@selector(showAlertBannerInView:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.bottomButton];
 
     self.underNavButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
     self.underNavButton.tag = ALAlertBannerPositionUnderNavBar;
+    [self.underNavButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.underNavButton setTitle:@"UIWindow" forState:UIControlStateNormal];
     [self.underNavButton addTarget:self action:@selector(showAlertBannerInWindow:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.underNavButton];
@@ -118,8 +108,6 @@
     self.animationDurationLabel.text = @"Animation duration: 0.25 seconds";
     self.animationDurationLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:self.animationDurationLabel];
-
-//    [self.view setBackgroundColor:[UIColor redColor]];
 
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background1.jpg"]];
     [self.view insertSubview:imageView atIndex:0];

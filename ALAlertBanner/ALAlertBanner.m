@@ -123,7 +123,8 @@ lineBreakMode:mode].height) : 0.f;
 @property (nonatomic, strong) UILabel *subtitleLabel;
 @property (nonatomic, strong) UIImageView *styleImageView;
 @property (nonatomic) CGRect parentFrameUponCreation;
-@property (nonatomic) UIVisualEffectView *blurView;
+@property (nonatomic, strong) UIVisualEffectView *blurView;
+@property (nonatomic, strong) UIView *contentView;
 
 @end
 
@@ -168,10 +169,10 @@ lineBreakMode:mode].height) : 0.f;
     _drawsGradient = @YES;
     _drawsStrokes = @YES;
     _shadowRadius = @0.f;
-//    _successImage = [UIImage imageNamed:@"bannerSuccess.png"];
-//    _failureImage = [UIImage imageNamed:@"bannerFailure.png"];
-//    _notifyImage = [UIImage imageNamed:@"bannerNotify.png"];
-//    _warningImage = [UIImage imageNamed:@"bannerAlert.png"];
+    _successImage = [UIImage imageNamed:@"bannerSuccess.png"];
+    _failureImage = [UIImage imageNamed:@"bannerFailure.png"];
+    _notifyImage = [UIImage imageNamed:@"bannerNotify.png"];
+    _warningImage = [UIImage imageNamed:@"bannerAlert.png"];
     _successFillColor = [UIColor colorWithRed:(77/255.0) green:(175/255.0) blue:(67/255.0) alpha:1.f];
     _failureFillColor = [UIColor colorWithRed:(173/255.0) green:(48/255.0) blue:(48/255.0) alpha:1.f];
     _warningFillColor = [UIColor colorWithRed:(211/255.0) green:(209/255.0) blue:(100/255.0) alpha:1.f];
@@ -205,15 +206,15 @@ lineBreakMode:mode].height) : 0.f;
     [self.blurView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
     [self insertSubview:self.blurView atIndex:0];
 
-    UIView *contentView = [[UIView alloc] initWithFrame:self.bounds];
-    contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    [self.blurView.contentView addSubview:contentView];
+    self.contentView = [[UIView alloc] initWithFrame:self.bounds];
+    self.contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    [self.blurView.contentView addSubview:self.contentView];
 
-    [contentView setBackgroundColor:[UIColor colorWithRed:0/255.f green:200/255.f blue:175/255.f alpha:.5f]]; //TODO - should be a UIAppearance selector
-    [contentView setBackgroundColor:[UIColor colorWithRed:255/255.f green:45/255.f blue:85/255.f alpha:.7f]]; //TODO - should be a UIAppearance selector
+    [self.contentView setBackgroundColor:[UIColor colorWithRed:0/255.f green:200/255.f blue:175/255.f alpha:.5f]]; //TODO - should be a UIAppearance selector
+//    [self.contentView setBackgroundColor:[UIColor colorWithRed:255/255.f green:45/255.f blue:85/255.f alpha:.6f]]; //TODO - should be a UIAppearance selector
 
-    [contentView addSubview:self.titleLabel];
-    [contentView addSubview:self.subtitleLabel];
+    [self.contentView addSubview:self.titleLabel];
+    [self.contentView addSubview:self.subtitleLabel];
 }
 
 - (void)applyStyling {
