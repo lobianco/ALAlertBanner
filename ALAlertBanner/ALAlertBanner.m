@@ -202,15 +202,15 @@ lineBreakMode:mode].height) : 0.f;
     self.contentView = [[UIView alloc] initWithFrame:self.bounds];
     self.contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-    UIBlurEffect *effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
-    self.blurView = [[UIVisualEffectView alloc] initWithEffect:effect];
-    [[(UIVisualEffectView *)self.blurView contentView] addSubview:self.contentView];
-#else
-    self.blurView = [[UIView alloc] initWithFrame:self.bounds];
-    self.blurView.backgroundColor = [UIColor colorWithWhite:1.f alpha:.9];
-    [self.blurView addSubview:self.contentView];
-#endif
+    if (AL_IOS_8_OR_GREATER) {
+        UIBlurEffect *effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
+        self.blurView = [[UIVisualEffectView alloc] initWithEffect:effect];
+        [[(UIVisualEffectView *)self.blurView contentView] addSubview:self.contentView];
+    } else {
+        self.blurView = [[UIView alloc] initWithFrame:self.bounds];
+        self.blurView.backgroundColor = [UIColor colorWithWhite:1.f alpha:.9];
+        [self.blurView addSubview:self.contentView];
+    }
 
     [self.blurView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
     [self insertSubview:self.blurView atIndex:0];
