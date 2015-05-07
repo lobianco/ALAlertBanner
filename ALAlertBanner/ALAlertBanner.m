@@ -320,7 +320,7 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
     if (![view isKindOfClass:[UIWindow class]] && position == ALAlertBannerPositionUnderNavBar)
         [[NSException exceptionWithName:@"Wrong ALAlertBannerPosition For View Type" reason:@"ALAlertBannerPositionUnderNavBar should only be used if you are presenting the alert banner on the AppDelegate window. Use ALAlertBannerPositionTop or ALAlertBannerPositionBottom for normal UIViews" userInfo:nil] raise];
     
-    alertBanner.titleLabel.text = !title ? @" " : title;
+    alertBanner.titleLabel.text = title;
     alertBanner.subtitleLabel.text = subtitle;
     alertBanner.style = style;
     alertBanner.position = position;
