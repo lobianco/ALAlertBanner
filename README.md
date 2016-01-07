@@ -1,12 +1,14 @@
+**Edit (January, 2016):** I've stopped maintaining this repo, but please feel free to fork it!
+
 # ALAlertBanner
 
 ALAlertBanner is a drop-in component for iOS (both iPhone and iPad) that allows you to display beautiful alert banners in a customizable and configurable way. 
 
 ### Preview
 
-![Preview1](http://alobi.github.io/ALAlertBanner/screenshots/screenshot1.gif) ![Preview2](http://alobi.github.io/ALAlertBanner/screenshots/screenshot3.png)
+![Preview1](http://lobianco.github.io/ALAlertBanner/screenshots/screenshot1.gif) ![Preview2](http://lobianco.github.io/ALAlertBanner/screenshots/screenshot3.png)
 
-![Preview3](http://alobi.github.io/ALAlertBanner/screenshots/screenshot2.png)
+![Preview3](http://lobianco.github.io/ALAlertBanner/screenshots/screenshot2.png)
 
 ### Why Use ALAlertBanner?
 
@@ -33,7 +35,7 @@ Installation is easy.
 
 ### Manually
 
-1. [Download the ZIP](https://github.com/alobi/ALAlertBanner/archive/master.zip) from Github and copy the ALAlertBanner directory to your project
+1. [Download the ZIP](https://github.com/lobianco/ALAlertBanner/archive/master.zip) from Github and copy the ALAlertBanner directory to your project
 2. Link the ```QuartzCore.framework``` library in your project's Build Phases
 3. ```#import "ALAlertBanner.h"``` in your view of choice
 
@@ -233,13 +235,13 @@ If you have any suggestions, let me know! If you find any bugs, please open a ne
 
 You can reach me anytime at the addresses below. If you use the library, feel free to give me a shoutout on Twitter to let me know how you like it. I'd love to hear your thoughts. 
 
-Github: [alobi](https://github.com/alobi) <br>
-Twitter: [@lobi4nco](https://twitter.com/lobi4nco) <br>
+Github: [lobianco](https://github.com/lobianco) <br>
+Twitter: [@lobnco](https://twitter.com/lobnco) <br>
 Email: [anthony@lobian.co](mailto:anthony@lobian.co) 
 
 ## Credits & License
 
-ALAlertBanner is developed and maintained by Anthony Lobianco ([@lobi4nco](https://twitter.com/lobi4nco)). Licensed under the MIT License. Basically, I would appreciate attribution if you use it.
+ALAlertBanner is developed and maintained by Anthony Lobianco ([@lobnco](https://twitter.com/lobnco)). Licensed under the MIT License. Basically, I would appreciate attribution if you use it.
 
 Enjoy!
 
