@@ -119,9 +119,6 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
 @property (nonatomic, assign) ALAlertBannerState state;
 @property (nonatomic) NSTimeInterval fadeOutDuration;
 @property (nonatomic, readonly) BOOL isAnimating;
-@property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, strong) UILabel *subtitleLabel;
-@property (nonatomic, strong) UIImageView *styleImageView;
 @property (nonatomic) CGRect parentFrameUponCreation;
 
 @end
@@ -221,6 +218,14 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
             //tone the shadows down a little for the yellow background
             self.titleLabel.layer.shadowOpacity = 0.2f;
             self.subtitleLabel.layer.shadowOpacity = 0.2f;
+            
+        case ALAlertBannerStyleCustom:
+            //self.styleImageView.image = [UIImage imageNamed:@"placeholder_notification"];
+            
+            //tone the shadows down a little for the yellow background
+            self.titleLabel.layer.shadowOpacity = 0.2f;
+            self.subtitleLabel.layer.shadowOpacity = 0.2f;
+
             
             break;
     }

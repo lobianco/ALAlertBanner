@@ -29,6 +29,12 @@
 		4FC799DF17BC33D0000AEC49 /* bannerNotify.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FC799DB17BC33D0000AEC49 /* bannerNotify.png */; };
 		4FC799E017BC33D0000AEC49 /* bannerSuccess.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FC799DC17BC33D0000AEC49 /* bannerSuccess.png */; };
 		4FFBA6F917BE970700C2A7F2 /* ALAlertBannerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FFBA6F817BE970700C2A7F2 /* ALAlertBannerManager.m */; };
+		5D24F4521859432E00821CAD /* JALabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D24F4511859432E00821CAD /* JALabel.m */; };
+		5D24F4571859446800821CAD /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D24F4541859446800821CAD /* 1.png */; };
+		5D24F4581859446800821CAD /* 2.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D24F4551859446800821CAD /* 2.png */; };
+		5D24F4591859446800821CAD /* 3.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D24F4561859446800821CAD /* 3.png */; };
+		5D24F45C1859452100821CAD /* 4.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D24F45A1859452100821CAD /* 4.png */; };
+		5D24F45F1859475500821CAD /* 0.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D24F45E1859475500821CAD /* 0.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,6 +69,13 @@
 		4FC799DC17BC33D0000AEC49 /* bannerSuccess.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bannerSuccess.png; sourceTree = "<group>"; };
 		4FFBA6F717BE970700C2A7F2 /* ALAlertBannerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALAlertBannerManager.h; sourceTree = "<group>"; };
 		4FFBA6F817BE970700C2A7F2 /* ALAlertBannerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALAlertBannerManager.m; sourceTree = "<group>"; };
+		5D24F4501859432E00821CAD /* JALabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JALabel.h; sourceTree = "<group>"; };
+		5D24F4511859432E00821CAD /* JALabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JALabel.m; sourceTree = "<group>"; };
+		5D24F4541859446800821CAD /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.png; sourceTree = "<group>"; };
+		5D24F4551859446800821CAD /* 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 2.png; sourceTree = "<group>"; };
+		5D24F4561859446800821CAD /* 3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 3.png; sourceTree = "<group>"; };
+		5D24F45A1859452100821CAD /* 4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 4.png; sourceTree = "<group>"; };
+		5D24F45E1859475500821CAD /* 0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +125,7 @@
 		4FC799AC17BC072A000AEC49 /* ALAlertBannerDemo */ = {
 			isa = PBXGroup;
 			children = (
+				5D24F4531859446800821CAD /* images */,
 				4FC799B517BC072A000AEC49 /* AppDelegate.h */,
 				4FC799B617BC072A000AEC49 /* AppDelegate.m */,
 				4FC799C317BC0758000AEC49 /* ViewController.h */,
@@ -140,6 +154,7 @@
 		4FC799C617BC078A000AEC49 /* ALAlertBanner */ = {
 			isa = PBXGroup;
 			children = (
+				5D24F44F1859432E00821CAD /* JALabel */,
 				4FC799CA17BC078B000AEC49 /* ALAlertBanner.h */,
 				4FC799CB17BC078B000AEC49 /* ALAlertBanner.m */,
 				4FFBA6F717BE970700C2A7F2 /* ALAlertBannerManager.h */,
@@ -164,6 +179,27 @@
 				4FC799DC17BC33D0000AEC49 /* bannerSuccess.png */,
 			);
 			path = Images;
+			sourceTree = "<group>";
+		};
+		5D24F44F1859432E00821CAD /* JALabel */ = {
+			isa = PBXGroup;
+			children = (
+				5D24F4501859432E00821CAD /* JALabel.h */,
+				5D24F4511859432E00821CAD /* JALabel.m */,
+			);
+			path = JALabel;
+			sourceTree = "<group>";
+		};
+		5D24F4531859446800821CAD /* images */ = {
+			isa = PBXGroup;
+			children = (
+				5D24F45E1859475500821CAD /* 0.png */,
+				5D24F4541859446800821CAD /* 1.png */,
+				5D24F4551859446800821CAD /* 2.png */,
+				5D24F4561859446800821CAD /* 3.png */,
+				5D24F45A1859452100821CAD /* 4.png */,
+			);
+			path = images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -227,8 +263,13 @@
 				4FC799D617BC07B7000AEC49 /* bannerSuccess@2x.png in Resources */,
 				4FC799DD17BC33D0000AEC49 /* bannerAlert.png in Resources */,
 				4FC799DE17BC33D0000AEC49 /* bannerFailure.png in Resources */,
+				5D24F4591859446800821CAD /* 3.png in Resources */,
+				5D24F45F1859475500821CAD /* 0.png in Resources */,
 				4FC799DF17BC33D0000AEC49 /* bannerNotify.png in Resources */,
+				5D24F45C1859452100821CAD /* 4.png in Resources */,
+				5D24F4581859446800821CAD /* 2.png in Resources */,
 				4FC799E017BC33D0000AEC49 /* bannerSuccess.png in Resources */,
+				5D24F4571859446800821CAD /* 1.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,6 +281,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				203ADC231809F1B9001E4C68 /* TableViewController.m in Sources */,
+				5D24F4521859432E00821CAD /* JALabel.m in Sources */,
 				4FC799B317BC072A000AEC49 /* main.m in Sources */,
 				4FC799B717BC072A000AEC49 /* AppDelegate.m in Sources */,
 				4FC799C517BC0758000AEC49 /* ViewController.m in Sources */,

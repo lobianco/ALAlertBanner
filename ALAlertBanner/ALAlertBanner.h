@@ -24,18 +24,21 @@
 
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
+#import "JALabel.h"
 
 typedef enum {
     ALAlertBannerStyleSuccess = 0,
     ALAlertBannerStyleFailure,
     ALAlertBannerStyleNotify,
     ALAlertBannerStyleWarning,
+    ALAlertBannerStyleCustom,
 } ALAlertBannerStyle;
 
 typedef enum {
     ALAlertBannerPositionTop = 0,
     ALAlertBannerPositionBottom,
     ALAlertBannerPositionUnderNavBar,
+    
 } ALAlertBannerPosition;
 
 typedef enum {
@@ -48,7 +51,9 @@ typedef enum {
 } ALAlertBannerState;
 
 @interface ALAlertBanner : UIView
-
+@property (nonatomic, strong) JALabel *titleLabel;
+@property (nonatomic, strong) JALabel *subtitleLabel;
+@property (nonatomic, strong) UIImageView *styleImageView;
 @property (nonatomic, readonly) ALAlertBannerStyle style;
 @property (nonatomic, readonly) ALAlertBannerPosition position;
 @property (nonatomic, readonly) ALAlertBannerState state;
