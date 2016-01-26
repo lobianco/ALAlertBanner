@@ -16,6 +16,7 @@
 @property (nonatomic, strong) UIButton *topButton;
 @property (nonatomic, strong) UIButton *bottomButton;
 @property (nonatomic, strong) UIButton *underNavButton;
+@property (nonatomic, strong) UIButton *changeTextButton;
 
 @property (nonatomic, strong) UISlider *secondsToShowSlider;
 @property (nonatomic, strong) UILabel *secondsToShowLabel;
@@ -25,6 +26,8 @@
 @property (nonatomic, strong) UILabel *animationDurationLabel;
 @property (nonatomic) NSTimeInterval showAnimationDuration;
 @property (nonatomic) NSTimeInterval hideAnimationDuration;
+
+@property (nonatomic, weak) ALAlertBanner *lastBanner;
 
 @end
 
@@ -100,6 +103,11 @@
     self.animationDurationLabel.text = @"Animation duration: 0.25 seconds";
     self.animationDurationLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:self.animationDurationLabel];
+
+    self.changeTextButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [self.changeTextButton setTitle:@"Change text" forState:UIControlStateNormal];
+    [self.changeTextButton addTarget:self action:@selector(changeText) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.changeTextButton];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -121,6 +129,8 @@
     self.secondsToShowLabel.frame = CGRectMake(self.secondsToShowSlider.frame.origin.x, self.secondsToShowSlider.frame.origin.y + self.secondsToShowSlider.frame.size.height, self.secondsToShowSlider.frame.size.width, 20.f);
     self.animationDurationSlider.frame = CGRectMake(self.secondsToShowSlider.frame.origin.x, self.secondsToShowLabel.frame.origin.y + self.secondsToShowLabel.frame.size.height + 20.f, self.view.frame.size.width - 40.f, 20.f);
     self.animationDurationLabel.frame = CGRectMake(self.animationDurationSlider.frame.origin.x, self.animationDurationSlider.frame.origin.y + self.animationDurationSlider.frame.size.height, self.animationDurationSlider.frame.size.width, 20.f);
+
+    self.changeTextButton.frame = CGRectMake(self.bottomButton.frame.origin.x, self.animationDurationSlider.frame.origin.y + self.animationDurationSlider.frame.size.height + 20.f, self.bottomButton.frame.size.width, self.bottomButton.frame.size.height);
 }
 
 - (void)showAlertBannerInView:(UIButton *)button {
@@ -134,6 +144,12 @@
     banner.showAnimationDuration = self.showAnimationDuration;
     banner.hideAnimationDuration = self.hideAnimationDuration;
     [banner show];
+    
+    self.lastBanner = banner;
+}
+
+- (void)changeText {
+    [self.lastBanner changeTitle:@"Text changed" subtitle:[[AppDelegate randomLoremIpsum] stringByAppendingString:[AppDelegate randomLoremIpsum]]];
 }
 
 - (void)showAlertBannerInWindow:(UIButton *)button {

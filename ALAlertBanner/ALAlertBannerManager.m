@@ -250,6 +250,56 @@
     }
 }
 
+- (void)alertBanner:(ALAlertBanner *)alertBanner willChangeHeight:(CGFloat)oldHeight toHeight:(CGFloat)newHeight inView:(UIView *)view {
+    NSMutableArray *bannersArray = view.alertBanners;
+    NSArray *bannersInSamePosition = [bannersArray filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.position == %i", alertBanner.position]];
+    NSUInteger index = [bannersInSamePosition indexOfObject:alertBanner];
+
+    BOOL forward = newHeight > oldHeight;
+    CGFloat distance = newHeight - oldHeight;
+
+    if (index != NSNotFound && index > 0) {
+        NSArray *bannersToPush = [bannersInSamePosition subarrayWithRange:NSMakeRange(0, index)];
+
+        for (ALAlertBanner *banner in bannersToPush)
+            [banner pushAlertBanner:distance forward:forward delay:0.f];
+    }
+
+    if (alertBanner.position == ALAlertBannerPositionBottom) {
+        [alertBanner pushAlertBanner:distance forward:forward delay:0.f];
+    }
+
+}
+
+- (void)alertBanner:(ALAlertBanner *)alertBanner changeTitle:(NSString *)title subtitle:(NSString *)subtitle hideAfter:(NSTimeInterval)delay {
+    dispatch_semaphore_t semaphore;
+    switch (alertBanner.position) {
+        case ALAlertBannerPositionTop:
+            semaphore = self.topPositionSemaphore;
+            break;
+        case ALAlertBannerPositionBottom:
+            semaphore = self.bottomPositionSemaphore;
+            break;
+        case ALAlertBannerPositionUnderNavBar:
+            semaphore = self.navBarPositionSemaphore;
+            break;
+    }
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [alertBanner setTitle:title subtitle:subtitle];
+
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideAlertBanner:) object:alertBanner];
+            if (delay > 0) {
+                [self performSelector:@selector(hideAlertBanner:) withObject:alertBanner afterDelay:delay];
+            }
+
+            dispatch_semaphore_signal(semaphore);
+        });
+    });
+}
+
 # pragma mark -
 # pragma mark Instance Methods
 

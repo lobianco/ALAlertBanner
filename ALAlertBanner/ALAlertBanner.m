@@ -345,6 +345,10 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
     [self.delegate hideAlertBanner:self forced:NO];
 }
 
+- (void)changeTitle:(NSString *)title subtitle:(NSString *)subtitle {
+    [self.delegate alertBanner:self changeTitle:title subtitle:subtitle hideAfter:self.secondsToShow];
+}
+
 # pragma mark -
 # pragma mark Internal Instance Methods
 
@@ -576,6 +580,15 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
     }
 }
 
+- (void)setTitle:(NSString *)titleText subtitle:(NSString *)subtitleText {
+    self.titleLabel.text = titleText;
+    self.subtitleLabel.text = subtitleText;
+
+    CGFloat origHeight = self.bounds.size.height;
+    [self updateSizeAndSubviewsAnimated:YES];
+    [self.delegate alertBanner:self willChangeHeight:origHeight toHeight:self.bounds.size.height inView:self.superview];
+}
+
 - (void)updateSizeAndSubviewsAnimated:(BOOL)animated {
     CGSize maxLabelSize = CGSizeMake(self.superview.bounds.size.width - (kMargin*3.f) - self.styleImageView.image.size.width, CGFLOAT_MAX);
     CGFloat titleLabelHeight = AL_SINGLELINE_TEXT_HEIGHT(self.titleLabel.text, self.titleLabel.font);
@@ -587,6 +600,7 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
     CGRect oldBounds = self.layer.bounds;
     CGRect newBounds = oldBounds;
     newBounds.size = CGSizeMake(self.superview.frame.size.width, heightForSelf);
+    BOOL forward = newBounds.size.height > oldBounds.size.height;
     self.layer.bounds = newBounds;
     
     if (animated) {
@@ -594,6 +608,7 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
         boundsAnimation.fromValue = [NSValue valueWithCGRect:oldBounds];
         boundsAnimation.toValue = [NSValue valueWithCGRect:newBounds];
         boundsAnimation.duration = boundsAnimationDuration;
+        boundsAnimation.timingFunction = forward ? [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut] : [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
         [self.layer addAnimation:boundsAnimation forKey:@"bounds"];
     }
     
@@ -619,6 +634,7 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
             CABasicAnimation *shadowAnimation = [CABasicAnimation animationWithKeyPath:@"shadowPath"];
             shadowAnimation.fromValue = (id)[UIBezierPath bezierPathWithRect:oldShadowPath].CGPath;
             shadowAnimation.toValue = (id)[UIBezierPath bezierPathWithRect:newShadowPath].CGPath;
+            shadowAnimation.timingFunction = forward ? [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut] : [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
             shadowAnimation.duration = boundsAnimationDuration;
             [self.layer addAnimation:shadowAnimation forKey:@"shadowPath"];
         }

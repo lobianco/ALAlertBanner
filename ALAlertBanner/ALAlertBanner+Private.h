@@ -44,6 +44,8 @@
 @required
 - (void)showAlertBanner:(ALAlertBanner *)alertBanner hideAfter:(NSTimeInterval)delay;
 - (void)hideAlertBanner:(ALAlertBanner *)alertBanner forced:(BOOL)forced;
+- (void)alertBanner:(ALAlertBanner *)alertBanner changeTitle:(NSString *)title subtitle:(NSString *)subtitle hideAfter:(NSTimeInterval)delay;
+- (void)alertBanner:(ALAlertBanner *)alertBanner willChangeHeight:(CGFloat)height toHeight:(CGFloat)newHeight inView:(UIView *)view;
 - (void)alertBannerWillShow:(ALAlertBanner *)alertBanner inView:(UIView *)view;
 - (void)alertBannerDidShow:(ALAlertBanner *)alertBanner inView:(UIView *)view;
 - (void)alertBannerWillHide:(ALAlertBanner *)alertBanner inView:(UIView *)view;
@@ -64,6 +66,7 @@
 - (void)pushAlertBanner:(CGFloat)distance forward:(BOOL)forward delay:(double)delay;
 - (void)updateSizeAndSubviewsAnimated:(BOOL)animated;
 - (void)updatePositionAfterRotationWithY:(CGFloat)yPos animated:(BOOL)animated;
+- (void)setTitle:(NSString *)titleText subtitle:(NSString *)subtitleText;
 - (id)nextAvailableViewController:(id)view;
 
 @end
