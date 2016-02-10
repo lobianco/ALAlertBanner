@@ -28,7 +28,7 @@ ALAlertBanner uses [Core Animation](https://developer.apple.com/library/mac/docu
 
 Installation is easy.
 
-### Cocoapods
+### CocoaPods
 
 1. Add ```pod 'ALAlertBanner', '~>0.3.1'``` to your Podfile
 2. ```#import <ALAlertBanner/ALAlertBanner.h>``` in your view of choice
