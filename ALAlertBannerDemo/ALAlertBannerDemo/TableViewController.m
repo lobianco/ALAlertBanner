@@ -9,6 +9,7 @@
 #import "TableViewController.h"
 #import "ALAlertBanner.h"
 #import "AppDelegate.h"
+#import "ALBannerStyleConfiguration.h"
 
 @interface TableViewController ()
 
@@ -38,8 +39,25 @@
 }
 
 - (void)showAlertBannerInView {
-    ALAlertBannerStyle randomStyle = (ALAlertBannerStyle)(arc4random_uniform(4));
-    ALAlertBanner *banner = [ALAlertBanner alertBannerForView:self.view style:randomStyle position:ALAlertBannerPositionTop title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[AppDelegate randomLoremIpsum] tappedBlock:^(ALAlertBanner *alertBanner) {
+    NSInteger styleNumber = arc4random_uniform(4);
+    ALBannerStyleConfiguration *styleConfiguration = nil;
+    switch (styleNumber) {
+        case 0:
+            styleConfiguration = [ALBannerStyleConfiguration successStyleConfiguration];
+            break;
+        case 1:
+            styleConfiguration = [ALBannerStyleConfiguration failureStyleConfiguration];
+            break;
+        case 2:
+            styleConfiguration = [ALBannerStyleConfiguration notifyStyleConfiguration];
+            break;
+        case 3:
+            styleConfiguration = [ALBannerStyleConfiguration warningStyleConfiguration];
+            break;
+        default:
+            styleConfiguration = [ALBannerStyleConfiguration successStyleConfiguration];
+    }
+    ALAlertBanner *banner = [ALAlertBanner alertBannerForView:self.view styleConfiguration:styleConfiguration position:ALAlertBannerPositionTop title:@"Lorem ipsum dolor sit amet, consectetur adipiscing elit." subtitle:[AppDelegate randomLoremIpsum] tappedBlock:^(ALAlertBanner *alertBanner) {
         NSLog(@"tapped!");
         [alertBanner hide];
     }];
@@ -69,7 +87,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
         
-    cell.textLabel.text = [NSString stringWithFormat:@"Cell %i", indexPath.row];
+    cell.textLabel.text = [NSString stringWithFormat:@"Cell %li", (long)indexPath.row];
     
     return cell;
 }
