@@ -48,6 +48,18 @@ static CFTimeInterval const kRotationDurationIPad = 0.4;
 
 static CGFloat const kForceHideAnimationDuration = 0.1f;
 
+
+@interface NSMutableParagraphStyle (LineBreak)
++ (NSMutableParagraphStyle *)defaultParagraphStyleWithLineBreakMode:(NSLineBreakMode)breakMode;
+@end
+@implementation NSMutableParagraphStyle(LineBreak)
++ (NSMutableParagraphStyle *)defaultParagraphStyleWithLineBreakMode:(NSLineBreakMode)breakMode {
+    NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    [style setLineBreakMode:breakMode];
+    return style;
+}
+@end
+
 #define AL_DEVICE_ANIMATION_DURATION UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ? kRotationDurationIPad : kRotationDurationIphone;
 
 //macros referenced from MBProgressHUD. cheers to @matej
@@ -55,7 +67,7 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
     #define AL_SINGLELINE_TEXT_HEIGHT(text, font) [text length] > 0 ? [text sizeWithAttributes:nil].height : 0.f;
     #define AL_MULTILINE_TEXT_HEIGHT(text, font, maxSize, mode) [text length] > 0 ? [text boundingRectWithSize:maxSize \
                                                                                                        options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading) \
-                                                                                                    attributes:nil \
+                                                                                                    attributes:@{NSFontAttributeName: font, NSParagraphStyleAttributeName: [NSMutableParagraphStyle defaultParagraphStyleWithLineBreakMode:mode]} \
                                                                                                        context:NULL].size.height : 0.f;
 #else
     #define AL_SINGLELINE_TEXT_HEIGHT(text, font) [text length] > 0 ? [text sizeWithFont:font].height : 0.f;
@@ -174,12 +186,12 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
     _titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13.f];
     _titleLabel.textColor = [UIColor colorWithWhite:1.f alpha:0.9f];
     _titleLabel.textAlignment = NSTextAlignmentLeft;
-    _titleLabel.numberOfLines = 1;
-    _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     _titleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
     _titleLabel.layer.shadowOffset = CGSizeMake(0.f, -1.f);
     _titleLabel.layer.shadowOpacity = 0.3f;
     _titleLabel.layer.shadowRadius = 0.f;
+    _titleLabel.numberOfLines = 0;
+    _titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self addSubview:_titleLabel];
     
     _subtitleLabel = [[UILabel alloc] init];
@@ -531,7 +543,7 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
     BOOL isSuperviewKindOfWindow = ([superview isKindOfClass:[UIWindow class]]);
     
     CGSize maxLabelSize = CGSizeMake(superview.bounds.size.width - (kMargin*3) - self.styleImageView.image.size.width, CGFLOAT_MAX);
-    CGFloat titleLabelHeight = AL_SINGLELINE_TEXT_HEIGHT(self.titleLabel.text, self.titleLabel.font);
+    CGFloat titleLabelHeight = AL_MULTILINE_TEXT_HEIGHT(self.titleLabel.text, self.titleLabel.font, maxLabelSize, self.titleLabel.lineBreakMode);
     CGFloat subtitleLabelHeight = AL_MULTILINE_TEXT_HEIGHT(self.subtitleLabel.text, self.subtitleLabel.font, maxLabelSize, self.subtitleLabel.lineBreakMode);
     CGFloat heightForSelf = titleLabelHeight + subtitleLabelHeight + (self.subtitleLabel.text == nil || self.titleLabel.text == nil ? kMargin*2 : kMargin*2.5);
     
@@ -578,7 +590,7 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
 
 - (void)updateSizeAndSubviewsAnimated:(BOOL)animated {
     CGSize maxLabelSize = CGSizeMake(self.superview.bounds.size.width - (kMargin*3.f) - self.styleImageView.image.size.width, CGFLOAT_MAX);
-    CGFloat titleLabelHeight = AL_SINGLELINE_TEXT_HEIGHT(self.titleLabel.text, self.titleLabel.font);
+    CGFloat titleLabelHeight = AL_MULTILINE_TEXT_HEIGHT(self.titleLabel.text, self.titleLabel.font, maxLabelSize, self.titleLabel.lineBreakMode);
     CGFloat subtitleLabelHeight = AL_MULTILINE_TEXT_HEIGHT(self.subtitleLabel.text, self.subtitleLabel.font, maxLabelSize, self.subtitleLabel.lineBreakMode);
     CGFloat heightForSelf = titleLabelHeight + subtitleLabelHeight + (self.subtitleLabel.text == nil || self.titleLabel.text == nil ? kMargin*2.f : kMargin*2.5f);
     
