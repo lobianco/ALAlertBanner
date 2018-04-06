@@ -26,13 +26,6 @@
 #import <Foundation/Foundation.h>
 
 typedef enum {
-    ALAlertBannerStyleSuccess = 0,
-    ALAlertBannerStyleFailure,
-    ALAlertBannerStyleNotify,
-    ALAlertBannerStyleWarning,
-} ALAlertBannerStyle;
-
-typedef enum {
     ALAlertBannerPositionTop = 0,
     ALAlertBannerPositionBottom,
     ALAlertBannerPositionUnderNavBar,
@@ -47,9 +40,11 @@ typedef enum {
     ALAlertBannerStateHidden
 } ALAlertBannerState;
 
+@protocol ALBannerStyleConfigurationProtocol;
+
 @interface ALAlertBanner : UIView
 
-@property (nonatomic, readonly) ALAlertBannerStyle style;
+@property (nonatomic, readonly) id<ALBannerStyleConfigurationProtocol> styleConfiguration;
 @property (nonatomic, readonly) ALAlertBannerPosition position;
 @property (nonatomic, readonly) ALAlertBannerState state;
 
@@ -89,18 +84,25 @@ typedef enum {
 @property (nonatomic) CGFloat bannerOpacity;
 
 /**
+ Dissable default initializer.
+ 
+ Use [ALAlertBanner alertBannerForView:styleConfiguration:position:title] and etc.
+ */
+- (instancetype)init  NS_UNAVAILABLE;
+
+/**
  The default methods to customize and display a banner.
  */
-+ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title;
++ (ALAlertBanner *)alertBannerForView:(UIView *)view styleConfiguration:(id<ALBannerStyleConfigurationProtocol>)styleConfiguration position:(ALAlertBannerPosition)position title:(NSString *)title;
 
-+ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle;
++ (ALAlertBanner *)alertBannerForView:(UIView *)view styleConfiguration:(id<ALBannerStyleConfigurationProtocol>)styleConfiguration position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle;
 
 /**
  Optional method to handle a tap on a banner.
  
  By default, supplying a tap handler will disable allowTapToDismiss on this particular banner. If you want to reinstate this behavior alongside the tap handler, you can call `[[ALAlertBannerManager sharedManager] hideAlertBanner:alertBanner];` in tappedBlock().
  */
-+ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle tappedBlock:(void(^)(ALAlertBanner *alertBanner))tappedBlock;
++ (ALAlertBanner *)alertBannerForView:(UIView *)view styleConfiguration:(id<ALBannerStyleConfigurationProtocol>)styleConfiguration position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle tappedBlock:(void(^)(ALAlertBanner *alertBanner))tappedBlock;
 
 /**
  Show the alert banner

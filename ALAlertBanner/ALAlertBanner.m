@@ -34,6 +34,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "ALAlertBanner+Private.h"
 #import "ALAlertBannerManager.h"
+#import "ALBannerStyleConfiguration.h"
 
 static NSString * const kShowAlertBannerKey = @"showAlertBannerKey";
 static NSString * const kHideAlertBannerKey = @"hideAlertBannerKey";
@@ -114,7 +115,6 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
     ALAlertBannerManager *manager;
 }
 
-@property (nonatomic, assign) ALAlertBannerStyle style;
 @property (nonatomic, assign) ALAlertBannerPosition position;
 @property (nonatomic, assign) ALAlertBannerState state;
 @property (nonatomic) NSTimeInterval fadeOutDuration;
@@ -123,15 +123,16 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
 @property (nonatomic, strong) UILabel *subtitleLabel;
 @property (nonatomic, strong) UIImageView *styleImageView;
 @property (nonatomic) CGRect parentFrameUponCreation;
+@property (nonatomic, readwrite) id<ALBannerStyleConfigurationProtocol> styleConfiguration;
 
 @end
 
 @implementation ALAlertBanner
 
-- (id)init {
+- (instancetype)init:(id<ALBannerStyleConfigurationProtocol>)styleConfiguration {
     self = [super init];
     if (self) {
-        
+        self.styleConfiguration = styleConfiguration;
         [self commonInit];
         
     }
@@ -172,26 +173,26 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
     _titleLabel = [[UILabel alloc] init];
     _titleLabel.backgroundColor = [UIColor clearColor];
     _titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13.f];
-    _titleLabel.textColor = [UIColor colorWithWhite:1.f alpha:0.9f];
+    _titleLabel.textColor = self.styleConfiguration.titleTextColor;
     _titleLabel.textAlignment = NSTextAlignmentLeft;
     _titleLabel.numberOfLines = 1;
     _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     _titleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
     _titleLabel.layer.shadowOffset = CGSizeMake(0.f, -1.f);
-    _titleLabel.layer.shadowOpacity = 0.3f;
+    _titleLabel.layer.shadowOpacity = self.styleConfiguration.labelsShadowOpacity;
     _titleLabel.layer.shadowRadius = 0.f;
     [self addSubview:_titleLabel];
     
     _subtitleLabel = [[UILabel alloc] init];
     _subtitleLabel.backgroundColor = [UIColor clearColor];
     _subtitleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:10.f];
-    _subtitleLabel.textColor = [UIColor colorWithWhite:1.f alpha:0.9f];
+    _subtitleLabel.textColor = self.styleConfiguration.subtitleTextColor;
     _subtitleLabel.textAlignment = NSTextAlignmentLeft;
     _subtitleLabel.numberOfLines = 0;
     _subtitleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     _subtitleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
     _subtitleLabel.layer.shadowOffset = CGSizeMake(0.f, -1.f);
-    _subtitleLabel.layer.shadowOpacity = 0.3f;
+    _subtitleLabel.layer.shadowOpacity = self.styleConfiguration.labelsShadowOpacity;
     _subtitleLabel.layer.shadowRadius = 0.f;
     [self addSubview:_subtitleLabel];
 }
@@ -199,31 +200,10 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
 # pragma mark -
 # pragma mark Custom Setters & Getters
 
--(void)setStyle:(ALAlertBannerStyle)style {
-    _style = style;
+-(void)setStyleConfiguration:(id<ALBannerStyleConfigurationProtocol>)styleConfiguration {
+    _styleConfiguration = styleConfiguration;
     
-    switch (style) {
-        case ALAlertBannerStyleSuccess:
-            self.styleImageView.image = [UIImage imageNamed:@"bannerSuccess.png"];
-            break;
-            
-        case ALAlertBannerStyleFailure:
-            self.styleImageView.image = [UIImage imageNamed:@"bannerFailure.png"];
-            break;
-            
-        case ALAlertBannerStyleNotify:
-            self.styleImageView.image = [UIImage imageNamed:@"bannerNotify.png"];
-            break;
-            
-        case ALAlertBannerStyleWarning:
-            self.styleImageView.image = [UIImage imageNamed:@"bannerAlert.png"];
-            
-            //tone the shadows down a little for the yellow background
-            self.titleLabel.layer.shadowOpacity = 0.2f;
-            self.subtitleLabel.layer.shadowOpacity = 0.2f;
-            
-            break;
-    }
+    self.styleImageView.image = self.styleConfiguration.image;
 }
 
 - (void)setShowShadow:(BOOL)showShadow {
@@ -240,9 +220,7 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
         self.layer.shadowPath = [UIBezierPath bezierPathWithRect:shadowPath].CGPath;
         
         self.fadeInDuration = 0.15f;
-    }
-    
-    else {
+    } else {
         newShadowRadius = 0.f;
         self.layer.shadowRadius = 0.f;
         self.layer.shadowOffset = CGSizeZero;
@@ -296,16 +274,16 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
     [[ALAlertBannerManager sharedManager] forceHideAllAlertBannersInView:view];
 }
 
-+ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title {
-    return [self alertBannerForView:view style:style position:position title:title subtitle:nil tappedBlock:nil];
++ (ALAlertBanner *)alertBannerForView:(UIView *)view styleConfiguration:(id<ALBannerStyleConfigurationProtocol>)styleConfiguration position:(ALAlertBannerPosition)position title:(NSString *)title {
+    return [self alertBannerForView:view styleConfiguration:styleConfiguration position:position title:title subtitle:nil tappedBlock:nil];
 }
 
-+ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle {
-    return [self alertBannerForView:view style:style position:position title:title subtitle:subtitle tappedBlock:nil];
++ (ALAlertBanner *)alertBannerForView:(UIView *)view styleConfiguration:(id<ALBannerStyleConfigurationProtocol>)styleConfiguration position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle {
+    return [self alertBannerForView:view styleConfiguration:styleConfiguration position:position title:title subtitle:subtitle tappedBlock:nil];
 }
 
-+ (ALAlertBanner *)alertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle tappedBlock:(void (^)(ALAlertBanner *alertBanner))tappedBlock {
-    ALAlertBanner *alertBanner = [ALAlertBanner createAlertBannerForView:view style:style position:position title:title subtitle:subtitle];
++ (ALAlertBanner *)alertBannerForView:(UIView *)view styleConfiguration:(id<ALBannerStyleConfigurationProtocol>)styleConfiguration position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle tappedBlock:(void (^)(ALAlertBanner *alertBanner))tappedBlock {
+    ALAlertBanner *alertBanner = [ALAlertBanner createAlertBannerForView:view styleConfiguration:styleConfiguration position:position title:title subtitle:subtitle];
     alertBanner.allowTapToDismiss = tappedBlock ? NO : alertBanner.allowTapToDismiss;
     alertBanner.tappedBlock = tappedBlock;
     return alertBanner;
@@ -314,15 +292,14 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
 # pragma mark -
 # pragma mark Internal Class Methods
 
-+ (ALAlertBanner *)createAlertBannerForView:(UIView *)view style:(ALAlertBannerStyle)style position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle {
-    ALAlertBanner *alertBanner = [[ALAlertBanner alloc] init];
++ (ALAlertBanner *)createAlertBannerForView:(UIView *)view styleConfiguration:(id<ALBannerStyleConfigurationProtocol>)styleConfiguration position:(ALAlertBannerPosition)position title:(NSString *)title subtitle:(NSString *)subtitle {
+    ALAlertBanner *alertBanner = [[ALAlertBanner alloc] init:styleConfiguration];
     
     if (![view isKindOfClass:[UIWindow class]] && position == ALAlertBannerPositionUnderNavBar)
         [[NSException exceptionWithName:@"Wrong ALAlertBannerPosition For View Type" reason:@"ALAlertBannerPositionUnderNavBar should only be used if you are presenting the alert banner on the AppDelegate window. Use ALAlertBannerPositionTop or ALAlertBannerPositionBottom for normal UIViews" userInfo:nil] raise];
     
     alertBanner.titleLabel.text = !title ? @" " : title;
     alertBanner.subtitleLabel.text = subtitle;
-    alertBanner.style = style;
     alertBanner.position = position;
     alertBanner.state = ALAlertBannerStateHidden;
     
@@ -696,21 +673,8 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
 - (void)drawRect:(CGRect)rect {
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    UIColor *fillColor;
-    switch (self.style) {
-        case ALAlertBannerStyleSuccess:
-            fillColor = [UIColor colorWithRed:(77/255.0) green:(175/255.0) blue:(67/255.0) alpha:1.f];
-            break;
-        case ALAlertBannerStyleFailure:
-            fillColor = [UIColor colorWithRed:(173/255.0) green:(48/255.0) blue:(48/255.0) alpha:1.f];
-            break;
-        case ALAlertBannerStyleNotify:
-            fillColor = [UIColor colorWithRed:(48/255.0) green:(110/255.0) blue:(173/255.0) alpha:1.f];
-            break;
-        case ALAlertBannerStyleWarning:
-            fillColor = [UIColor colorWithRed:(211/255.0) green:(209/255.0) blue:(100/255.0) alpha:1.f];
-            break;
-    }
+    UIColor *fillColor;    
+    fillColor = self.styleConfiguration.fillColor;
     
     NSArray *colorsArray = [NSArray arrayWithObjects:(id)[fillColor CGColor], (id)[[fillColor darkerColor] CGColor], nil];
     CGColorSpaceRef colorSpace =  CGColorSpaceCreateDeviceRGB();
@@ -740,21 +704,7 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
 }
 
 - (NSString *)description {
-    NSString *styleString;
-    switch (self.style) {
-        case ALAlertBannerStyleSuccess:
-            styleString = @"ALAlertBannerStyleSuccess";
-            break;
-        case ALAlertBannerStyleFailure:
-            styleString = @"ALAlertBannerStyleFailure";
-            break;
-        case ALAlertBannerStyleNotify:
-            styleString = @"ALAlertBannerStyleNotify";
-            break;
-        case ALAlertBannerStyleWarning:
-            styleString = @"ALAlertBannerStyleWarning";
-            break;
-    }
+    NSString *styleString = self.styleConfiguration.styleString;
     NSString *positionString;
     switch (self.position) {
         case ALAlertBannerPositionTop:

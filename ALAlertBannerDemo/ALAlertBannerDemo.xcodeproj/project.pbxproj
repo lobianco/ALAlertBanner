@@ -29,6 +29,7 @@
 		4FC799DF17BC33D0000AEC49 /* bannerNotify.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FC799DB17BC33D0000AEC49 /* bannerNotify.png */; };
 		4FC799E017BC33D0000AEC49 /* bannerSuccess.png in Resources */ = {isa = PBXBuildFile; fileRef = 4FC799DC17BC33D0000AEC49 /* bannerSuccess.png */; };
 		4FFBA6F917BE970700C2A7F2 /* ALAlertBannerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FFBA6F817BE970700C2A7F2 /* ALAlertBannerManager.m */; };
+		D654E67B2077742100B8B286 /* ALBannerStyleConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = D654E67A2077742100B8B286 /* ALBannerStyleConfiguration.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,6 +64,8 @@
 		4FC799DC17BC33D0000AEC49 /* bannerSuccess.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bannerSuccess.png; sourceTree = "<group>"; };
 		4FFBA6F717BE970700C2A7F2 /* ALAlertBannerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALAlertBannerManager.h; sourceTree = "<group>"; };
 		4FFBA6F817BE970700C2A7F2 /* ALAlertBannerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALAlertBannerManager.m; sourceTree = "<group>"; };
+		D654E6792077742100B8B286 /* ALBannerStyleConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALBannerStyleConfiguration.h; sourceTree = "<group>"; };
+		D654E67A2077742100B8B286 /* ALBannerStyleConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALBannerStyleConfiguration.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,6 +143,8 @@
 		4FC799C617BC078A000AEC49 /* ALAlertBanner */ = {
 			isa = PBXGroup;
 			children = (
+				D654E6792077742100B8B286 /* ALBannerStyleConfiguration.h */,
+				D654E67A2077742100B8B286 /* ALBannerStyleConfiguration.m */,
 				4FC799CA17BC078B000AEC49 /* ALAlertBanner.h */,
 				4FC799CB17BC078B000AEC49 /* ALAlertBanner.m */,
 				4FFBA6F717BE970700C2A7F2 /* ALAlertBannerManager.h */,
@@ -243,6 +248,7 @@
 				4FC799B317BC072A000AEC49 /* main.m in Sources */,
 				4FC799B717BC072A000AEC49 /* AppDelegate.m in Sources */,
 				4FC799C517BC0758000AEC49 /* ViewController.m in Sources */,
+				D654E67B2077742100B8B286 /* ALBannerStyleConfiguration.m in Sources */,
 				4FC799CD17BC078B000AEC49 /* ALAlertBanner.m in Sources */,
 				4FFBA6F917BE970700C2A7F2 /* ALAlertBannerManager.m in Sources */,
 			);
